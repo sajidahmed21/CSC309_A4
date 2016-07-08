@@ -54,3 +54,28 @@ nav #tabs-list li a {
 nav #tabs-list li a:hover {
     background-color: #265a88;
 }
+
+#users-section {
+    width: 97%;
+    margin: auto;
+}
+
+#users-section > section {
+    margin-top: 25px;
+    padding: 1px 10px 20px 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    font-weight: 200;
+}
+
+#users-section > section h3 {
+    border-bottom: 1px solid  #337ab7;
+    color: #337ab7;
+}
+
+#users-section > section > input {
+    display: block;
+    width: 300px;
+    height: 2.0rem;
+    margin: auto;
+    font-size: 1.0rem;
+}
