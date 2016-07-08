@@ -1,0 +1,56 @@
+body {
+    font-size: 18px;
+    margin: 0px;
+}
+
+header {
+    font-size: 0.8rem;
+    color: white;
+    background-color: #337ab7;
+}
+
+header h1 {
+    padding: 8px 5px 8px 10px;
+}
+
+header h1, header h2 {
+    font-weight: 200;
+    margin: 0px;
+}
+
+header h2 {
+    margin-left: 5px;
+}
+
+header h1, header h2, header #tabs-list li, header #tabs-list li a {
+    display: inline-block;
+}
+
+header h2 {
+    color: gold;
+}
+
+nav #tabs-list {
+    margin: 0px;
+    padding: 0px;
+}
+
+nav #tabs-list li {
+    display: inline-block;
+    width: 33%;
+    text-align: center;
+}
+
+nav #tabs-list li a {
+    width: 100%;
+    margin: 0px;
+    padding: 10px;
+    border-bottom: 2px solid #337ab7;
+    font-size: 1.0rem;
+    color: white;
+    text-decoration: none;
+}
+
+nav #tabs-list li a:hover {
+    background-color: #265a88;
+}
