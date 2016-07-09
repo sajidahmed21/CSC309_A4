@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
-	<!-- Head starts here. Define stylesheet and total width-->
+	<!-- Head starts here. Define stylesheet and total width. -->
 	<head>
 	    <meta name="viewport" content="width=device-width, initialscale=1">
 	    <title>Teach Stuff</title>
 
 	    <script src="assets/js/jquery-2.0.0.min.js"></script>
+		<script src="assets/js/classes.js" defer></script>
+		
 	    <!-- Latest compiled and minified CSS -->
 	    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
@@ -20,7 +22,7 @@
 		<link rel="stylesheet" type="text/css" href="assets/css/classes.css">
 	</head>
 
-	<!-- Body Start here, where content is. -->
+	<!-- Body starts here, where content is. -->
 	<body class="global_font nomargin">
 	    <nav class="navbar navbar-default beautiful_headbar">
 	        <div class="container-fluid">
@@ -45,8 +47,9 @@
 	    </nav>
 
 	    <main class="no-search">
-                <input id="class-search" name="class-search" type="text" class="form-control" placeholder="Enter text to search for classes...">
-	    
+                <input id="search" name="search" class="form-control" placeholder="Enter text to search for classes...">
+	    		
+				<!-- recommended classes based on the user's profile data -->
 				<section id="recommended-classes">
 					<p>
 						Not sure what to search for? Here are some recommended classes based on your profile!
@@ -60,7 +63,9 @@
 							Software Design
 						</p>
 						<div class="class-description">
-							Introduction to large-scale software design and development concepts.
+							<p>
+								Introduction to large-scale software design and development concepts.
+							</p>
 						</div>
 					</article>
 					
@@ -91,6 +96,62 @@
 								<li>signals</li>
 								<li>basic network programming</li>
 							</ul>
+						</div>
+					</article>
+				</section>
+				
+				<!-- classes based on the search result -->
+				<section id="search-classes">
+					<p>
+						Not sure what to search for? Here are some recommended classes based on your profile!
+					</p>
+					
+					<article class="class">
+						<p class="class-title text-primary">
+							csc343
+						</p>
+						<p class="class-name">
+							Introduction to Databases
+						</p>
+						<div class="class-description">
+							<p>
+								Introduction to database management systems including:
+							</p>
+							
+							<ul>
+								<li>relational data models and algebra</li>
+								<li>querying and updating databases</li>
+								<li> application programming with SQL</li>
+								<li>database design</li>
+								<li>transaction management</li>
+							</ul>
+							
+							<p>
+								Students will also learn about XML and using XQuery to query XML data.
+							</p>
+						</div>
+					</article>
+					
+					<article class="class">
+						<p class="class-title text-primary">
+							csc411
+						</p>
+						<p class="class-name">
+							Machine Learning and Data Mining
+						</p>
+						<div class="class-description">
+							<p>
+								An introduction to methods for automated learning of relationships on the basis of empirical data.
+							</p>
+							<p>
+								Classification and regression using nearest neighbour methods, decision trees, linear models, and neural networks.
+							</p>
+							<p>
+								Studying clustering algorithms and problems of overfitting and of assessing accuracy.
+							</p>
+							<p>
+								Problems with handling large databases with an emphasis on statistical approaches.
+							</p>
 						</div>
 					</article>
 				</section>

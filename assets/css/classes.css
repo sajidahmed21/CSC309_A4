@@ -1,7 +1,7 @@
 /* have the search bar be take up nearly all the width and be centred;
  * also make it be a bit larger in height
  */
-input#class-search {
+input#search {
     height: 3em;
     width: 90%;
     font-size: 1.5em;
@@ -21,8 +21,16 @@ section#recommended-classes {
     display: none;
 }
 
-
 main.no-search section#recommended-classes {
+    display: initial;
+}
+
+/* only show search results if there was a search */
+main.no-search section#search-classes {
+    display: none;
+}
+
+section#search-classes {
     display: initial;
 }
 
@@ -66,12 +74,12 @@ footer {
 /* tablet mode and larger --------------------------------------------------*/
 @media screen and (min-width: 768px) {
     /* have the input take up even less of the total width */
-    input#class-search {
+    input#search {
         width: 80%;
     }
     
     /* move the search box a bit lower */
-    input#class-search {
+    input#search {
         margin-top: 40px;
     }
 }
