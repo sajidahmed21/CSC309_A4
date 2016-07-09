@@ -11,7 +11,7 @@ function showChatArea(partnerId) {
     $chatAreas.each(function(index, chatArea) {
         var $chatArea = $(chatArea);
         
-        if ($chatArea.attr('data-partner-id') == partnerId) {
+        if ($chatArea.attr('data-partner-id') === partnerId) {
             foundTarget = true;
             $chatArea.show();
         }
@@ -21,6 +21,29 @@ function showChatArea(partnerId) {
     });
     
     return foundTarget;
+}
+
+
+function onClickUser(user) {
+    var userId = $(user).attr('data-user-id');
+    
+    // if the user is already being shown, do nothing
+    if (userId === window.currentPartnerId) {
+        return;
+    }
+    
+    window.currentPartnerId = userId;
+    
+    // otherwise, show the chat area
+    if (showChatArea(userId)) {
+        // if the chat area already existed, do nothing
+        ;
+    }
+    else {
+        // this is a new chat area, so load previous messages?
+    }
+    
+    return;
 }
 
 
@@ -43,11 +66,20 @@ function resizeMessagingArea() {
 
 
 window.onload = function() {
-    // load the first chat area (which for the mockup is hiding all
-    // chat areas except the first
-    showChatArea(41);
-    
     // set the resizing of the messaging area and trigger it immediately
     $(window).resize(resizeMessagingArea);
     resizeMessagingArea();
+    
+    // set the cick event for all user in the users list
+    $('section#user-list div.user').each(function(index, user) {
+        $(user).click(function(e) {
+            onClickUser(user);
+            
+            e.preventDefault();
+        });
+    });
+    
+    // load the first chat area (which for the mockup is hiding all
+    // chat areas except the first
+    onClickUser('41');
 }
