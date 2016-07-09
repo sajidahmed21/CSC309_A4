@@ -31,7 +31,31 @@ function showUsersTab() {
     
     $('<h3/>').text('Current Users').appendTo($currentUsersSection);
     $('<p/>').text('View or edit an existing user profile.').appendTo($currentUsersSection);
-    $('<input/>', {type: 'text', placeholder: 'Search by user name'}).appendTo($currentUsersSection);
+    
+    // Search section
+    $searchContainer = $('<article/>', {id: 'search-container'});
+
+    $autocompleteDropDown = $('<section>', {id: 'autocomplete-drop-down'});
+    
+    $searchBox = $('<input/>', {type: 'text', placeholder: 'Search by user name    (e.g. type "Jeff")'});
+    // Bind input changed listener to text box
+    $searchBox.bind('input', function() {
+       console.log($(this).val()); 
+    });
+    
+    $searchBox.autocomplete({
+        lookup: ['Jeff', 'Bob', 'Terry', 'Jeffrey', 'Rob'],
+        minLength: 0,
+        autoFocus: true,
+        appendTo: $autocompleteDropDown,
+        onSelect: function (suggestion) {
+            console.log(suggestion);
+        }
+    });
+    
+    $searchBox.appendTo($searchContainer);
+    $autocompleteDropDown.appendTo($searchContainer);
+    $searchContainer.appendTo($currentUsersSection);
     
     $usersTab.append($currentUsersSection);
     

@@ -72,10 +72,35 @@ nav #tabs-list li a:hover {
     color: #337ab7;
 }
 
-#users-section > section > input {
-    display: block;
-    width: 300px;
-    height: 2.0rem;
+#search-container {
+    width: 350px;
     margin: auto;
     font-size: 1.0rem;
+}
+
+#search-container > input {
+    display: block;
+    width: 100%;
+    height: 2.0rem;
+    font-size: 1.0rem;
+}
+
+.autocomplete-suggestions {
+    border: 1px solid #999;
+    background: #fff;
+    cursor: default; }
+    
+.autocomplete-suggestion {
+    padding: 10px 5px;
+    font-size: 1.2em;
+    white-space: nowrap;
+}
+
+.autocomplete-selected {
+    background: #f0f0f0;
+}
+
+.autocomplete-suggestions strong {
+    font-weight: normal;
+    color: #3399ff;
 }
