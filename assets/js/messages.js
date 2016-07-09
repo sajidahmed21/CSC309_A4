@@ -1,22 +1,22 @@
-/* Hides all chat area sections except the one for the given partner id.
+/* Hides all conversations except the one for the given partner id.
  * If no chat area exists for the given partner id, one will be created.
  *
  * Returns true if a chat area existed and false otherwise.
  */
-function showChatArea(partnerId) {
-    var $chatAreas = $('section.chat');
+function showConversation(partnerId) {
+    var $conversations = $('section#chat-area div.conversation');
     
     var foundTarget = false;
     
-    $chatAreas.each(function(index, chatArea) {
-        var $chatArea = $(chatArea);
+    $conversations.each(function(index, conversation) {
+        var $conversation = $(conversation);
         
-        if ($chatArea.attr('data-partner-id') === partnerId) {
+        if ($conversation.attr('data-partner-id') === partnerId) {
             foundTarget = true;
-            $chatArea.show();
+            $conversation.show();
         }
         else {
-            $chatArea.hide();
+            $conversation.hide();
         }
     });
     
@@ -35,7 +35,7 @@ function onClickUser(user) {
     window.currentPartnerId = userId;
     
     // otherwise, show the chat area
-    if (showChatArea(userId)) {
+    if (showConversation(userId)) {
         // if the chat area already existed, do nothing
         ;
     }
@@ -59,7 +59,21 @@ function resizeMessagingArea() {
     });
     
     // set the height of the messaging area
-    $('main#messaging').height($(window).height() - usedHeight);
+    var availableMessagingHeight = $(window).height() - usedHeight;
+    $('main#messaging').height(availableMessagingHeight);
+    
+    // next, calculate the available area for conversations
+    var conversationHeight = availableMessagingHeight;
+    conversationHeight -= $('section#chat-area div#message-send-area').outerHeight();
+    
+    // convert to a string with px
+    conversationHeight += 'px';
+    
+    // finally, set the minimum height of all conversations, so that the 
+    // send area is pushed down correctly
+    $('section#chat-area div.conversation').each(function(index, conversation) {
+        conversation.style.minHeight = conversationHeight;
+    });
     
     return;
 }
@@ -81,5 +95,5 @@ window.onload = function() {
     
     // load the first chat area (which for the mockup is hiding all
     // chat areas except the first
-    onClickUser('41');
+    onClickUser(document.getElementsByClassName('user')[0]);
 }

@@ -19,6 +19,7 @@
 
 
 	    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+		<link rel="stylesheet" type="text/css" href="assets/css/messages.css">
 	</head>
 
 	<!-- Body starts here, where content is. -->
@@ -45,7 +46,7 @@
 	        </div>
 	    </nav>
 
-	    <main id="messaging" class="container-fluid">
+	    <main id="messaging" class="container">
 			<!-- divide the screen into two columns: one for the user list and one for the chat area -->
 			<div class="row">
 				<section id="user-list" class="hidden-xs col-sm-5 col-md-4 col-lg-3">
@@ -63,12 +64,24 @@
 					</div>
 				</section>
 				
-				<section class="chat col-xs-12 col-sm-7 col-md-8 col-lg-9" data-partner-id="41">
-					chat area for shafid
-				</section>
-				
-				<section class="chat col-xs-12 col-sm-7 col-md-8 col-lg-9" data-partner-id="27">
-					chat area for alina
+				<!-- chat area -->
+				<section id="chat-area" class="col-xs-12 col-sm-7 col-md-8 col-lg-9">
+					<!-- each loaded user conversation will have a div here -->
+					<div class="conversation row" data-partner-id="41">
+						chat area for shafid
+					</div>
+					
+					<div class="conversation row" data-partner-id="27">
+						chat area for alina
+					</div>
+					
+					<!-- finally, the common input/send area -->
+					<div id="message-send-area" class="input-group">
+						<input type="text" id="message-text" class="form-control" name="message-text" placeholder="Enter message..."></input>
+						<span class="input-group-btn">
+							<button id="message-send" class="btn btn-primary">Send</button>
+						</span>
+					</div>
 				</section>
 			</div>
 		</main>

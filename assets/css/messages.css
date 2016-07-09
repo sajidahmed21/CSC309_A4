@@ -1,0 +1,53 @@
+button.btn-primary {
+    background-color: #3498db;
+    background-image: none;
+    border-color: #3498db;
+}
+
+nav.beautiful_headbar {
+    margin-bottom: 10px;
+}
+
+
+footer {
+    margin-top: 20px;
+    text-align: center;
+}
+
+
+/* user list */
+section#user-list {
+    border: 1px solid #e5e5e5;
+}
+
+section#user-list div.user {
+    border-bottom: 1px solid #e5e5e5;
+    
+    cursor: pointer;
+}
+
+section#user-list div.user:hover {
+    background-color: #badcf3;
+}
+
+/* make each user row a bit larger, and eliminate the margin added by p */
+section#user-list div.user p {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    margin-bottom: 0;
+}
+
+
+/* landscape mobile and larger ---------------------------------------------*/
+@media screen and (min-width: 480px) {
+}
+
+
+/* tablet mode and larger --------------------------------------------------*/
+@media screen and (min-width: 768px) {
+}
+
+
+/* landscape tablet and desktop mode ---------------------------------------*/
+@media screen and (min-width: 1024px) {
+}
