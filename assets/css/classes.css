@@ -3,10 +3,7 @@
  */
 input#search {
     height: 3em;
-    width: 90%;
     font-size: 1.5em;
-    
-    margin: 20px auto;
 }
 
 /* any paragraphs directly within a section should have some padding */
@@ -36,27 +33,17 @@ section#search-classes {
 
 
 /* class blocks */
-article.class {
-    border: 1px solid #e5e5e5;
-    
-    margin: 0 1em;
-    padding: 0.75em;
-}
-
-article.class:not(:last-child) {
-    margin-bottom: 1em;
-}
-
 
 article.class p.class-title {
-    display: inline-block;
-    margin-right: 2em;
-    
     font-weight: bold;
 }
 
 article.class p.class-name {
-    display: inline-block;
+    font-style: italic;
+}
+
+article.class button {
+    width: 100%;
 }
 
 
@@ -73,10 +60,6 @@ footer {
 
 /* tablet mode and larger --------------------------------------------------*/
 @media screen and (min-width: 768px) {
-    /* have the input take up even less of the total width */
-    input#search {
-        width: 80%;
-    }
     
     /* move the search box a bit lower */
     input#search {

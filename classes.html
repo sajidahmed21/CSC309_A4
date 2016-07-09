@@ -46,16 +46,23 @@
 	        </div>
 	    </nav>
 
-	    <main class="no-search">
-                <input id="search" name="search" class="form-control" placeholder="Enter text to search for classes...">
-	    		
-				<!-- recommended classes based on the user's profile data -->
-				<section id="recommended-classes">
-					<p>
+	    <main class="no-search container-fluid">
+			<div class="row">
+				<div class="form-horizontal col-xs-offset-1 col-xs-10">
+                	<input id="search" name="search" class="form-control" placeholder="Enter text to search for classes...">
+	    		</div>
+			</div>
+			
+				<!-- recommended classes based on the user's profile data; only shown if a user is logged in -->
+			<section id="recommended-classes" class="row">
+				<div class="col-xs-offset-1 col-xs-10">
+					<p class="text-info">
 						Not sure what to search for? Here are some recommended classes based on your profile!
 					</p>
-					
-					<article class="class">
+				</div>
+				
+				<article class="class col-xs-12 col-md-6 col-lg-4">
+					<div class="well">
 						<p class="class-title text-primary">
 							csc207
 						</p>
@@ -67,9 +74,13 @@
 								Introduction to large-scale software design and development concepts.
 							</p>
 						</div>
-					</article>
 					
-					<article class="class">
+						<button class="btn btn-primary beautiful_btn">Class Page</button>
+					</div>
+				</article>
+				
+				<article class="class col-xs-12 col-md-6 col-lg-4">
+					<div class="well">
 						<p class="class-title text-primary">
 							csc209
 						</p>
@@ -97,17 +108,41 @@
 								<li>basic network programming</li>
 							</ul>
 						</div>
-					</article>
-				</section>
-				
-				<!-- classes based on the search result -->
-				<section id="search-classes">
-					<p>
-						Not sure what to search for? Here are some recommended classes based on your profile!
-					</p>
 					
-					<article class="class">
+						<button class="btn btn-primary beautiful_btn">Class Page</button>
+					</div>
+				</article>
+				
+				<article class="class col-xs-12 col-md-6 col-lg-4">
+					<div class="well">
 						<p class="class-title text-primary">
+							csc236
+						</p>
+						<p class="class-name">
+							Introduction to the Theory of Computation
+						</p>
+						<div class="class-description">
+							<p>
+								The application of logic and proof techniques to Computer Science.
+							</p>
+							<p>
+								Mathematical induction; correctness proofs for iterative and recursive algorithms; recurrence equations and their solutions; introduction to automata and formal languages.
+							<p>
+							<p>
+								This course assumes university-level experience with proof techniques and algorithmic complexity as provided by CSC165H1.  Very strong students who already have this experience (e.g. successful completion of MAT157Y1) may consult the undergraduate office about proceeding directly into CSC236H1.
+							</p>
+						</div>
+					
+						<button class="btn btn-primary beautiful_btn">Class Page</button>
+					</div>
+				</article>
+			</section>
+			
+			<!-- classes based on the search result -->
+			<section id="search-classes" class="row">
+				<article class="class col-xs-12 col-md-6 col-lg-4">
+					<div class="well">
+						<p class="class-title text-primary col-xs-offset-1 col-xs-10">
 							csc343
 						</p>
 						<p class="class-name">
@@ -117,7 +152,7 @@
 							<p>
 								Introduction to database management systems including:
 							</p>
-							
+						
 							<ul>
 								<li>relational data models and algebra</li>
 								<li>querying and updating databases</li>
@@ -125,14 +160,18 @@
 								<li>database design</li>
 								<li>transaction management</li>
 							</ul>
-							
+						
 							<p>
 								Students will also learn about XML and using XQuery to query XML data.
 							</p>
 						</div>
-					</article>
 					
-					<article class="class">
+						<button class="btn btn-primary beautiful_btn">Class Page</button>
+					</div>
+				</article>
+				
+				<article class="class col-xs-12 col-md-6 col-lg-4">
+					<div class="well">
 						<p class="class-title text-primary">
 							csc411
 						</p>
@@ -153,8 +192,38 @@
 								Problems with handling large databases with an emphasis on statistical approaches.
 							</p>
 						</div>
-					</article>
-				</section>
+					
+						<button class="btn btn-primary beautiful_btn">Class Page</button>
+					</div>
+				</article>
+				
+				<article class="class col-xs-12 col-md-6 col-lg-4">
+					<div class="well">
+						<p class="class-title text-primary">
+							csc443
+						</p>
+						<p class="class-name">
+							Database System Technology
+						</p>
+						<div class="class-description">
+							<p>
+								Implementation of database management systems. Storage management, indexing, query processing, concurrency control, transaction management.
+							</p>
+							<p>
+								Database systems on parallel and distributed architectures.
+							</p>
+							<p>
+								Modern database applications: data mining, data warehousing, OLAP, data on the web.
+							</p>
+							<p>
+								Object-oriented and object-relational databases.
+							</p>
+						</div>
+					
+						<button class="btn btn-primary beautiful_btn">Class Page</button>
+					</div>
+				</article>
+			</section>
 		</main>
 	
 	
