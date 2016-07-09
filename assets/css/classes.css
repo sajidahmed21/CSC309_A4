@@ -6,13 +6,6 @@ input#search {
     font-size: 1.5em;
 }
 
-/* any paragraphs directly within a section should have some padding */
-section > p {
-    width: 90%;
-    margin-left: auto;
-    margin-right: auto;
-}
-
 /* only show recommendations if there was no search */
 section#recommended-classes {
     display: none;
@@ -33,7 +26,6 @@ section#search-classes {
 
 
 /* class blocks */
-
 article.class p.class-title {
     font-weight: bold;
 }
