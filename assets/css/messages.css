@@ -37,6 +37,36 @@ section#user-list div.user p {
     margin-bottom: 0;
 }
 
+/* messages */
+/* remove the negative margin so that the conversation rows have some padding;
+ * also add in scrolling if needed
+ */
+section#chat-area div.conversation.row {
+    margin-right: 0;
+    margin-left: 0;
+    
+    overflow-x: auto;
+}
+
+p.message {
+    margin-bottom: 0.5em;
+    padding: 0.25em 0.5em;
+    border-width: 1px;
+    border-style: solid;
+    
+    word-wrap: break-word;
+}
+
+p.received-message {
+    border-color: green;
+}
+
+p.sent-message {
+    border-color: orange;
+    
+    text-align: right;
+}
+
 
 /* landscape mobile and larger ---------------------------------------------*/
 @media screen and (min-width: 480px) {
