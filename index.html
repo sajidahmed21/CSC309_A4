@@ -16,7 +16,7 @@
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-    
+
 
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
 
@@ -39,6 +39,9 @@
                     <li>
                         <button type="button" class="btn btn-primary beautiful_btn">Sign Up</button>
                     </li>
+                    <li>
+                        <button type="button" class="btn btn-danger beautiful_admin_btn">Admin</button>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -49,7 +52,7 @@
     <div class="abs_center_search">
         <div>
             <div class="input-group">
-                <input type="text" class="form-control beautiful_search" placeholder="Seach Class...">
+                <input type="text" class="form-control beautiful_search" placeholder="Search Class...">
                 <span class="input-group-btn">
                     <button type="submit" class="btn btn-primary beautiful_btn">Search Now</button>
                 </span>
@@ -57,11 +60,64 @@
         </div>
     </div>
 
-
-    <footer>
     
-        Not sure what to put in footer
 
+
+        <div>
+            <div class="col-md-6">
+                <div id="beautiful_container">
+                    <form>
+                        <h1 class="beautiful_title">Sign Up</h1>
+                        <input name="userName" type="text" placeholder="Username" required="required" class="beautiful_input" />
+                        <input name="userPassword" type="password" placeholder="Password" required="required" class="beautiful_input" />
+                        <input name="userPasswordConfirm" type="password" placeholder="Password Comfirmation" required="required" class="beautiful_input" />
+                        <input name="userEmail" type="email" placeholder="Email" required="required" class="beautiful_input" />
+                        <input type="submit" value="Join Now!" class="btn btn-primary beautiful_btn block_btn" />
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div>
+            <div class="col-md-6">
+                <div id="beautiful_container">
+                    <form>
+                        <h1 class="beautiful_title">Login</h1>
+                        <input name="userName" type="text" placeholder="Username" required="required" class="beautiful_input" />
+                        <input name="userPassword" type="password" placeholder="Password" required="required" class="beautiful_input" />
+                        <input type="submit" value="Login" class="btn btn-primary beautiful_btn block_btn" />
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div>
+            <div class="col-md-6">
+                <div id="beautiful_container">
+                    <form>
+                        <h1 class="beautiful_title">Admin</h1>
+                        <input name="adminName" type="text" placeholder="Admin" required="required" class="beautiful_admin_input" />
+                        <input name="adminPassword" type="password" placeholder="Password" required="required" class="beautiful_admin_input" />
+                        <input type="submit" value="Login" class="btn btn-danger beautiful_admin_btn block_btn" />
+                    </form>
+                </div>
+            </div>
+        </div>
+        <footer>
+        <ul>
+            <li>
+                <a href=""> About </a>
+            </li>
+            <li>
+                <a href=""> Contact </a>
+            </li>
+            <li>
+                <a href=""> FAQ </a>
+            </li>
+        </ul>
+        <div class="footer-logo">
+        </div>
+        <hr class="footer-line">
     </footer>
 </body>
 

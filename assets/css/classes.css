@@ -1,0 +1,65 @@
+/* have the search bar be take up nearly all the width and be centred;
+ * also make it be a bit larger in height
+ */
+input#search {
+    height: 3em;
+    font-size: 1.5em;
+}
+
+/* only show recommendations if there was no search */
+section#recommended-classes {
+    display: none;
+}
+
+main.no-search section#recommended-classes {
+    display: initial;
+}
+
+/* only show search results if there was a search */
+main.no-search section#search-classes {
+    display: none;
+}
+
+section#search-classes {
+    display: initial;
+}
+
+
+/* class blocks */
+article.class p.class-title {
+    font-weight: bold;
+}
+
+article.class p.class-name {
+    font-style: italic;
+}
+
+article.class button {
+    width: 100%;
+}
+
+
+footer {
+    margin-top: 20px;
+    text-align: center;
+}
+
+
+/* landscape mobile and larger ---------------------------------------------*/
+@media screen and (min-width: 480px) {
+}
+
+
+/* tablet mode and larger --------------------------------------------------*/
+@media screen and (min-width: 768px) {
+    
+    /* move the search box a bit lower */
+    input#search {
+        margin-top: 40px;
+    }
+}
+
+
+/* landscape tablet and desktop mode ---------------------------------------*/
+@media screen and (min-width: 1024px) {
+}
