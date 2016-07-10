@@ -20,6 +20,8 @@
 
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
 
+    <script src="assets/js/index.js"></script>
+
 </head>
 
 <!-- Body Start here, where content is. -->
@@ -35,12 +37,12 @@
             <div class="navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#">Recommend</a></li>
-                    <li><a href="#">Login</a></li>
+                    <li><a id="userlogin_btn" href="#">Login</a></li>
                     <li>
-                        <button type="button" class="btn btn-primary beautiful_btn">Sign Up</button>
+                        <button type="button" id="signup_btn" class="btn btn-primary beautiful_btn">Sign Up</button>
                     </li>
                     <li>
-                        <button type="button" class="btn btn-danger beautiful_red_btn">Admin</button>
+                        <button type="button" id="adminlogin_btn" class="btn btn-danger beautiful_red_btn">Admin</button>
                     </li>
                 </ul>
             </div>
@@ -63,9 +65,12 @@
 
 
 
-    <div>
+    <div id="signup_form">
         <div class="col-md-6">
             <div class="beautiful_container">
+                <div>
+                    <span class="glyphicon glyphicon-remove cancel_icon" ></span>
+                </div>
                 <form>
                     <h1 class="beautiful_title">Sign Up</h1>
                     <input name="userName" type="text" placeholder="Username" required="required" class="beautiful_input" />
@@ -78,9 +83,12 @@
         </div>
     </div>
 
-    <div>
+    <div id="userlogin_form">
         <div class="col-md-6">
             <div class="beautiful_container">
+                <div>
+                    <span class="glyphicon glyphicon-remove cancel_icon" ></span>
+                </div>
                 <form>
                     <h1 class="beautiful_title">Login</h1>
                     <input name="userName" type="text" placeholder="Username" required="required" class="beautiful_input" />
@@ -91,9 +99,12 @@
         </div>
     </div>
 
-    <div>
+    <div id="adminlogin_form">
         <div class="col-md-6">
             <div class="beautiful_container">
+                <div>
+                    <span class="glyphicon glyphicon-remove cancel_icon" ></span>
+                </div>
                 <form>
                     <h1 class="beautiful_title">Admin</h1>
                     <input name="adminName" type="text" placeholder="Admin" required="required" class="beautiful_admin_input" />
