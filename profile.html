@@ -19,6 +19,8 @@
 
 
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    
+    <script src="assets/js/profile.js" crossorigin="anonymous"></script>
 
 </head>
 
@@ -32,7 +34,7 @@
             <div>
                 <div class="navbar-collapse">
                     <div class="row">
-                       <div class="col-md-3">
+                        <div class="col-md-3">
                         </div>
                         <div class="col-md-5">
                             <div class="input-group headbar_search">
@@ -94,26 +96,41 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-3"></div>
-            <div class="col-md-9">
-                <div class="class_container">
-                    <div class="row">
-                        <div class="col-md-10">
-                            <div>
-                                <h1 class="beautiful_title class_title">Class 2</h1>
-                            </div>
-                            <div>
-                                <h1 class="beautiful_title professor_title">Professor 2</h1>
-                            </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-9">
+            <div class="class_container">
+                <div class="row">
+                    <div class="col-md-10">
+                        <div>
+                            <h1 class="beautiful_title class_title">Class 2</h1>
                         </div>
-                        <div class="col-md-2">
-                            <button type="button" class="btn btn-danger beautiful_red_btn drop_course_btn">Drop Course</button>
+                        <div>
+                            <h1 class="beautiful_title professor_title">Professor 2</h1>
                         </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button id="unenroll_btn" type="button" class="btn btn-danger beautiful_red_btn drop_course_btn">Drop Course</button>
                     </div>
                 </div>
             </div>
-
+        </div>
+    </div>
+    <div id="unenroll_form">
+        <div class="col-md-6">
+            <div class="beautiful_container">
+                <div>
+                    <span class="glyphicon glyphicon-remove cancel_icon" ></span>
+                </div>
+                <form>
+                    <h1 class="beautiful_title">Unenroll</h1>
+                    <p class="beautiful_body"> Are you sure you want to unenroll {{Class Name}}?</p>
+                    <input type="submit" value="Unenroll" class="btn btn-danger beautiful_red_btn block_btn" />
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

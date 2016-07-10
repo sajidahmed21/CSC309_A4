@@ -272,3 +272,23 @@ footer ul li {
 .cancel_icon {
     margin-left: 95%;
 }
+
+.beautiful_body {
+    text-align: center;
+    font-size: 150%;
+    color: #757575;
+    font-weight: 200;
+}
+
+#unenroll_form {
+    width: 320px;
+    z-index: 20;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 24%;
+    bottom: 0;
+    margin: auto;
+    max-width: 100%;
+    max-height: 100%;
+}
