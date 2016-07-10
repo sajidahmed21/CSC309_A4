@@ -218,6 +218,34 @@ function sendMessage() {
 }
 
 
+/* Creates a new row in the user list for a given user. */
+function addUser(userId, name, lastMessage) {
+    // generate HTML
+    var $userRow = $('<div>', {
+        class: 'user row',
+        'data-user-id': userId
+    });
+    
+    $userRow.append($('<p>', {
+        class: 'user-name col-sm-4 col-md-3 col-lg-2',
+        text: name
+    }));
+    
+    $userRow.append($('<p>', {
+        class: 'last-message text-muted col-sm-8 col-md-9 col-lg-10',
+        text: lastMessage
+    }));
+    
+    // add click event
+    $userRow.click(onClickUser);
+    
+    // add to user list
+    $userRow.appendTo($('section#user-list'));
+    
+    return;
+}
+
+
 window.onload = function() {
     // set the resizing of the messaging area and trigger it immediately
     $(window).resize(resizeMessagingArea);
@@ -233,4 +261,8 @@ window.onload = function() {
     addReceivedMessage('41', 'What are you up to?');
     addSentMessage('41', 'Nothing much, you?');
     addReceivedMessage('41', 'Hey!');
+    
+    // add in a few dummy user rows
+    addUser(12, 'Bob', 'My name is Bob.');
+    addUser(13, 'Olaf', 'My name is Olaf.');
 }
