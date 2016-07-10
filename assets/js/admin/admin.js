@@ -12,6 +12,9 @@ function attachClickListeners() {
 
 function showAnalyticsTab() {
     $mainContent = $('#main-content').empty();
+    
+    // TODO: 
+    $('<p/>').text('Will add soon..').appendTo($mainContent);
 }
 
 function showUsersTab() {
