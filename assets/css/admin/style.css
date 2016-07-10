@@ -5,8 +5,10 @@ body {
 
 header {
     font-size: 0.8rem;
-    color: white;
-    background-color: #337ab7;
+    /*color: white;*/
+    color: #777;
+    /*background-color: #337ab7;*/
+    background-image: linear-gradient(to bottom,#fff 0,#f8f8f8 100%);
 }
 
 header h1 {
@@ -27,7 +29,7 @@ header h1, header h2, header #tabs-list li, header #tabs-list li a {
 }
 
 header h2 {
-    color: gold;
+    color: red;
 }
 
 nav #tabs-list {
@@ -47,12 +49,15 @@ nav #tabs-list li a {
     padding: 10px;
     border-bottom: 2px solid #337ab7;
     font-size: 1.0rem;
-    color: white;
+    /*color: white;*/
+    color: #337ab7;
     text-decoration: none;
 }
 
 nav #tabs-list li a:hover {
-    background-color: #265a88;
+    color: white;
+    /*background-color: #265a88;*/
+    background-color: #337ab7;
 }
 
 #users-section, #edit-class-section {
