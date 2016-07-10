@@ -1,7 +1,18 @@
 $(document).ready(function() {
     //showAnalyticsTab();
+    attachClickListeners();
     showUsersTab();
 });
+
+function attachClickListeners() {
+    $('#analytics-tab').click(showAnalyticsTab);
+    $('#users-tab').click(showUsersTab);
+    $('#class-tab').click(showClassTab);
+}
+
+function showAnalyticsTab() {
+    $mainContent = $('#main-content').empty();
+}
 
 function showUsersTab() {
     $mainContent = $('#main-content').empty();
@@ -19,6 +30,7 @@ function showUsersTab() {
     
     $createAccountButton = $('<button/>', {
         id: 'create-account-button',
+        'class': 'admin-page-button',
         type: 'button'
     });
     $createAccountButton.text('Create User Account');
@@ -44,7 +56,7 @@ function showUsersTab() {
     });
     
     $searchBox.autocomplete({
-        lookup: ['Jeff', 'Bob', 'Terry', 'Jeffrey', 'Rob'],
+        lookup: ['Jeff', 'Jeffrey', 'Terry', 'Johnson', 'Rob'],
         minLength: 0,
         autoFocus: true,
         appendTo: $autocompleteDropDown,
@@ -59,8 +71,49 @@ function showUsersTab() {
     
     $usersTab.append($currentUsersSection);
     
-    $mainContent.append($usersTab);
+    $mainContent.append($usersTab);    
+}
+
+function showClassTab() {
+    $mainContent = $('#main-content').empty();
     
+    // Edit / Delete class section
+    $editClassSection = $('<section/>', {id: 'edit-class-section'});
     
+    $('<h3/>').text('Edit or Delete an Existing class').appendTo($editClassSection);
+    
+    // Search section
+    $searchContainer = $('<article/>', {id: 'search-container'});
+
+    $autocompleteDropDown = $('<section>', {id: 'autocomplete-drop-down'});
+    
+    $searchBox = $('<input/>', {
+        type: 'text',
+        placeholder: 'Search by class name    (e.g. type "Intro")'
+    });
+    // Bind input changed listener to text box
+    $searchBox.bind('input', function() {
+       console.log($(this).val()); 
+    });
+    
+    var classNames = ['Introduction to Programming', 'Introduction to Data Structures',
+                   'Introduction to Religion', 'Introduction to Arthictecture'];
+    
+    $searchBox.autocomplete({
+        lookup: classNames,
+        minLength: 0,
+        autoFocus: true,
+        appendTo: $autocompleteDropDown,
+        onSelect: function (suggestion) {
+            console.log(suggestion);
+        }
+    });
+    
+    $searchBox.appendTo($searchContainer);
+    $autocompleteDropDown.appendTo($searchContainer);
+    
+    $searchContainer.appendTo($editClassSection);
+
+    $mainContent.append($editClassSection);
 }
 
