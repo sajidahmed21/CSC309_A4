@@ -39,6 +39,27 @@ function findConversation(partnerId) {
 }
 
 
+/* Creates a new conversation for the given partner id and adds it to the chat area.
+ *
+ * Returns a jQuerified version of the conversation.
+ */
+function createConversation(partnerId) {
+    var $conversation = $('<div>', {
+        class: 'conversation row',
+        'data-partner-id': partnerId
+    });
+    
+    // set the height of the conversation, as this wasn't done before
+    var conversationHeight = calculateConversationHeight();
+    $conversation.css('minHeight', conversationHeight);
+    $conversation.css('maxHeight', conversationHeight)
+    
+    $conversation.prependTo($('section#chat-area'));
+    
+    return $conversation;
+}
+
+
 /* Should be called whenever a user row is clicked on. Triggers a changing of
  * the conversation.
  *
@@ -62,6 +83,7 @@ function onClickUser(e) {
         ;
     }
     else {
+        createConversation(userId);
         // this is a new chat area, so load previous messages?
     }
     
@@ -69,9 +91,12 @@ function onClickUser(e) {
 }
 
 
-/* Resizes the main messaging area so that it uses the entire available height */
-function resizeMessagingArea() {
-    // calculate the used height
+/* Calculates the height avilable to the messaging area section, after accounting
+ * for elements such as the header and footer.
+ *
+ * Returns the height as an integer.
+ */
+function calculateMessagingAreaHeight() {
     var $elements = $('body > *:not(main#messaging)');
     
     var usedHeight = 0;
@@ -80,19 +105,30 @@ function resizeMessagingArea() {
         usedHeight += $(element).outerHeight(true);
     });
     
-    // set the height of the messaging area
-    var availableMessagingHeight = $(window).height() - usedHeight;
-    $('main#messaging').height(availableMessagingHeight);
-    
-    // next, calculate the available area for conversations
-    var conversationHeight = availableMessagingHeight;
+    return $(window).height() - usedHeight;
+}
+
+
+/* Calculates the height avilable to conversation areas, after accounting
+ * for elements such as the header, footer, and message send area.
+ *
+ * Returns the height as an string with 'px' appended.
+ */
+function calculateConversationHeight() {
+    var conversationHeight = calculateMessagingAreaHeight();
     conversationHeight -= $('section#chat-area div#message-send-area').outerHeight();
     
-    // convert to a string with px
-    conversationHeight += 'px';
+    return conversationHeight + 'px';
+}
+
+
+/* Resizes the main messaging area so that it uses the entire available height */
+function resizeMessagingArea() {
+    // set the height of the messaging area
+    $('main#messaging').height(calculateMessagingAreaHeight());
     
-    // finally, set the height of all conversations, so that the 
-    // send area is pushed down correctly
+    // next, calculate and set the available height for conversations
+    var conversationHeight = calculateConversationHeight();
     $('section#chat-area div.conversation').each(function(index, conversation) {
         conversation.style.minHeight = conversationHeight;
         conversation.style.maxHeight = conversationHeight;
@@ -145,9 +181,12 @@ function addReceivedMessage(partnerId, message) {
     // first, find and verify that the conversation exists
     var $conversation = findConversation(partnerId);
     
+    // if the conversation doesn't exist, create it
     if ($conversation === null) {
-        console.log('Error: no conversation found for partnerId [' + partnerId + ']');
-        return;
+        $conversation = createConversation(partnerId);
+        
+        // and immediately hide it as it isn't the active conversation
+        $conversation.hide();
     }
     
     // append the message
