@@ -65,6 +65,7 @@ function showUsersTab() {
         appendTo: $autocompleteDropDown,
         onSelect: function (suggestion) {
             console.log(suggestion);
+            window.location.href = 'file:///Users/ugo/Sajid/Courses/CSC309/A4/CSC309_A4/edit-profile-admin.html';
         }
     });
     
