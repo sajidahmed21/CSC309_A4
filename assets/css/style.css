@@ -76,6 +76,7 @@ footer {
     background-color: #a6acaf;
     color: white;
     font-size: 13px;
+    
 }
 footer ul {
     list-style: none;
@@ -89,3 +90,4 @@ footer ul li {
 .footer-line {
      height: 1px;
      width: 400px;
+}
