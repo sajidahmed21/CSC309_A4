@@ -86,23 +86,76 @@ nav #tabs-list li a:hover {
     padding-right: 5px;
 }
 
-#users-section, #edit-class-section {
+.selected-tab {
+    color: white !important;
+    background-color: #3498db;
+}
+
+#users-section, #analytics-section, #edit-class-section {
     width: 97%;
     margin: auto;
 }
 
-#users-section > section, #edit-class-section {
+#users-section > section, #analytics-section > section, #edit-class-section {
     margin-top: 25px;
     padding: 1px 10px 20px 10px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     font-weight: 200;
 }
 
-#users-section > section h3, #edit-class-section h3 {
+#users-section > section h3, #analytics-section h3, #edit-class-section h3 {
     border-bottom: 1px solid  #337ab7;
     color: #337ab7;
 }
 
+/* Style properties for the analytics tab */
+#analytics-section section h3 {
+    padding: 0px 10px;
+}
+
+/* Style properties for all data lists in the analytics tab */
+#analytics-section ul {
+    list-style: none;
+    text-align: center;
+    margin: 0px;
+    padding: 0px;
+}
+
+#analytics-section ul:after {
+    content: " ";
+    display: block;
+    clear: both;
+}
+
+/* Display data lists on the same line */
+#analytics-section ul li {
+    float: left;
+    width: 30%;
+    margin: 1.6%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+#analytics-section ul li h4 {
+    display: inline-block;
+    width: 85%;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+    /*border-bottom: 1px solid #ff5a5f;*/
+    /*color: #3498db;*/
+    color: #ff5a5f;
+    font-weight: 400;
+}
+
+/* Customize font and spacings for the data values */
+#analytics-section ul li p {
+    font-size: 3.0rem;
+    color: #ff5a5f;
+    padding: 20px;
+    margin: 0px;
+}
+
+
+/* Font, width, and spacing properties for the auto-complete search container */
 #search-container {
     width: 350px;
     margin: auto;
@@ -129,6 +182,7 @@ nav #tabs-list li a:hover {
     background-color: #265a88;
 }
 
+/* Custom properties for auto-complete dropdown */
 .autocomplete-suggestions {
     border: 1px solid #999;
     background: #fff;
