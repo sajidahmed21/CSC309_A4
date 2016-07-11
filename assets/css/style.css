@@ -7,6 +7,10 @@
     margin: 0;
 }
 
+.nopadding{
+    padding: 0px !important;
+}
+
 .homepage_img {
     width: 100%;
 }
@@ -206,7 +210,7 @@ footer ul li {
     border-bottom-color: #b3e6ff;
 }
 
-.beautiful_admin_input {
+.beautiful_red_input {
     display: block;
     width: 75%;
     height: 50px;
@@ -217,12 +221,12 @@ footer ul li {
     border-bottom: 2px solid #ecf0f1;
 }
 
-.beautiful_admin_input:focus {
+.beautiful_red_input:focus {
     outline: none;
     border-bottom-color: #ff5a5f !important;
 }
 
-.beautiful_admin_input:hover {
+.beautiful_red_input:hover {
     border-bottom-color: #ff9999;
 }
 

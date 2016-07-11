@@ -1,105 +1,106 @@
 <!DOCTYPE html>
 <html>
-    <!-- Head starts here. Define stylesheet and tottal width-->
-    
-    <head>
-        <meta name="viewport" content="width=device-width, initialscale=1">
-            <title>Teach Stuff</title>
-            
-            <script src="assets/js/jquery-2.0.0.min.js"></script>
-            <!-- Latest compiled and minified CSS -->
-            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-                
-                <!-- Optional theme -->
-                <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
-                    
-                    <!-- Latest compiled and minified JavaScript -->
-                    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-                    
-                    
-                    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
-                        <link rel="stylesheet" type="text/css" href="assets/css/coursedesc-style.css">
-                          <link rel="stylesheet" type="text/css" href="assets/css/edit-coursedesc-style.css">
-                              <script src="assets/js/edit-coursedesc.js"></script>
-                              <script src="assets/js/jquery.jeditable.js"></script>
-                            </head>
-    
-    <!-- Body Start here, where content is. -->
-    
-    <body class="global_font nomargin">
-        <nav class="navbar navbar-default beautiful_headbar">
-            <div class="container-fluid">
-                
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="#">Teach Stuff</a>
-                </div>
-                <div>
-                    <div class="navbar-collapse">
-                        <div class="row">
-                            <div class="col-md-3">
+<!-- Head starts here. Define stylesheet and tottal width-->
+
+<head>
+    <meta name="viewport" content="width=device-width, initialscale=1">
+    <title>Teach Stuff</title>
+
+    <script src="assets/js/jquery-2.0.0.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/coursedesc-style.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/edit-coursedesc-style.css">
+    <script src="assets/js/edit-coursedesc.js"></script>
+    <script src="assets/js/jquery.jeditable.js"></script>
+</head>
+
+<!-- Body Start here, where content is. -->
+
+<body class="global_font nomargin">
+    <nav class="navbar navbar-default beautiful_headbar">
+        <div class="container-fluid">
+
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Teach Stuff</a>
+            </div>
+            <div>
+                <div class="navbar-collapse">
+                    <div class="row">
+                        <div class="col-md-3">
+                        </div>
+                        <div class="col-md-5">
+                            <div class="input-group headbar_search">
+                                <input type="text" class="form-control beautiful_search headbar_search_input" placeholder="Search Class...">
+                                <span class="input-group-btn">
+                    <button type="submit" class="btn btn-primary beautiful_btn">Search Now</button>
+                </span>
                             </div>
-                            <div class="col-md-5">
-                                <div class="input-group headbar_search">
-                                    <input type="text" class="form-control beautiful_search headbar_search_input" placeholder="Search Class...">
-                                        <span class="input-group-btn">
-                                            <button type="submit" class="btn btn-primary beautiful_btn">Search Now</button>
-                                        </span>
-                                        </div>
-                            </div>
-                            <div>
-                                <ul class="nav navbar-nav navbar-right">
-                                    <li><a href="#">Recommend</a></li>
-                                    <li><img src="assets/img/profile.png" alt="Profile" height="40" width="40" class="profile_icon"></li>
-                                    <div class="dropdown-toggle headbar_caret" type="button" data-toggle="dropdown">
-                                        <span class="caret"></span></div>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">Profile</a></li>
-                                        <li><a href="#">Setting</a></li>
-                                        <li><a href="#">Logout</a></li>
-                                    </ul>
-                                    </li>
-                                    
+                        </div>
+                        <div>
+                            <ul class="nav navbar-nav navbar-right">
+                                <li><a href="./classes.html">Recommend</a></li>
+                                <li><a class="nopadding" href="./profile.html"><img src="assets/img/profile.png" alt="Profile" height="40" width="40" class="profile_icon"></li></a>
+                                <div class="dropdown-toggle headbar_caret" type="button" data-toggle="dropdown">
+                                    <span class="caret"></span></div>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">Profile</a></li>
+                                    <li><a href="#">Setting</a></li>
+                                    <li><a href="#">Logout</a></li>
                                 </ul>
-                            </div>
+                                </li>
+
+                            </ul>
                         </div>
                     </div>
                 </div>
-                </nav>
-        <div class="alert alert-success alert-dismissible" role="alert" style="margin-top: 10px;">
-            
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            
-            You are currently editing your course: Origami 101
-           
-        </div>
-        <div class="container">
-            <h1>Edit Course Profile</h1>
-            <hr>
-            <form role="form" class='form-horizontal'>
-                <!-- left column -->
-                <div class="col-md-3">
-                    
-                    <div class="text-center">
-                        <h3> Course Banner</h3>
-                        <img src="assets/img/origami.jpg" id="banner_img" class="avatar img-circle" alt="course banner">
-                            <h6>Upload a different photo...</h6>
-                            
-                            <input class="form-control" type="file">
-                                </div>
+            </div>
+    </nav>
+    <div class="alert alert-success alert-dismissible" role="alert" style="margin-top: 10px;">
+
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+        You are currently editing your course: Origami 101
+
+    </div>
+    <div class="container">
+        <h1>Edit Course Profile</h1>
+        <hr>
+        <form role="form" class='form-horizontal'>
+            <!-- left column -->
+            <div class="col-md-3">
+
+                <div class="text-center">
+                    <h3> Course Banner</h3>
+                    <img src="assets/img/origami.jpg" id="banner_img" class="avatar img-circle" alt="course banner">
+                    <h6>Upload a different photo...</h6>
+
+                    <input class="form-control" type="file">
                 </div>
-                
-                <!-- edit form column -->
-                <div class="col-md-9"> <div class="container"></div>
-                    <div id="fields">
+            </div>
+
+            <!-- edit form column -->
+            <div class="col-md-9">
+                <div class="container"></div>
+                <div id="fields">
                     <h3>Course Details</h3>
-                    
-                    
+
+
                     <div class="form-group">
-                        
+
                         <label class="col-md-2 control-label">Course Title</label>
                         <div class="col-md-10">
                             <input class="form-control" value="Origami 101" type="text">
-                                </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-2 control-label">Course Description</label>
@@ -107,53 +108,53 @@
                             <textarea class="form-control" rows="5"> *No prior experience is necessary but we strongly recommend that students be at least five years of age to take Origami Classes. It is a shared class environment so it is important that each folder can listen to and follow directions for 45 minutes. </textarea>
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
-                        
+
                         <label class="col-md-2 control-label">Requirements </label>
                         <div class="col-md-10">
-                        <textarea class="form-control" rows="5"> *No prior experience is necessary but we strongly recommend that students be at least five years of age to take Origami Classes. It is a shared class environment so it is important that each folder can listen to and follow directions for 45 minutes. </textarea>
-                            </div>
+                            <textarea class="form-control" rows="5"> *No prior experience is necessary but we strongly recommend that students be at least five years of age to take Origami Classes. It is a shared class environment so it is important that each folder can listen to and follow directions for 45 minutes. </textarea>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-md-2 control-label"></label>
-                        <div class="col-md-10">
-                            <input id="add_cat" class="btn" value="+ Add Another Category" type="button">
-                                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label"></label>
+                    <div class="col-md-10">
+                        <input id="add_cat" class="btn" value="+ Add Another Category" type="button">
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="col-md-2 control-label"></label>
-                        <div class="col-md-10">
-                            <input class="btn btn-primary" value="Save Changes" type="button">
-                                <span></span>
-                                <input class="btn btn-default" value="Cancel" type="reset">
-                                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-2 control-label"></label>
+                    <div class="col-md-10">
+                        <input class="btn btn-primary" value="Save Changes" type="button">
+                        <span></span>
+                        <input class="btn btn-default" value="Cancel" type="reset">
                     </div>
-                    </div>
-                   </form>
                 </div>
             </div>
-       
-        
-        <footer>
-            <ul>
-                <li>
-                    <a href=""> About </a>
-                </li>
-                <li>
-                    <a href=""> Contact </a>
-                </li>
-                <li>
-                    <a href=""> FAQ </a>
-                </li>
-            </ul>
-            <div class="footer-logo">
-            </div>
-            <hr class="footer-line">
-            
-        </footer>
-    </body>
-    
+        </form>
+    </div>
+    </div>
+
+
+    <footer>
+        <ul>
+            <li>
+                <a href=""> About </a>
+            </li>
+            <li>
+                <a href=""> Contact </a>
+            </li>
+            <li>
+                <a href=""> FAQ </a>
+            </li>
+        </ul>
+        <div class="footer-logo">
+        </div>
+        <hr class="footer-line">
+
+    </footer>
+</body>
+
 </html>
