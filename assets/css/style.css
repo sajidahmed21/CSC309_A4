@@ -7,7 +7,7 @@
     margin: 0;
 }
 
-.nopadding{
+.nopadding {
     padding: 0px !important;
 }
 
@@ -39,6 +39,19 @@
 
 .beautiful_red_btn:hover {
     background-color: #e74c3c;
+}
+
+.beautiful_green_btn {
+    margin-left: 8px;
+    padding: 15px;
+    background-color: #1abc9c;
+    background-image: none !important;
+    border: none;
+    border-radius: 0;
+}
+
+.beautiful_green_btn:hover {
+    background-color: #16a085;
 }
 
 .beautiful_headbar {
@@ -99,7 +112,6 @@ footer {
     background-color: #a6acaf;
     color: white;
     font-size: 13px;
-    
 }
 
 footer ul {
@@ -230,9 +242,29 @@ footer ul li {
     border-bottom-color: #ff9999;
 }
 
+.beautiful_green_input {
+    display: block;
+    width: 75%;
+    height: 50px;
+    margin: 0 auto;
+    padding: 0 15px;
+    margin-bottom: 13px;
+    border: none;
+    border-bottom: 2px solid #ecf0f1;
+}
+
+.beautiful_green_input:focus {
+    outline: none;
+    border-bottom-color: #16a085 !important;
+}
+
+.beautiful_green_input:hover {
+    border-bottom-color: #1abc9c;
+}
+
 .footer-line {
-     height: 1px;
-     width: 400px;
+    height: 1px;
+    width: 400px;
 }
 
 #signup_form {
@@ -283,4 +315,26 @@ footer ul li {
     margin: auto;
     max-width: 100%;
     max-height: 100%;
+}
+
+.user_name {
+    display: inline-block;
+}
+
+.edit_profile_btn {
+    display: inline-block;
+    width: 42px;
+    height: 42px;
+    background-color: #1abc9c;
+    border-radius: 50%;
+    margin-left: 10px;
+    margin-top: 19px;
+}
+
+.edit_icon {
+    color: white;
+    width: 20;
+    height: 20px;
+    margin-left: 15px;
+    margin-top: 14px;
 }

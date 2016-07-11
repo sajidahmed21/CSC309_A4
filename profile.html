@@ -19,7 +19,7 @@
 
 
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
-    
+
     <script src="assets/js/profile.js" crossorigin="anonymous"></script>
 
 </head>
@@ -47,7 +47,9 @@
                         <div>
                             <ul class="nav navbar-nav navbar-right">
                                 <li><a href="./classes.html">Recommend</a></li>
-                                <li><a class="nopadding" href="#"><img src="assets/img/profile.png" alt="Profile" height="40" width="40" class="profile_icon"></li></a>
+                                <li>
+                                    <a class="nopadding" href="#"><img src="assets/img/profile.png" alt="Profile" height="40" width="40" class="profile_icon"></li>
+                                </a>
                                 <div class="dropdown-toggle headbar_caret" type="button" data-toggle="dropdown">
                                     <span class="caret"></span></div>
                                 <ul class="dropdown-menu">
@@ -68,7 +70,11 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-4">
-            <h2 class="beautiful_font">User Name</h2></div>
+            <h2 class="beautiful_font user_name">User Name</h2>
+            <div class="edit_profile_btn">
+                <span class="glyphicon glyphicon-edit edit_icon"></span>
+            </div>
+        </div>
         <div class="col-md-5"></div>
     </div>
     <div class="row">
@@ -121,7 +127,7 @@
         <div class="col-md-6">
             <div class="beautiful_container">
                 <div>
-                    <span class="glyphicon glyphicon-remove cancel_icon" ></span>
+                    <span class="glyphicon glyphicon-remove cancel_icon"></span>
                 </div>
                 <form>
                     <h1 class="beautiful_title">Unenroll</h1>
@@ -130,6 +136,8 @@
                 </form>
             </div>
         </div>
+    </div>
+    <div id="popup">
     </div>
 </body>
 
