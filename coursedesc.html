@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-    
     <!-- Head starts here. Define stylesheet and tottal width-->
     
     <head>
@@ -51,7 +50,7 @@
                         Origami 101
                     </div>
             </div>
-            <div class= "box" id="desc-content">
+            <div class= "container-fluid" id="desc-content">
                
         <div  id="course-nav">
             <ul>
@@ -80,10 +79,46 @@
             </div>
         </div>
             
-        <div class="box" id="comments">
-            <h1> Comments </h1>
-            <input type="text" placeholder="  Enter your comment or review here!">
-        </div>
+           <div class="container-fluid">
+                <div class="col-sm-12">
+                    <h3>Comments/Reviews</h3>
+                </div><!-- /col-sm-12 -->
+                <div class="col-sm-1">
+                    <div class="thumbnail">
+                        <img class="img-responsive user-photo" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
+                    </div><!-- /thumbnail -->
+                </div><!-- /col-sm-1 -->
+                
+                <div class="col-sm-11">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <strong>myusername</strong> <span class="text-muted">commented 5 days ago</span>
+                    </div>
+                    <div class="panel-body">
+                        Great Course !
+                    </div><!-- /panel-body -->
+                </div><!-- /panel panel-default -->
+            </div><!-- /col-sm-5 -->
+                
+                
+              
+                <div class="add-comment">
+                    <div class="col-sm-1">
+                        <div class="thumbnail">
+                            <img class="img-responsive user-photo" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
+                                </div><!-- /thumbnail -->
+                    </div><!-- /col-sm-1 -->
+                    <div class="col-sm-11">
+                    <div class="panel panel-default">
+                        <textarea class="form-control" rows="3" placeholder="Add a comment here !"></textarea>
+                    </div>
+                    </div>
+                <div class="col-sm-offset-1 col-sm-1">
+                <button class="btn btn-defaults" type="submit">Submit</button>
+                </div>
+                </div><!-- add-comment -->
+            </div> <!-- container-fluid -->
+            </div>
         
             <footer>
                 <ul>

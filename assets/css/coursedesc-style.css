@@ -11,18 +11,7 @@
     width: auto;
     height: auto;
 }
-.box {
-    margin-left: auto;
-    margin-right: auto;
-    border: 1px solid lightgrey;
-    width: 80%;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-bottom: 100px;
-    background-color: white;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
+
 #desc-content p {
     margin-bottom: 20px;
     margin-top: 20px;
@@ -73,17 +62,65 @@
 }
 
 body {
-    background-color:  #e5e7e9;
+    background-color: #e5e7e9;
 }
+
 
 #comments {
-
-}
-#comments h1 {
-    padding-top: 20px;
-}
-
-#comments input {
-    width: 100%;
     height: 100px;
+}
+
+#course-profile .container-fluid {
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid lightgrey;
+    width: 80%;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 100px;
+    padding-top: 20px;
+    background-color: white;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    height: auto;
+}
+
+.thumbnail {
+    padding:0px;
+}
+.panel {
+    position:relative;
+    width: 100%;
+}
+.panel>.panel-heading:after,.panel>.panel-heading:before{
+    position:absolute;
+    top:11px;left:-16px;
+    right:100%;
+    width:0;
+    height:0;
+    display:block;
+    content:" ";
+    border-color:transparent;
+    border-style:solid solid outset;
+    pointer-events:none;
+}
+.panel>.panel-heading:after{
+    border-width:7px;
+    border-right-color:#f7f7f7;
+    margin-top:1px;
+    margin-left:2px;
+}
+.panel>.panel-heading:before{
+    border-right-color:#ddd;
+    border-width:8px;
+}
+.row {
+    padding-top: 20px;
+    display: inline-block;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.add-comment {
+    padding-top: 0px;
 }
