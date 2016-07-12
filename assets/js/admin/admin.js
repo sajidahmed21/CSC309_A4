@@ -1,7 +1,6 @@
 $(document).ready(function() {
-    //showAnalyticsTab();
+    showAnalyticsTab();
     attachClickListeners();
-    showUsersTab();
 });
 
 function attachClickListeners() {
@@ -11,13 +10,67 @@ function attachClickListeners() {
 }
 
 function showAnalyticsTab() {
+    // Set selected tab
+    selectTab('#analytics-tab');
+    
     $mainContent = $('#main-content').empty();
     
-    // TODO: 
-    $('<p/>').text('Will add soon..').appendTo($mainContent);
+    $analyticsTab = $('<section/>', {id: 'analytics-section'});
+    
+    // Section containing analytics data of users
+    $usersSection = $('<section/>', {id: 'users-section'});
+    
+    $('<h3/>').text('Users').appendTo($usersSection);
+    
+    $userDataList = $('<ul/>');
+    
+    // Mock Date
+    var numUsers = 27;
+    var numUniqueUsersEnrolledInClass = 13;
+    var avgUniqueUsersPerDay = 21;
+    
+    $userDataList.append(createDataListItem('Total Users', numUsers));
+    $userDataList.append(createDataListItem('Users Enrolled in Class', numUniqueUsersEnrolledInClass));
+    $userDataList.append(createDataListItem('Unique Users Per Day', avgUniqueUsersPerDay));
+    
+    $usersSection.append($userDataList);
+    $analyticsTab.append($usersSection);
+    
+    // Section containing analytics data of classes
+    $classesSection = $('<section/>', {id: 'classes-section'});
+    
+    $('<h3/>').text('Classes').appendTo($classesSection);
+    
+    $classesDataList = $('<ul/>');
+    
+    // Mock data
+    var totalActiveClasses = 10;
+    var avgNumberOfUsersPerClass = 11.2;
+    var avgRatingForClass = 4.2;
+    
+    $classesDataList.append(createDataListItem('Active Classes', totalActiveClasses));
+    $classesDataList.append(createDataListItem('Avg Users Per Class', avgNumberOfUsersPerClass));
+    $classesDataList.append(createDataListItem('Avg Rating For Class', avgRatingForClass));
+    
+    $classesSection.append($classesDataList);
+    $analyticsTab.append($classesSection);
+    
+    $mainContent.append($analyticsTab);
+}
+
+function createDataListItem(dataTitle, dataValue) {
+    $listItem = $('<li/>');
+    $('<h4/>').text(dataTitle).appendTo($listItem);
+    
+    $('<p/>').text(dataValue).appendTo($listItem);
+    
+    return $listItem;   
 }
 
 function showUsersTab() {
+    // Set selected tab
+    selectTab('#users-tab');
+    
     $mainContent = $('#main-content').empty();
     
     $usersTab = $('<section/>', {
@@ -79,6 +132,9 @@ function showUsersTab() {
 }
 
 function showClassTab() {
+    // Set selected tab
+    selectTab('#class-tab');
+    
     $mainContent = $('#main-content').empty();
     
     // Edit / Delete class section
@@ -119,5 +175,17 @@ function showClassTab() {
     $searchContainer.appendTo($editClassSection);
 
     $mainContent.append($editClassSection);
+}
+
+function selectTab(id) {
+    unSelectAllTabs();
+    // Set selected tab
+    $(id).addClass('selected-tab');
+}
+
+function unSelectAllTabs() {
+    $('#analytics-tab').removeClass('selected-tab');
+    $('#users-tab').removeClass('selected-tab');
+    $('#class-tab').removeClass('selected-tab');
 }
 
