@@ -24,4 +24,7 @@ window.onload = function() {
     $('input#search').on('change keyup paste mouseup', search);
     
     window.lastSearchText = '';
+    
+    // run search on load in case there was an automatically filled value
+    search();
 }
