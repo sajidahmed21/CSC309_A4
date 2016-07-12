@@ -72,7 +72,7 @@ var deleteUser = function(){
     $input = $('<input/>',{
         type : 'submit',
         value : 'Edit Now!',
-        class : 'btn btn-primary beautiful_red_btn block_btn'
+        class : 'btn btn-danger beautiful_red_btn block_btn'
     });
     
     $input.appendTo($form);
@@ -141,7 +141,7 @@ var changePassword = function(){
     $input = $('<input/>',{
         type : 'submit',
         value : 'Edit Now!',
-        class : 'btn btn-primary beautiful_green_btn block_btn'
+        class : 'btn beautiful_green_btn block_btn'
     });
     
     $input.appendTo($form);

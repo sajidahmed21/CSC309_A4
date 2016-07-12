@@ -68,7 +68,7 @@ var loginPage = function(){
     $input = $('<input/>',{
         type : 'submit',
         value : 'Login',
-        class : 'btn btn-primary beautiful_red_btn block_btn',
+        class : 'btn btn-danger beautiful_red_btn block_btn',
         onclick: "JavaScript:return true;"
     });
     
@@ -85,7 +85,7 @@ var loginPage = function(){
     $input = $('<input/>',{
         type : 'button',
         value : 'Facebook Login',
-        class : 'btn btn-primary beautiful_red_btn block_btn'
+        class : 'btn btn-danger beautiful_red_btn block_btn'
     });
     
     $input.css('margin-top','10px');

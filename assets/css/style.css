@@ -21,6 +21,10 @@
     border-radius: 0;
 }
 
+.beautiful_btn:active {
+    background-color: #265a88 !important;
+}
+
 .beautiful_btn:hover {
     background-color: #265a88 !important;
 }
@@ -35,6 +39,10 @@
 }
 
 .beautiful_red_btn:hover {
+    background-color: #e74c3c;
+}
+
+.beautiful_red_btn:active {
     background-color: #e74c3c;
 }
 
@@ -127,6 +135,12 @@ footer ul li {
 .footer-line {
     height: 1px;
     width: 400px;
+}
+
+.fullblock_btn{
+    display: block;
+    width: 100%;
+    margin: 0 auto;
 }
 
 .block_btn {
