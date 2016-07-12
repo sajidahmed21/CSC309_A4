@@ -12,3 +12,8 @@
 hr {
     size: 2px;
 }
+
+.edit_btn {
+    background-color: green;
+    margin-bottom: 0px;
+}
