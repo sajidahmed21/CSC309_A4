@@ -26,11 +26,11 @@ section#search-classes {
 
 
 /* class blocks */
-article.class p.class-title {
+article.class p.class-name {
     font-weight: bold;
 }
 
-article.class p.class-name {
+article.class p.class-instructor {
     font-style: italic;
 }
 
