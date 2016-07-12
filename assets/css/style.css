@@ -1,4 +1,5 @@
 /* global style starts*/
+
 .global_font {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #777;
@@ -88,9 +89,9 @@
     margin: auto;
     margin-top: 40px;
     width: 300px;
-    -webkit-box-shadow: 0px 3px 26px -7px rgba(0, 0, 0, 0.59);
-    -moz-box-shadow: 0px 3px 26px -7px rgba(0, 0, 0, 0.59);
-    box-shadow: 0px 3px 26px -7px rgba(0, 0, 0, 0.59);
+    -webkit-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+    -moz-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+    box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
 }
 
 footer a {
@@ -263,9 +264,12 @@ footer ul li {
     font-weight: 200;
 }
 
+
 /* global style ends*/
 
+
 /* index page style starts*/
+
 .homepage_img {
     width: 100%;
 }
@@ -320,7 +324,9 @@ footer ul li {
     margin-top: 14px;
 }
 
+
 /* index page style ends*/
+
 
 /* profile page style starts*/
 
@@ -349,9 +355,9 @@ footer ul li {
     margin: 20px auto;
     margin-left: 0;
     background-color: #fff;
-    -webkit-box-shadow: 0px 10px 61px -18px rgba(0,0,0,0.36);
--moz-box-shadow: 0px 10px 61px -18px rgba(0,0,0,0.36);
-box-shadow: 0px 10px 61px -18px rgba(0,0,0,0.36);
+    -webkit-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+    -moz-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+    box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
 }
 
 .class_title {
@@ -367,4 +373,6 @@ box-shadow: 0px 10px 61px -18px rgba(0,0,0,0.36);
     padding: 24px 15px;
     margin-top: 4px;
 }
+
+
 /* profile page style ends*/
