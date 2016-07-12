@@ -44,6 +44,7 @@ var loginPage = function(){
     $title.text('Login').appendTo($form);
     
     $input = $('<input/>',{
+        id : 'userName',
         name : 'userName',
         type : 'text',
         placeholder : 'Username',
@@ -54,6 +55,7 @@ var loginPage = function(){
     $input.appendTo($form);
     
     $input = $('<input/>',{
+        id: 'userPassword',
         name : 'userPassword',
         type : 'password',
         placeholder : 'Password',
@@ -66,7 +68,31 @@ var loginPage = function(){
     $input = $('<input/>',{
         type : 'submit',
         value : 'Login',
+        class : 'btn btn-primary beautiful_red_btn block_btn',
+        onclick: "JavaScript:return true;"
+    });
+    
+    $input.click(function(){
+        if(document.getElementById('userName').value.length >=1 && document.getElementById('userPassword').value.length >=1)
+        {
+            hidePopup();
+            window.location = "./profile.html";
+        }
+    });
+    
+    $input.appendTo($form);
+    
+    $input = $('<input/>',{
+        type : 'button',
+        value : 'Facebook Login',
         class : 'btn btn-primary beautiful_red_btn block_btn'
+    });
+    
+    $input.css('margin-top','10px');
+    
+    $input.click(function(){
+        hidePopup();
+        window.location = "./profile.html";
     });
     
     $input.appendTo($form);
@@ -113,6 +139,7 @@ var signupPage = function(){
     $title.text('Sign Up').appendTo($form);
     
     $input = $('<input/>',{
+        id : 'userName',
         name : 'userName',
         type : 'text',
         placeholder : 'Username',
@@ -123,6 +150,7 @@ var signupPage = function(){
     $input.appendTo($form);
     
     $input = $('<input/>',{
+        id : 'userPassword',
         name : 'userPassword',
         type : 'password',
         placeholder : 'Password',
@@ -133,6 +161,7 @@ var signupPage = function(){
     $input.appendTo($form);
     
     $input = $('<input/>',{
+        id : 'userPasswordConfirm',
         name : 'userPasswordConfirm',
         type : 'password',
         placeholder : 'Password Comfirmation',
@@ -143,6 +172,7 @@ var signupPage = function(){
     $input.appendTo($form);
     
     $input = $('<input/>',{
+        id : 'userEmail',
         name : 'userEmail',
         type : 'email',
         placeholder : 'Email',
@@ -153,9 +183,35 @@ var signupPage = function(){
     $input.appendTo($form);
     
     $input = $('<input/>',{
-        type : 'submit',
+        type : 'button',
         value : 'Join Now!',
+        class : 'btn btn-primary beautiful_btn block_btn',
+        onclick: "JavaScript: return true;"
+    });
+    
+    $input.click(function(){
+        
+        if(document.getElementById('userName').value.length >=1 && document.getElementById('userPassword').value.length >=1 && document.getElementById('userPasswordConfirm').value.length == document.getElementById('userPassword').value.length && document.getElementById('userEmail').value.length >=1)
+        {
+            console.log('here');
+            hidePopup();
+            window.location = "./profile.html";
+        }
+    });
+    
+    $input.appendTo($form);
+    
+    $input = $('<input/>',{
+        type : 'button',
+        value : 'Facebook Sign Up',
         class : 'btn btn-primary beautiful_btn block_btn'
+    });
+    
+    $input.css('margin-top','10px');
+    
+    $input.click(function(){
+        hidePopup();
+        window.location = "./profile.html";
     });
     
     $input.appendTo($form);

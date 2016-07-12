@@ -137,6 +137,15 @@ footer ul {
     font-weight: 200;
 }
 
+.beautiful_title_top_course {
+    text-align: center;
+    font-size: 225%;
+    color: #757575;
+    font-weight: 200;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
 .profile_icon {
     margin: 5px;
 }
