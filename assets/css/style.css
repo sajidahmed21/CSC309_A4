@@ -1,3 +1,4 @@
+/* global style starts*/
 .global_font {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #777;
@@ -9,15 +10,6 @@
 
 .nopadding {
     padding: 0px !important;
-}
-
-.homepage_img {
-    width: 100%;
-}
-
-.profilepage_img {
-    width: 100%;
-    height: 400px;
 }
 
 .beautiful_btn {
@@ -76,12 +68,6 @@
     padding-bottom: 7px;
 }
 
-.beautiful_search {
-    padding: 24px;
-    border-radius: 0;
-    border: none;
-}
-
 .abs_center_search {
     width: 500px;
     height: 50px;
@@ -132,6 +118,16 @@ footer ul {
     text-align: center;
 }
 
+footer ul li {
+    display: inline;
+    margin: 50px;
+}
+
+.footer-line {
+    height: 1px;
+    width: 400px;
+}
+
 .block_btn {
     display: block;
     width: 80%;
@@ -145,19 +141,6 @@ footer ul {
     font-weight: 200;
 }
 
-.beautiful_title_top_course {
-    text-align: center;
-    font-size: 225%;
-    color: #757575;
-    font-weight: 200;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-.profile_icon {
-    margin: 5px;
-}
-
 .headbar_caret {
     display: inline-block;
     padding: 15px;
@@ -168,43 +151,8 @@ footer ul {
     background-color: #bdc3c7;
 }
 
-.profile_pic {
-    position: absolute;
-    z-index: 20;
-    display: block;
-    top: 387px;
-    left: 13%;
-    background-color: #ecf0f1;
-    border: 5px solid #ffffff;
-}
-
 .beautiful_font {
     font-weight: 200;
-}
-
-.class_container {
-    padding: 10px;
-    width: 90%;
-    margin: 20px auto;
-    margin-left: 0;
-    background-color: #fff;
-    -webkit-box-shadow: 10px 10px 61px -26px rgba(0,0,0,0.75);
--moz-box-shadow: 10px 10px 61px -26px rgba(0,0,0,0.75);
-box-shadow: 10px 10px 61px -26px rgba(0,0,0,0.75);
-}
-
-.class_title {
-    margin: 10px auto;
-}
-
-.professor_title {
-    margin: 10px auto;
-    font-size: 140%
-}
-
-.drop_course_btn {
-    padding: 24px 15px;
-    margin-top: 4px;
 }
 
 .headbar_search {
@@ -216,11 +164,6 @@ box-shadow: 10px 10px 61px -26px rgba(0,0,0,0.75);
 
 .headbar_search_input {
     max-width: 350px;
-}
-
-footer ul li {
-    display: inline;
-    margin: 50px;
 }
 
 .beautiful_input {
@@ -283,13 +226,8 @@ footer ul li {
     border-bottom-color: #1abc9c;
 }
 
-.footer-line {
-    height: 1px;
-    width: 400px;
-}
-
 #signup_form {
-    width: 320px;
+    width: 300px;
     z-index: 20;
     position: absolute;
     left: 0;
@@ -302,7 +240,7 @@ footer ul li {
 }
 
 #userlogin_form {
-    width: 320px;
+    width: 300px;
     z-index: 20;
     position: absolute;
     left: 0;
@@ -325,8 +263,30 @@ footer ul li {
     font-weight: 200;
 }
 
+/* global style ends*/
+
+/* index page style starts*/
+.homepage_img {
+    width: 100%;
+}
+
+.beautiful_search {
+    padding: 24px;
+    border-radius: 0;
+    border: none;
+}
+
+.beautiful_title_top_course {
+    text-align: center;
+    font-size: 225%;
+    color: #757575;
+    font-weight: 200;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
 #unenroll_form {
-    width: 320px;
+    width: 300px;
     z-index: 20;
     position: absolute;
     left: 0;
@@ -359,3 +319,52 @@ footer ul li {
     margin-left: 15px;
     margin-top: 14px;
 }
+
+/* index page style ends*/
+
+/* profile page style starts*/
+
+.profilepage_img {
+    width: 100%;
+    height: 400px;
+}
+
+.profile_icon {
+    margin: 5px;
+}
+
+.profile_pic {
+    position: absolute;
+    z-index: 20;
+    display: block;
+    top: 387px;
+    left: 13%;
+    background-color: #ecf0f1;
+    border: 5px solid #ffffff;
+}
+
+.class_container {
+    padding: 10px;
+    width: 90%;
+    margin: 20px auto;
+    margin-left: 0;
+    background-color: #fff;
+    -webkit-box-shadow: 0px 10px 61px -18px rgba(0,0,0,0.36);
+-moz-box-shadow: 0px 10px 61px -18px rgba(0,0,0,0.36);
+box-shadow: 0px 10px 61px -18px rgba(0,0,0,0.36);
+}
+
+.class_title {
+    margin: 10px auto;
+}
+
+.professor_title {
+    margin: 10px auto;
+    font-size: 140%
+}
+
+.drop_course_btn {
+    padding: 24px 15px;
+    margin-top: 4px;
+}
+/* profile page style ends*/
