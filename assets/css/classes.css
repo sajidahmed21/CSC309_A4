@@ -34,7 +34,7 @@ article.class p.class-instructor {
     font-style: italic;
 }
 
-article.class button {
+article.class a.btn-class-page {
     width: 100%;
 }
 
