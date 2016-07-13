@@ -183,7 +183,7 @@ var signupPage = function(){
     $input.appendTo($form);
     
     $input = $('<input/>',{
-        type : 'button',
+        type : 'submit',
         value : 'Join Now!',
         //class : 'btn btn-primary beautiful_btn block_btn',
         class: 'standard-blue-button block_btn',
@@ -205,7 +205,6 @@ var signupPage = function(){
     $input = $('<input/>',{
         type : 'button',
         value : 'Facebook Sign Up',
-        //class : 'btn btn-primary beautiful_btn block_btn'
         'class': 'standard-blue-button block_btn'
     });
     
