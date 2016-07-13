@@ -1,6 +1,6 @@
 # Learnr
 
-# Repository Infomation
+## Repository Infomation
 
 Link: https://github.com/sajidahmed21/CSC309_A4/
 
@@ -26,7 +26,7 @@ Users who wish to enrol in a course may not always know what to enrol in or whic
     * g4ssa
     * sajid.ahmed@mail.utoronto.ca
 * Willis Chien
-    * cdf
+    * c5chienw
     * willis.chien@mail.utoronto.ca
 * Erfa Habib
     * g4habibe
