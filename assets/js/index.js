@@ -65,7 +65,7 @@ var referencePopup = function(){
         class: 'standard_ref_list'
     });
     
-    $li.text('Youtube. (Company). (2005). maxresdefault. [Digital image]. Retrieved from https://i.ytimg.com/vi/ LrGPkzy6mFo/maxresdefault.jpgg');
+    $li.text('Youtube. (Company). (2005). maxresdefault. [Digital image]. Retrieved from https://i.ytimg.com/vi/ LrGPkzy6mFo/maxresdefault.jpg');
             
     $li.appendTo($ul);
     
