@@ -81,11 +81,6 @@ nav #tabs-list li a:hover {
     font-size: 1.5rem;
 }
 
-.profile_icon {
-    border-right: 1px solid #bdc3c7;
-    padding-right: 5px;
-}
-
 .selected-tab {
     color: white !important;
     background-color: #3498db;

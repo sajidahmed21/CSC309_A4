@@ -17,7 +17,8 @@
     color: #777;
     border: 1px solid #bdc3c7;
     border-radius: 5px;
-    padding: 15px;
+    padding: 5px;
+    margin: 10px;
     font-size: 14px;
     background-color: transparent;
     text-decoration: none;
@@ -413,7 +414,7 @@ p.class-name {
 
 .edit_icon {
     color: white;
-    width: 20;
+    width: 20px;
     height: 20px;
     margin-left: 15px;
     margin-top: 14px;
@@ -435,7 +436,11 @@ p.class-name {
 }
 
 .profile_icon {
+    width: 45px;
+    height: 40px;
     margin: 5px;
+    border-right: 1px solid #bdc3c7;
+    padding-right: 5px;
 }
 
 .profile_pic {
