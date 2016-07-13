@@ -86,9 +86,10 @@ function showUsersTab() {
     
     $createAccountButton = $('<button/>', {
         id: 'create-account-button',
-        'class': 'admin-page-button',
+        'class': 'standard-blue-button',
         type: 'button'
     });
+    $createAccountButton.click(showCreateUserForm);
     $createAccountButton.text('Create User Account');
     $createAccountButton.appendTo($addUserSection);
     
@@ -175,6 +176,105 @@ function showClassTab() {
     $searchContainer.appendTo($editClassSection);
 
     $mainContent.append($editClassSection);
+}
+
+function showCreateUserForm() {
+   var $popup = $('<article/>', {id: 'popup'});
+    //$popup.empty();
+    
+    $outer = $('<div/>', {
+       id:  'signup_form'
+    });
+    
+    $middle = $('<div/>', {
+       class:  'col-md-6'
+    });
+    
+    $container = $('<div/>', {
+       class:  'standard-container'
+    });
+    
+    $cancelwrapper = $('<div/>');
+    
+    $cancelicon = $('<span/>', {
+       class:  'glyphicon glyphicon-remove cancel_icon'
+    });
+    $cancelicon.click(function(){
+        hidePopup();
+    });
+    $cancelwrapper.append($cancelicon);
+    
+    $container.append($cancelwrapper);
+    
+    $form = $('<form/>', {action: 'edit-profile-admin.html', method: 'GET'});
+    
+    $title = $('<h1/>',{
+        class : 'standard-title'
+    });
+    $title.text('Create User').appendTo($form);
+    
+    $input = $('<input/>',{
+        id : 'userName',
+        name : 'userName',
+        type : 'text',
+        placeholder : 'Username',
+        required : 'required',
+        class : 'standard-input'
+    });
+    
+    $input.appendTo($form);
+    
+    $input = $('<input/>',{
+        id : 'userPassword',
+        name : 'userPassword',
+        type : 'password',
+        placeholder : 'Password',
+        required : 'required',
+        class : 'standard-input'
+    });
+    
+    $input.appendTo($form);
+    
+    $input = $('<input/>',{
+        id : 'userPasswordConfirm',
+        name : 'userPasswordConfirm',
+        type : 'password',
+        placeholder : 'Password Comfirmation',
+        required : 'required',
+        class : 'standard-input'
+    });
+    
+    $input.appendTo($form);
+    
+    $input = $('<input/>',{
+        id : 'userEmail',
+        name : 'userEmail',
+        type : 'email',
+        placeholder : 'Email',
+        required : 'required',
+        class : 'standard-input'
+    });
+    
+    $input.appendTo($form);
+    
+    $submitButton = $('<input/>',{
+        type : 'submit',
+        value : 'Create',
+        class : 'standard-blue-button block_btn'
+    });
+    
+    $submitButton.appendTo($form);
+    
+    $form.appendTo($container);
+    $container.appendTo($middle);
+    $middle.appendTo($outer);
+    $outer.appendTo($popup);
+    
+    $('#main-content').append($popup);
+}
+
+function hidePopup() {
+    $('#popup').empty();
 }
 
 function selectTab(id) {

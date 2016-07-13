@@ -27,4 +27,4 @@ window.onload = function() {
     
     // run search on load in case there was an automatically filled value
     search();
-}
+};

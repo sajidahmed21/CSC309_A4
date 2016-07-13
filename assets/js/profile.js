@@ -39,7 +39,7 @@ var deleteUser = function(){
     });
     
     $container = $('<div/>', {
-       class:  'beautiful_container'
+       class:  'standard-container'
     });
     
     $cancelwrapper = $('<div/>');
@@ -57,12 +57,12 @@ var deleteUser = function(){
     $form = $('<form/>');
     
     $title = $('<h1/>',{
-        class : 'beautiful_title'
+        class : 'standard-title'
     });
     $title.text('Delete Account').appendTo($form);
     
     $paraharph = $('<p/>',{
-        class : 'beautiful_body'
+        class : 'standard-body'
     });
     
     $paraharph.text('Are you sure to delete this account?');
@@ -72,7 +72,7 @@ var deleteUser = function(){
     $input = $('<input/>',{
         type : 'submit',
         value : 'Edit Now!',
-        class : 'btn btn-danger beautiful_red_btn block_btn'
+        class : 'btn btn-danger standard-red-button block_btn'
     });
     
     $input.appendTo($form);
@@ -96,7 +96,7 @@ var changePassword = function(){
     });
     
     $container = $('<div/>', {
-       class:  'beautiful_container'
+       class:  'standard-container'
     });
     
     $cancelwrapper = $('<div/>');
@@ -114,7 +114,7 @@ var changePassword = function(){
     $form = $('<form/>');
     
     $title = $('<h1/>',{
-        class : 'beautiful_title'
+        class : 'standard-title'
     });
     $title.text('Change Password').appendTo($form);
     
@@ -123,7 +123,7 @@ var changePassword = function(){
         type : 'password',
         placeholder : 'Password',
         required : 'required',
-        class : 'beautiful_green_input'
+        class : 'standard-green-input'
     });
     
     $input.appendTo($form);
@@ -133,7 +133,7 @@ var changePassword = function(){
         type : 'password',
         placeholder : 'Password Confirm',
         required : 'required',
-        class : 'beautiful_green_input'
+        class : 'standard-green-input'
     });
     
     $input.appendTo($form);
@@ -141,7 +141,7 @@ var changePassword = function(){
     $input = $('<input/>',{
         type : 'submit',
         value : 'Edit Now!',
-        class : 'btn beautiful_green_btn block_btn'
+        class : 'btn standard-green-button block_btn'
     });
     
     $input.appendTo($form);

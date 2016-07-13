@@ -1,5 +1,5 @@
 $( document ).ready(function() {
-    initialize();
+    //initialize();
     $('#signup_btn').click(function(){
         signupPage();
     });
@@ -21,7 +21,7 @@ var loginPage = function(){
     });
     
     $container = $('<div/>', {
-       class:  'beautiful_container'
+       class:  'standard-container'
     });
     
     $cancelwrapper = $('<div/>');
@@ -39,7 +39,7 @@ var loginPage = function(){
     $form = $('<form/>');
     
     $title = $('<h1/>',{
-        class : 'beautiful_title'
+        class : 'standard-title'
     });
     $title.text('Login').appendTo($form);
     
@@ -49,7 +49,7 @@ var loginPage = function(){
         type : 'text',
         placeholder : 'Username',
         required : 'required',
-        class : 'beautiful_red_input'
+        class : 'standard-red-input'
     });
     
     $input.appendTo($form);
@@ -60,7 +60,7 @@ var loginPage = function(){
         type : 'password',
         placeholder : 'Password',
         required : 'required',
-        class : 'beautiful_red_input'
+        class : 'standard-red-input'
     });
     
     $input.appendTo($form);
@@ -68,7 +68,7 @@ var loginPage = function(){
     $input = $('<input/>',{
         type : 'submit',
         value : 'Login',
-        class : 'btn btn-danger beautiful_red_btn block_btn',
+        class : 'btn btn-danger standard-red-button block_btn',
         onclick: "JavaScript:return true;"
     });
     
@@ -85,7 +85,7 @@ var loginPage = function(){
     $input = $('<input/>',{
         type : 'button',
         value : 'Facebook Login',
-        class : 'btn btn-danger beautiful_red_btn block_btn'
+        class : 'btn btn-danger standard-red-button block_btn'
     });
     
     $input.css('margin-top','10px');
@@ -101,7 +101,7 @@ var loginPage = function(){
     $container.appendTo($middle);
     $middle.appendTo($outer);
     $outer.appendTo($popup);
-}
+};
 
 var signupPage = function(){
    var $popup = $('#popup');
@@ -116,7 +116,7 @@ var signupPage = function(){
     });
     
     $container = $('<div/>', {
-       class:  'beautiful_container'
+       class:  'standard-container'
     });
     
     $cancelwrapper = $('<div/>');
@@ -134,7 +134,7 @@ var signupPage = function(){
     $form = $('<form/>');
     
     $title = $('<h1/>',{
-        class : 'beautiful_title'
+        class : 'standard-title'
     });
     $title.text('Sign Up').appendTo($form);
     
@@ -144,7 +144,7 @@ var signupPage = function(){
         type : 'text',
         placeholder : 'Username',
         required : 'required',
-        class : 'beautiful_input'
+        class : 'standard-input'
     });
     
     $input.appendTo($form);
@@ -155,7 +155,7 @@ var signupPage = function(){
         type : 'password',
         placeholder : 'Password',
         required : 'required',
-        class : 'beautiful_input'
+        class : 'standard-input'
     });
     
     $input.appendTo($form);
@@ -166,7 +166,7 @@ var signupPage = function(){
         type : 'password',
         placeholder : 'Password Comfirmation',
         required : 'required',
-        class : 'beautiful_input'
+        class : 'standard-input'
     });
     
     $input.appendTo($form);
@@ -177,7 +177,7 @@ var signupPage = function(){
         type : 'email',
         placeholder : 'Email',
         required : 'required',
-        class : 'beautiful_input'
+        class : 'standard-input'
     });
     
     $input.appendTo($form);
@@ -185,7 +185,8 @@ var signupPage = function(){
     $input = $('<input/>',{
         type : 'button',
         value : 'Join Now!',
-        class : 'btn btn-primary beautiful_btn block_btn',
+        //class : 'btn btn-primary beautiful_btn block_btn',
+        class: 'standard-blue-button block_btn',
         onclick: "JavaScript: return true;"
     });
     
@@ -204,7 +205,8 @@ var signupPage = function(){
     $input = $('<input/>',{
         type : 'button',
         value : 'Facebook Sign Up',
-        class : 'btn btn-primary beautiful_btn block_btn'
+        //class : 'btn btn-primary beautiful_btn block_btn'
+        'class': 'standard-blue-button block_btn'
     });
     
     $input.css('margin-top','10px');
@@ -223,9 +225,9 @@ var signupPage = function(){
 };
 
 
-var initialize = function(){
-    hidePopup();
-};
+//var initialize = function(){
+//    hidePopup();
+//};
 var hidePopup = function(){
     console.log("hide");
     var $popup = $('#popup');
