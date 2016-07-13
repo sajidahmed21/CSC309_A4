@@ -1,34 +1,3 @@
-function search() {
-    var searchText = $('input#search').val();
-    
-    // if the text didn't change, don't do anything
-    if (searchText === window.lastSearchText) {
-        return;
-    }
-    
-    console.log('search triggered for: [' + searchText + ']');
-    
-    // otherwise, set the last search and and update as needed
-    window.lastSearchText = searchText;
-    if (searchText === '') {
-        $('main').addClass('no-search');
-    }
-    else {
-        // run the search
-        $('main').removeClass('no-search');
-    }
-}
-
-
-window.onload = function() {
-    $('input#search').on('change keyup paste mouseup', search);
-    
-    window.lastSearchText = '';
-    
-    // run search on load in case there was an automatically filled value
-    search();
-};
-
 $( document ).ready(function() {
     initialize();
     $('#reference').click(function(){
@@ -44,10 +13,16 @@ var initialize = function(){
 };
 
 var hidePopup = function(){
+    console.log("hide");
     var $popup = $('#popup');
     $popup.empty();
-    var $unenroll_form = $('#unenroll_form');
-    $unenroll_form.css('display', 'none');
+    
+    var $signup_form = $('#signup_form');
+    var $userlogin_form = $('#userlogin_form');
+    var $adminlogin_form = $('#adminlogin_form');
+    $signup_form.css('display', 'none');
+    $userlogin_form.css('display', 'none');
+    $adminlogin_form.css('display', 'none');
 };
 
 var referencePopup = function(){

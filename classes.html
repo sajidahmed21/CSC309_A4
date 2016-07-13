@@ -1,34 +1,36 @@
 <!DOCTYPE html>
 <html>
-	<!-- Head starts here. Define stylesheet and total width. -->
-	<head>
-	    <meta name="viewport" content="width=device-width, initial-scale=1">
-	    <title>Teach Stuff</title>
+<!-- Head starts here. Define stylesheet and total width. -->
 
-	    <script src="assets/js/jquery-2.0.0.min.js"></script>
-		<script src="assets/js/classes.js" defer></script>
-		
-	    <!-- Latest compiled and minified CSS -->
-	    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Teach Stuff</title>
 
-	    <!-- Optional theme -->
-	    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <script src="assets/js/jquery-2.0.0.min.js"></script>
+    <script src="assets/js/classes.js" defer></script>
 
-	    <!-- Latest compiled and minified JavaScript -->
-	    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
 
-	    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
-		<link rel="stylesheet" type="text/css" href="assets/css/classes.css">
-	</head>
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/classes.css">
+</head>
 
-	<!-- Body starts here, where content is. -->
-	<body class="global_font nomargin">
-	    <nav class="navbar navbar-default standard-headbar">
+<!-- Body starts here, where content is. -->
+
+<body class="global_font nomargin">
+    <nav class="navbar navbar-default standard-headbar">
         <div class="container-fluid">
 
             <div class="navbar-header">
-                <a class="navbar-brand" href="#">Teach Stuff</a>
+                <a class="navbar-brand" href="./index.html">Teach Stuff</a>
             </div>
             <div>
                 <div class="navbar-collapse">
@@ -40,15 +42,10 @@
                         <div>
                             <ul class="nav navbar-nav navbar-right">
                                 <li><a href="#">Recommend</a></li>
-                                <li><a class="nopadding" href="./profile.html"><img src="assets/img/profile.png" alt="Profile" height="40" width="40" class="profile_icon"></li></a>
-                                <div class="dropdown-toggle headbar_caret" type="button" data-toggle="dropdown">
-                                    <span class="caret"></span></div>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Profile</a></li>
-                                    <li><a href="#">Setting</a></li>
-                                    <li><a href="#">Logout</a></li>
-                                </ul>
-                                </li>
+                                <li>
+                                    <a class="nopadding" href="./profile.html"><img src="assets/img/profile.png" alt="Profile" height="40" width="40" class="profile_icon"></li>
+                                </a>
+                                <a id="logout-anchor" class="standard-clear-button" href="./index.html">Logout</a>
 
                             </ul>
                         </div>
@@ -57,189 +54,198 @@
             </div>
     </nav>
 
-	    <main class="no-search container-fluid">
-			<div class="row">
-				<div class="form-horizontal col-xs-offset-1 col-xs-10">
-                	<input id="search" name="search" class="form-control" placeholder="Enter text to search for classes...">
-	    		</div>
-			</div>
-			
-				<!-- recommended classes based on the user's profile data; only shown if a user is logged in -->
-			<section id="recommended-classes" class="row">
-				<div class="col-xs-offset-1 col-xs-10">
-					<p class="text-info">
-						Not sure what to search for? Here are some recommended classes based on your profile!
-					</p>
-				</div>
-				
-				<article class="class col-xs-12 col-md-6 col-lg-4">
-					<div class="well">
-						<p class="class-name text-primary">
-							Software Design
-						</p>
-						<p class="class-instructor">
-							Dino D'amore
-						</p>
-						<div class="class-description">
-							<p>
-								Introduction to large-scale software design and development concepts.
-							</p>
-						</div>
-					
-						<a href="coursedesc.html" class="btn-class-page btn btn-primary standard-blue-button" role="button">Class Page</a>
-					</div>
-				</article>
-				
-				<article class="class col-xs-12 col-md-6 col-lg-4">
-					<div class="well">
-						<p class="class-name text-primary">
-							Software Tools and Systems Programming
-						</p>
-						<p class="class-instructor">
-							Jamshed Petri
-						</p>
-						<div class="class-description">
-							<p>
-								Software techniques in a Unix-style environment, using scripting languages and a machine-oriented programming language (typically C).
-							</p>
-							<p>
-								What goes on in the operating system when programs are executed.
-							<p>
-							<p>
-								Core topics:
-							</p>
-							<ul>
-								<li>creating and using software tools</li>
-								<li>pipes and filters</li>
-								<li>file processing</li>
-								<li>shell programming</li>
-								<li>processes</li>
-								<li>system calls</li>
-								<li>signals</li>
-								<li>basic network programming</li>
-							</ul>
-						</div>
-					
-						<a href="coursedesc.html" class="btn-class-page btn btn-primary standard-blue-button" role="button">Class Page</a>
-					</div>
-				</article>
-				
-				<article class="class col-xs-12 col-md-6 col-lg-4">
-					<div class="well">
-						<p class="class-name text-primary">
-							Introduction to the Theory of Computation
-						</p>
-						<p class="class-instructor">
-							Shahzad Corti
-						</p>
-						<div class="class-description">
-							<p>
-								The application of logic and proof techniques to Computer Science.
-							</p>
-							<p>
-								Mathematical induction; correctness proofs for iterative and recursive algorithms; recurrence equations and their solutions; introduction to automata and formal languages.
-							<p>
-							<p>
-								This course assumes university-level experience with proof techniques and algorithmic complexity as provided by CSC165H1.  Very strong students who already have this experience (e.g. successful completion of MAT157Y1) may consult the undergraduate office about proceeding directly into CSC236H1.
-							</p>
-						</div>
-					
-						<a href="coursedesc.html" class="btn-class-page btn btn-primary standard-blue-button" role="button">Class Page</a>
-					</div>
-				</article>
-			</section>
-			
-			<!-- classes based on the search result -->
-			<section id="search-classes" class="row">
-				<article class="class col-xs-12 col-md-6 col-lg-4">
-					<div class="well">
-						<p class="class-name text-primary col-xs-offset-1 col-xs-10">
-							Introduction to Databases
-						</p>
-						<p class="class-instructor">
-							Rosario Acqua
-						</p>
-						<div class="class-description">
-							<p>
-								Introduction to database management systems including:
-							</p>
-								Nenad Nicodemo
-							<ul>
-								<li>relational data models and algebra</li>
-								<li>querying and updating databases</li>
-								<li> application programming with SQL</li>
-								<li>database design</li>
-								<li>transaction management</li>
-							</ul>
-						
-							<p>
-								Students will also learn about XML and using XQuery to query XML data.
-							</p>
-						</div>
-					
-						<a href="coursedesc.html" class="btn-class-page btn btn-primary standard-blue-button" role="button">Class Page</a>
-					</div>
-				</article>
-				
-				<article class="class col-xs-12 col-md-6 col-lg-4">
-					<div class="well">
-						<p class="class-name text-primary">
-							Machine Learning and Data Mining
-						</p>
-						<p class="class-instructor">
-							Nishant Mullur
-						</p>
-						<div class="class-description">
-							<p>
-								An introduction to methods for automated learning of relationships on the basis of empirical data.
-							</p>
-							<p>
-								Classification and regression using nearest neighbour methods, decision trees, linear models, and neural networks.
-							</p>
-							<p>
-								Studying clustering algorithms and problems of overfitting and of assessing accuracy.
-							</p>
-							<p>
-								Problems with handling large databases with an emphasis on statistical approaches.
-							</p>
-						</div>
-					
-						<a href="coursedesc.html" class="btn-class-page btn btn-primary standard-blue-button" role="button">Class Page</a>
-					</div>
-				</article>
-				
-				<article class="class col-xs-12 col-md-6 col-lg-4">
-					<div class="well">
-						<p class="class-name text-primary">
-							Database System Technology
-						</p>
-						<p class="class-instructor">
-							Anantha Basile
-						</p>
-						<div class="class-description">
-							<p>
-								Implementation of database management systems. Storage management, indexing, query processing, concurrency control, transaction management.
-							</p>
-							<p>
-								Database systems on parallel and distributed architectures.
-							</p>
-							<p>
-								Modern database applications: data mining, data warehousing, OLAP, data on the web.
-							</p>
-							<p>
-								Object-oriented and object-relational databases.
-							</p>
-						</div>
-						
-						<a href="coursedesc.html" class="btn-class-page btn btn-primary standard-blue-button" role="button">Class Page</a>
-					</div>
-				</article>
-			</section>
-		</main>
-	
-	
-	    <footer>
-			footer
-	    </footer>
-	</body>
+    <main class="no-search container-fluid">
+        <div class="row">
+            <div class="form-horizontal col-xs-offset-1 col-xs-10">
+                <input id="search" name="search" class="form-control" placeholder="Enter text to search for classes...">
+            </div>
+        </div>
+
+        <!-- recommended classes based on the user's profile data; only shown if a user is logged in -->
+        <section id="recommended-classes" class="row">
+            <div class="col-xs-offset-1 col-xs-10">
+                <p class="text-info">
+                    Not sure what to search for? Here are some recommended classes based on your profile!
+                </p>
+            </div>
+
+            <article class="class col-xs-12 col-md-6 col-lg-4">
+                <div class="well">
+                    <p class="class-name text-primary">
+                        Software Design
+                    </p>
+                    <p class="class-instructor">
+                        Dino D'amore
+                    </p>
+                    <div class="class-description">
+                        <p>
+                            Introduction to large-scale software design and development concepts.
+                        </p>
+                    </div>
+
+                    <a href="coursedesc.html" class="btn-class-page btn btn-primary standard-blue-button" role="button">Class Page</a>
+                </div>
+            </article>
+
+            <article class="class col-xs-12 col-md-6 col-lg-4">
+                <div class="well">
+                    <p class="class-name text-primary">
+                        Software Tools and Systems Programming
+                    </p>
+                    <p class="class-instructor">
+                        Jamshed Petri
+                    </p>
+                    <div class="class-description">
+                        <p>
+                            Software techniques in a Unix-style environment, using scripting languages and a machine-oriented programming language (typically C).
+                        </p>
+                        <p>
+                            What goes on in the operating system when programs are executed.
+                            <p>
+                                <p>
+                                    Core topics:
+                                </p>
+                                <ul>
+                                    <li>creating and using software tools</li>
+                                    <li>pipes and filters</li>
+                                    <li>file processing</li>
+                                    <li>shell programming</li>
+                                    <li>processes</li>
+                                    <li>system calls</li>
+                                    <li>signals</li>
+                                    <li>basic network programming</li>
+                                </ul>
+                    </div>
+
+                    <a href="coursedesc.html" class="btn-class-page btn btn-primary standard-blue-button" role="button">Class Page</a>
+                </div>
+            </article>
+
+            <article class="class col-xs-12 col-md-6 col-lg-4">
+                <div class="well">
+                    <p class="class-name text-primary">
+                        Introduction to the Theory of Computation
+                    </p>
+                    <p class="class-instructor">
+                        Shahzad Corti
+                    </p>
+                    <div class="class-description">
+                        <p>
+                            The application of logic and proof techniques to Computer Science.
+                        </p>
+                        <p>
+                            Mathematical induction; correctness proofs for iterative and recursive algorithms; recurrence equations and their solutions; introduction to automata and formal languages.
+                            <p>
+                                <p>
+                                    This course assumes university-level experience with proof techniques and algorithmic complexity as provided by CSC165H1. Very strong students who already have this experience (e.g. successful completion of MAT157Y1) may consult the undergraduate office about proceeding directly into CSC236H1.
+                                </p>
+                    </div>
+
+                    <a href="coursedesc.html" class="btn-class-page btn btn-primary standard-blue-button" role="button">Class Page</a>
+                </div>
+            </article>
+        </section>
+
+        <!-- classes based on the search result -->
+        <section id="search-classes" class="row">
+            <article class="class col-xs-12 col-md-6 col-lg-4">
+                <div class="well">
+                    <p class="class-name text-primary col-xs-offset-1 col-xs-10">
+                        Introduction to Databases
+                    </p>
+                    <p class="class-instructor">
+                        Rosario Acqua
+                    </p>
+                    <div class="class-description">
+                        <p>
+                            Introduction to database management systems including:
+                        </p>
+                        Nenad Nicodemo
+                        <ul>
+                            <li>relational data models and algebra</li>
+                            <li>querying and updating databases</li>
+                            <li> application programming with SQL</li>
+                            <li>database design</li>
+                            <li>transaction management</li>
+                        </ul>
+
+                        <p>
+                            Students will also learn about XML and using XQuery to query XML data.
+                        </p>
+                    </div>
+
+                    <a href="coursedesc.html" class="btn-class-page btn btn-primary standard-blue-button" role="button">Class Page</a>
+                </div>
+            </article>
+
+            <article class="class col-xs-12 col-md-6 col-lg-4">
+                <div class="well">
+                    <p class="class-name text-primary">
+                        Machine Learning and Data Mining
+                    </p>
+                    <p class="class-instructor">
+                        Nishant Mullur
+                    </p>
+                    <div class="class-description">
+                        <p>
+                            An introduction to methods for automated learning of relationships on the basis of empirical data.
+                        </p>
+                        <p>
+                            Classification and regression using nearest neighbour methods, decision trees, linear models, and neural networks.
+                        </p>
+                        <p>
+                            Studying clustering algorithms and problems of overfitting and of assessing accuracy.
+                        </p>
+                        <p>
+                            Problems with handling large databases with an emphasis on statistical approaches.
+                        </p>
+                    </div>
+
+                    <a href="coursedesc.html" class="btn-class-page btn btn-primary standard-blue-button" role="button">Class Page</a>
+                </div>
+            </article>
+
+            <article class="class col-xs-12 col-md-6 col-lg-4">
+                <div class="well">
+                    <p class="class-name text-primary">
+                        Database System Technology
+                    </p>
+                    <p class="class-instructor">
+                        Anantha Basile
+                    </p>
+                    <div class="class-description">
+                        <p>
+                            Implementation of database management systems. Storage management, indexing, query processing, concurrency control, transaction management.
+                        </p>
+                        <p>
+                            Database systems on parallel and distributed architectures.
+                        </p>
+                        <p>
+                            Modern database applications: data mining, data warehousing, OLAP, data on the web.
+                        </p>
+                        <p>
+                            Object-oriented and object-relational databases.
+                        </p>
+                    </div>
+
+                    <a href="coursedesc.html" class="btn-class-page btn btn-primary standard-blue-button" role="button">Class Page</a>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <div id="popup">
+    </div>
+    <footer>
+        <ul>
+            <li>
+                <a id="reference" class="no-underline" href="#"> Image References </a>
+            </li>
+        </ul>
+        <div class="footer-logo">
+        </div>
+        <hr class="footer-line">
+    </footer>
+</body>
+
 </html>

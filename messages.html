@@ -8,6 +8,7 @@
 
     <script src="assets/js/jquery-2.0.0.min.js"></script>
     <script src="assets/js/messages.js" defer></script>
+    <script src="assets/js/footer.js"></script>
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -30,7 +31,7 @@
         <div class="container-fluid">
 
             <div class="navbar-header">
-                <a class="navbar-brand" href="#">Teach Stuff</a>
+                <a class="navbar-brand" href="./index.html">Teach Stuff</a>
             </div>
             <div>
                 <div class="navbar-collapse">
@@ -39,24 +40,19 @@
                         </div>
                         <div class="col-md-5">
                             <div class="input-group headbar_search">
-                                <input type="text" class="form-control standard-search-bar  headbar_search_input" placeholder="Search Class...">
+                                <input type="text" class="form-control standard-search-bar headbar_search_input" placeholder="Search Class...">
                                 <span class="input-group-btn">
-                    <button type="submit" class="btn btn-primary standard-blue-button">Search Now</button>
+                    <button type="submit" class="standard-blue-button">Search Now</button>
                 </span>
                             </div>
                         </div>
                         <div>
                             <ul class="nav navbar-nav navbar-right">
                                 <li><a href="./classes.html">Recommend</a></li>
-                                <li><a class="nopadding" href="./profile.html"><img src="assets/img/profile.png" alt="Profile" height="40" width="40" class="profile_icon"></li></a>
-                                <div class="dropdown-toggle headbar_caret" type="button" data-toggle="dropdown">
-                                    <span class="caret"></span></div>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Profile</a></li>
-                                    <li><a href="#">Setting</a></li>
-                                    <li><a href="#">Logout</a></li>
-                                </ul>
-                                </li>
+                                <li>
+                                    <a class="nopadding" href="./profile.html"><img src="assets/img/profile.png" alt="Profile" height="40" width="40" class="profile_icon"></li>
+                                </a>
+                                <a id="logout-anchor" class="standard-clear-button" href="./index.html">Logout</a>
 
                             </ul>
                         </div>
@@ -104,8 +100,17 @@
         </div>
     </main>
 
+    <div id="popup">
+    </div>
     <footer>
-        footer
+        <ul>
+            <li>
+                <a id="reference" class="no-underline" href="#"> Image References </a>
+            </li>
+        </ul>
+        <div class="footer-logo">
+        </div>
+        <hr class="footer-line">
     </footer>
 </body>
 

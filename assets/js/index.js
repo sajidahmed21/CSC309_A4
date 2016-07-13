@@ -6,7 +6,84 @@ $( document ).ready(function() {
     $('#userlogin_btn').click(function(){
         loginPage();
     });
+    $('#reference').click(function(){
+        referencePopup();
+    });
 });
+
+var referencePopup = function(){
+    var $popup = $('#popup');
+    $popup.empty();
+    
+    $outer = $('<div/>', {
+       id:  'reference_form'
+    });
+    
+    $middle = $('<div/>', {
+       class:  'col-md-6'
+    });
+    
+    $container = $('<div/>', {
+       class:  'standard-ref-container'
+    });
+    
+    $cancelwrapper = $('<div/>');
+    
+    $cancelicon = $('<span/>', {
+       class:  'glyphicon glyphicon-remove cancel_icon'
+    });
+    $cancelicon.click(function(){
+        hidePopup();
+    });
+    $cancelwrapper.append($cancelicon);
+    
+    $container.append($cancelwrapper);
+    
+    $form = $('<form/>');
+    
+    $title = $('<h1/>',{
+        class : 'standard-title'
+    });
+    $title.text('References').appendTo($form);
+    
+    $ul = $('<ul/>');
+    
+    $ul.css('list-style-type', 'none');
+    $ul.css('margin', '0');
+    $ul.css('padding', '0');
+    $ul.css('text-align', 'center');
+    
+    $li = $('<li/>',{
+        class: 'standard_ref_list'
+    });
+    
+    $li.text('Youtube. (Company). (2005). maxresdefault. [Digital image]. Retrieved from https://i.ytimg.com/vi/ MWOdIIGOHGU/maxresdefault.jpg');
+            
+    $li.appendTo($ul);
+    
+    $li = $('<li/>', {
+        class: 'standard_ref_list'
+    });
+    
+    $li.text('Youtube. (Company). (2005). maxresdefault. [Digital image]. Retrieved from https://i.ytimg.com/vi/ LrGPkzy6mFo/maxresdefault.jpgg');
+            
+    $li.appendTo($ul);
+    
+    $li = $('<li/>',{
+        class: 'standard_ref_list'
+    });
+    
+    $li.text('boredpanda. (Website). origami-crane-paper-art-fb. [Digital image]. Retrieved from http://static.boredpanda.com/blog/wp-content/uploads/2015/10/ origami-crane-paper-art-fb.jpg');
+            
+    $li.appendTo($ul);
+    
+    $ul.appendTo($form);
+            
+    $form.appendTo($container);
+    $container.appendTo($middle);
+    $middle.appendTo($outer);
+    $outer.appendTo($popup);
+};
 
 var loginPage = function(){
     var $popup = $('#popup');
@@ -36,7 +113,10 @@ var loginPage = function(){
     
     $container.append($cancelwrapper);
     
-    $form = $('<form/>');
+    $form = $('<form/>',{
+        action: "profile.html",
+        method: "get"
+    });
     
     $title = $('<h1/>',{
         class : 'standard-title'
@@ -69,15 +149,6 @@ var loginPage = function(){
         type : 'submit',
         value : 'Login',
         class : 'btn btn-danger standard-red-button block_btn',
-        onclick: "JavaScript:return true;"
-    });
-    
-    $input.click(function(){
-        if(document.getElementById('userName').value.length >=1 && document.getElementById('userPassword').value.length >=1)
-        {
-            hidePopup();
-            window.location = "./profile.html";
-        }
     });
     
     $input.appendTo($form);
@@ -131,7 +202,10 @@ var signupPage = function(){
     
     $container.append($cancelwrapper);
     
-    $form = $('<form/>');
+    $form = $('<form/>',{
+        action: "profile.html",
+        method: "get"
+    });
     
     $title = $('<h1/>',{
         class : 'standard-title'
@@ -185,19 +259,7 @@ var signupPage = function(){
     $input = $('<input/>',{
         type : 'submit',
         value : 'Join Now!',
-        //class : 'btn btn-primary beautiful_btn block_btn',
         class: 'standard-blue-button block_btn',
-        onclick: "JavaScript: return true;"
-    });
-    
-    $input.click(function(){
-        
-        if(document.getElementById('userName').value.length >=1 && document.getElementById('userPassword').value.length >=1 && document.getElementById('userPasswordConfirm').value.length == document.getElementById('userPassword').value.length && document.getElementById('userEmail').value.length >=1)
-        {
-            console.log('here');
-            hidePopup();
-            window.location = "./profile.html";
-        }
     });
     
     $input.appendTo($form);

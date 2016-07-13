@@ -22,6 +22,7 @@
     <link rel="stylesheet" type="text/css" href="assets/css/edit-coursedesc-style.css">
     <script src="assets/js/edit-coursedesc.js"></script>
     <script src="assets/js/jquery.jeditable.js"></script>
+    <script src="assets/js/footer.js"></script>
 </head>
 
 <!-- Body Start here, where content is. -->
@@ -31,7 +32,7 @@
         <div class="container-fluid">
 
             <div class="navbar-header">
-                <a class="navbar-brand" href="#">Teach Stuff</a>
+                <a class="navbar-brand" href="./index.html">Teach Stuff</a>
             </div>
             <div>
                 <div class="navbar-collapse">
@@ -42,22 +43,17 @@
                             <div class="input-group headbar_search">
                                 <input type="text" class="form-control standard-search-bar headbar_search_input" placeholder="Search Class...">
                                 <span class="input-group-btn">
-                    <button type="submit" class="btn btn-primary standard-blue-button">Search Now</button>
+                    <button type="submit" class="standard-blue-button">Search Now</button>
                 </span>
                             </div>
                         </div>
                         <div>
                             <ul class="nav navbar-nav navbar-right">
                                 <li><a href="./classes.html">Recommend</a></li>
-                                <li><a class="nopadding" href="./profile.html"><img src="assets/img/profile.png" alt="Profile" height="40" width="40" class="profile_icon"></li></a>
-                                <div class="dropdown-toggle headbar_caret" type="button" data-toggle="dropdown">
-                                    <span class="caret"></span></div>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Profile</a></li>
-                                    <li><a href="#">Setting</a></li>
-                                    <li><a href="#">Logout</a></li>
-                                </ul>
-                                </li>
+                                <li>
+                                    <a class="nopadding" href="./profile.html"><img src="assets/img/profile.png" alt="Profile" height="40" width="40" class="profile_icon"></li>
+                                </a>
+                                <a id="logout-anchor" class="standard-clear-button" href="./index.html">Logout</a>
 
                             </ul>
                         </div>
@@ -140,22 +136,17 @@
     </div>
 
 
+    <div id="popup">
+    </div>
     <footer>
         <ul>
             <li>
-                <a href=""> About </a>
-            </li>
-            <li>
-                <a href=""> Contact </a>
-            </li>
-            <li>
-                <a href=""> FAQ </a>
+                <a id="reference" class="no-underline" href="#"> Image References </a>
             </li>
         </ul>
         <div class="footer-logo">
         </div>
         <hr class="footer-line">
-
     </footer>
 </body>
 
