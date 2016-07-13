@@ -148,15 +148,20 @@ footer ul li {
     margin: 50px;
 }
 
+p.class-name {
+    font-weight: bold;
+}
+
 .footer-line {
     height: 1px;
     width: 400px;
 }
 
-.fullblock_btn{
+.fullblock_btn {
     display: block;
     width: 100%;
     margin: 0 auto;
+    text-align: center;
 }
 
 .block_btn {
