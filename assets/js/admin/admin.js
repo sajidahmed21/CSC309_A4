@@ -86,7 +86,7 @@ function showUsersTab() {
     
     $createAccountButton = $('<button/>', {
         id: 'create-account-button',
-        'class': 'admin-page-button',
+        'class': 'standard-blue-button',
         type: 'button'
     });
     $createAccountButton.click(showCreateUserForm);
@@ -191,7 +191,7 @@ function showCreateUserForm() {
     });
     
     $container = $('<div/>', {
-       class:  'beautiful_container'
+       class:  'standard-container'
     });
     
     $cancelwrapper = $('<div/>');
@@ -209,7 +209,7 @@ function showCreateUserForm() {
     $form = $('<form/>', {action: 'edit-profile-admin.html', method: 'GET'});
     
     $title = $('<h1/>',{
-        class : 'beautiful_title'
+        class : 'standard-title'
     });
     $title.text('Create User').appendTo($form);
     
@@ -219,7 +219,7 @@ function showCreateUserForm() {
         type : 'text',
         placeholder : 'Username',
         required : 'required',
-        class : 'beautiful_input'
+        class : 'standard-input'
     });
     
     $input.appendTo($form);
@@ -230,7 +230,7 @@ function showCreateUserForm() {
         type : 'password',
         placeholder : 'Password',
         required : 'required',
-        class : 'beautiful_input'
+        class : 'standard-input'
     });
     
     $input.appendTo($form);
@@ -241,7 +241,7 @@ function showCreateUserForm() {
         type : 'password',
         placeholder : 'Password Comfirmation',
         required : 'required',
-        class : 'beautiful_input'
+        class : 'standard-input'
     });
     
     $input.appendTo($form);
@@ -252,7 +252,7 @@ function showCreateUserForm() {
         type : 'email',
         placeholder : 'Email',
         required : 'required',
-        class : 'beautiful_input'
+        class : 'standard-input'
     });
     
     $input.appendTo($form);
@@ -260,7 +260,7 @@ function showCreateUserForm() {
     $submitButton = $('<input/>',{
         type : 'submit',
         value : 'Create',
-        class : 'btn btn-primary beautiful_btn block_btn'
+        class : 'standard-blue-button block_btn'
     });
     
     $submitButton.appendTo($form);
