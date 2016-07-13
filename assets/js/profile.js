@@ -17,14 +17,14 @@ $( document ).ready(function() {
 
 var initialize = function(){
     hidePopup();
-}
+};
 
 var hidePopup = function(){
     var $popup = $('#popup');
     $popup.empty();
     var $unenroll_form = $('#unenroll_form');
     $unenroll_form.css('display', 'none');
-}
+};
 
 var deleteUser = function(){
     var $popup = $('#popup');
@@ -71,7 +71,7 @@ var deleteUser = function(){
     
     $input = $('<input/>',{
         type : 'submit',
-        value : 'Edit Now!',
+        value : 'Delete',
         class : 'btn btn-danger standard-red-button block_btn'
     });
     
@@ -81,7 +81,7 @@ var deleteUser = function(){
     $container.appendTo($middle);
     $middle.appendTo($outer);
     $outer.appendTo($popup);
-}
+};
 
 var changePassword = function(){
     var $popup = $('#popup');
@@ -150,4 +150,4 @@ var changePassword = function(){
     $container.appendTo($middle);
     $middle.appendTo($outer);
     $outer.appendTo($popup);
-}
+};

@@ -18,6 +18,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
 
+    <link rel="stylesheet" type="text/css" href="assets/css/admin_home.css">
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
     <link rel="stylesheet" type="text/css" href="assets/css/edit-profile-admin.css">
     
@@ -26,45 +27,15 @@
 </head>
 
 <body class="global_font nomargin">
-    <nav class="navbar navbar-default standard-headbar">
-        <nav class="navbar navbar-default standard-headbar">
-        <div class="container-fluid">
-
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">Teach Stuff</a>
-            </div>
-            <div>
-                <div class="navbar-collapse">
-                    <div class="row">
-                        <div class="col-md-3">
-                        </div>
-                        <div class="col-md-5">
-                            <div class="input-group headbar_search">
-                                <input type="text" class="form-control standard-search-bar headbar_search_input" placeholder="Search Class...">
-                                <span class="input-group-btn">
-                    <button type="submit" class="btn btn-primary standard-blue-button">Search Now</button>
-                </span>
-                            </div>
-                        </div>
-                        <div>
-                            <ul class="nav navbar-nav navbar-right">
-                                <li><a href="./classes.html">Recommend</a></li>
-                                <li><a class="nopadding" href="#"><img src="assets/img/profile.png" alt="Profile" height="40" width="40" class="profile_icon"></li></a>
-                                <div class="dropdown-toggle headbar_caret" type="button" data-toggle="dropdown">
-                                    <span class="caret"></span></div>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Profile</a></li>
-                                    <li><a href="#">Setting</a></li>
-                                    <li><a href="#">Logout</a></li>
-                                </ul>
-                                </li>
-
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-    </nav>
+    <header>
+        <h1>Teach Stuff</h1>
+		<h2>Admin</h2>
+			
+		<a id="logout-anchor" class="standard-clear-button" href="admin_login.html">Logout</a> <!-- TODO: Remove href -->
+		<img src="assets/img/profile.png" alt="Profile" height="40" width="45" class="profile_icon">
+		<h3 id="admin-username">admin.username</h3>
+    </header>
+    
     <img class="profilepage_img" src="assets/img/profile_background.jpg">
     <img class="img-circle profile_pic" src="assets/img/profile.png" height="150" width="150">
     <div class="row">
