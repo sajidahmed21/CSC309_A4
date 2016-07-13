@@ -104,12 +104,16 @@ glyphicon glyphicon-star:hover {
 }
 
 .course-title {
-    font-size: 100px;
+    font-size: 5vw;
     text-align: center;
 }
 
+.title-font-size {
+    font-size: 100px;
+}
 #course-title-box {
     width: 600px;
+    height: 150px;
     background-color: white;
     position: absolute;
     margin-left: auto;

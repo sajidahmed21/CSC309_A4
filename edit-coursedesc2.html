@@ -20,6 +20,8 @@
                     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
                         <link rel="stylesheet" type="text/css" href="assets/css/coursedesc-style.css">
                           <link rel="stylesheet" type="text/css" href="assets/css/edit-coursedesc-style.css">
+                              <script src="assets/js/profile.js"></script>
+                              <script src="assets/js/edit-coursedesc.js"></script>
                             </head>
     
     <!-- Body Start here, where content is. -->
@@ -31,27 +33,52 @@
                 <div class="navbar-header">
                     <a class="navbar-brand" href="#">Teach Stuff</a>
                 </div>
-                
-                <nav>
-                    
-                    
+                <div>
                     <div class="navbar-collapse">
-                        <ul class="nav navbar-nav navbar-right">
-                            <li><a id="userlogin_btn" href="#">Login</a></li>
-                            <li>
-                                <button type="button" id="signup_btn" class="btn btn-primary standard-blue-button">Sign Up</button>
-                            </li>
-                        </ul>
+                        <div class="row">
+                            <div class="col-md-3">
+                            </div>
+                            <div class="col-md-5">
+                                <div class="input-group headbar_search">
+                                    <input type="text" class="form-control standard-search-bar headbar_search_input" placeholder="Search Class...">
+                                        <span class="input-group-btn">
+                                            <button type="submit" class="standard-blue-button">Search Now</button>
+                                        </span>
+                                        </div>
+                            </div>
+                            <div>
+                                <ul class="nav navbar-nav navbar-right">
+                                    <li><a href="./classes.html">Recommend</a></li>
+                                    <li>
+                                        <a class="nopadding" href="#"><img src="assets/img/profile.png" alt="Profile" height="40" width="40" class="profile_icon"></li>
+                                    </a>
+                                    <div class="dropdown-toggle headbar_caret" type="button" data-toggle="dropdown">
+                                        <span class="caret"></span></div>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#">Profile</a></li>
+                                        <li><a href="#">Setting</a></li>
+                                        <li><a href="#">Logout</a></li>
+                                    </ul>
+                                    </li>
+                                    
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                    </div>
-        </nav>
-        
+                </div>
+                </nav>
+        <div class="alert alert-success alert-dismissible" role="alert" style="margin-top: 10px;">
+            
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            
+            You are currently viewing your course: Origami 101
+        </div>
         <div id="course-profile">
             <div class="course-banner">
                 <img alt="<course img>" src="assets/img/origami.jpg">
                     <div id="course-title-box" class="standard-container">
                         <button type="button" id="edit-title" class="btn btn-primary standard-blue-button edit-btn">Edit</button>
-                        <h1 class="standard-font course-title">
+                        <h1 id="course-title" class="standard-font course-title">
                             Origami 101
                         </h1>
                     </div>
@@ -84,21 +111,23 @@
                 <div id="course-desc" class="standard-container course-container">
                     <button type="button" id="edit-course-desc" class="btn btn-primary standard-blue-button edit-btn">Edit</button>
                     <h1 class="standard-font"> Course Description </h1>
-                    <p class="standard-font"> This course will teach you how to create a variety of origami objects, including swans, flowers etc. </p>
-                    <p class="standard-font">
+                    <div class="standard-font">
+                   This course will teach you how to create a variety of origami objects, including swans, flowers etc.
+                   
                     
                     We have 45-minute classes of up to five students for people of all ages and levels, from those who have never folded before to seasoned veterans looking for a new challenge. Our staff has over 50 combined years teaching origami, and our flexible schedule ensures that we can find a time that works for you.
-                    </p>
-                    <p class="standard-font">
+                    
+                  
                     Our classes are designed around our brand new “Kyu” teaching method. We have taken all the folds needed in origami and categorized them by difficulty so they are easy to follow and fun to learn. Like martial arts, the Kyu System relies on progression through practice, repetition, and demonstration. By displaying mastery of a specific set of techniques, students will receive colored bands as they ‘graduate’ to new levels; in the same manner that belts are awarded in karate.
-                    </p>
+                  
+                    </div>
                 </div>
                 <div id="requirements" class="standard-container course-container">
-                    <button type="button" id="edit-course-desc" class="btn btn-primary standard-blue-button edit-btn">Edit</button>
+                    <button type="button" id="edit-requirements" class="btn btn-primary standard-blue-button edit-btn">Edit</button>
                     <h1 class="standard-font"> Requirements </h1>
-                    <p class="standard-font">
+                    <div class="standard-font">
                     *No prior experience is necessary but we strongly recommend that students be at least five years of age to take Origami Classes. It is a shared class environment so it is important that each folder can listen to and follow directions for 45 minutes.
-                    </p>
+                    </div>
                     
                 </div>
                 
@@ -117,6 +146,7 @@
                                 <td>Waterman123</td>
                                 <td>Doe</td>
                                 <td>waterman123@mail.com</td>
+                                
                             </tr>
                             <tr>
                                 <td>fruit123</td>
@@ -128,6 +158,7 @@
                                 <td>Dooley</td>
                                 <td>julypepper@mail.com</td>
                             </tr>
+                            
                         </tbody>
                     </table>
                 </div>
