@@ -57,7 +57,7 @@ var referencePopup = function(){
         class: 'standard_ref_list'
     });
     
-    $li.text('Youtube. (Company). (2005). maxresdefault. [Digital image]. Retrieved from https://i.ytimg.com/vi/ MWOdIIGOHGU/maxresdefault.jpg');
+    $li.text('Youtube. (Company). (2005). maxresdefault. [Digital image]. Retrieved from https://i.ytimg.com/vi/MWOdIIGOHGU/maxresdefault.jpg');
             
     $li.appendTo($ul);
     
@@ -65,7 +65,7 @@ var referencePopup = function(){
         class: 'standard_ref_list'
     });
     
-    $li.text('Youtube. (Company). (2005). maxresdefault. [Digital image]. Retrieved from https://i.ytimg.com/vi/ LrGPkzy6mFo/maxresdefault.jpg');
+    $li.text('Youtube. (Company). (2005). maxresdefault. [Digital image]. Retrieved from https://i.ytimg.com/vi/LrGPkzy6mFo/maxresdefault.jpg');
             
     $li.appendTo($ul);
     
@@ -73,7 +73,7 @@ var referencePopup = function(){
         class: 'standard_ref_list'
     });
     
-    $li.text('boredpanda. (Website). origami-crane-paper-art-fb. [Digital image]. Retrieved from http://static.boredpanda.com/blog/wp-content/uploads/2015/10/ origami-crane-paper-art-fb.jpg');
+    $li.text('boredpanda. (Website). origami-crane-paper-art-fb. [Digital image]. Retrieved from http://static.boredpanda.com/blog/wp-content/uploads/2015/10/origami-crane-paper-art-fb.jpg');
             
     $li.appendTo($ul);
     
