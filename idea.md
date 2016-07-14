@@ -52,6 +52,8 @@ Admin Pages: Syed Sajid
 ### Web Services
 Note that the sections below include test cases.
 
+User Login(authentication): Willis
+
 Profiles: Willis
 
 Classes: Erfa
