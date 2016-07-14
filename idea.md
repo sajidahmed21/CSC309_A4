@@ -47,7 +47,7 @@ Recommended Classes: Sajjad
 
 Messaging: Sajjad
 
-Admin Pages: Sajid
+Admin Pages: Syed Sajid
 
 ### Web Services
 Note that the sections below include test cases.
@@ -60,7 +60,7 @@ Recommended Class System: Sajjad
 
 Messaging: Sajjad
 
-Admin: Sajid
+Admin: Syed Sajid
 
 ## Frameworks and Libraries
 We currently plan on using jQuery and Bootstrap.
