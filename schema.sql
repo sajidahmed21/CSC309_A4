@@ -1,18 +1,112 @@
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS USERS (
   id INTEGER PRIMARY KEY,
-  username TEXT NOT NULL,
-  password TEXT NOT NULL,
-  is_admin INTEGER DEFAULT 0
+  name TEXT NOT NULL,
+  profile_picture_path TEXT
 );
 
-CREATE TABLE comments (
-  id INTEGER PRIMARY KEY,
-  user_id INT,
-  comment TEXT NOT NULL,
-  timestamp INTEGER NOT NULL DEFAULT (datetime('now')),
+CREATE TABLE IF NOT EXISTS LOGIN_CREDENTIALS (
+  user_id INTEGER PRIMARY KEY,
+  username varchar(32) UNIQUE NOT NULL,
+  password_hash char(128) NOT NULL,
+  password_salt char(32) NOT NULL,
 
-  FOREIGN KEY(user_id) REFERENCES users(id)
+  FOREIGN KEY(user_id) REFERENCES USERS(id)
 );
 
-/* Create admin accounts here */
+CREATE TABLE IF NOT EXISTS THIRD_PARTY_LOGIN (
+  user_id INTEGER PRIMARY KEY,
+  login_token varchar(512) UNIQUE NOT NULL,
+  third_party_name varchar(32) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS FOLLOWINGS (
+  follower INTEGER NOT NULL,
+  followee INTEGER NOT NULL,
+
+  PRIMARY KEY(follower, followee),
+  FOREIGN KEY(follower) REFERENCES USERS(id),
+  FOREIGN KEY(followee) REFERENCES USERS(id)
+);
+
+CREATE TABLE IF NOT EXISTS NOTIFICATIONS (
+  notifcation_id INTEGER PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  seen INTEGER DEFAULT 0,
+  content TEXT NOT NULL,
+  created_timestamp INTEGER DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS ADMINS (
+  username PRIMARY KEY,
+  password_hash char(128) NOT NULL,
+  password_salt char(32) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS CLASSES (
+  id INTEGER PRIMARY KEY,
+  class_name varchar(64) NOT NULL,
+  instructor INTEGER NOT NULL,
+  banner_picture_path TEXT,
+  created_timestamp INTEGER DEFAULT (datetime('now')),
+
+  UNIQUE(instructor, class_name),
+  FOREIGN KEY(instructor) REFERENCES USERS(id)
+);
+
+CREATE TABLE IF NOT EXISTS INSTRUCTOR_POSTS (
+  id INTEGER PRIMARY KEY,
+  class_id INTEGER NOT NULL,
+  created_timestamp INTEGER DEFAULT (datetime('now')),
+  content TEXT NOT NULL,
+
+  FOREIGN KEY(class_id) REFERENCES CLASSES(id)
+);
+
+CREATE TABLE IF NOT EXISTS REVIEWS (
+  user_id INTEGER,
+  class_id INTEGER,
+  created_timestamp INTEGER DEFAULT (datetime('now')),
+  content TEXT,
+  rating INTEGER,
+
+  PRIMARY KEY(user_id, class_id),
+  FOREIGN KEY(user_id) REFERENCES USERS(id),
+  FOREIGN KEY(class_id) REFERENCES CLASSES(id)
+);
+
+CREATE TABLE IF NOT EXISTS ENROLMENT (
+  user_id INTEGER NOT NULL,
+  class_id INTEGER NOT NULL,
+
+  PRIMARY KEY(user_id, class_id),
+  FOREIGN KEY(user_id) REFERENCES USERS(id),
+  FOREIGN KEY(class_id) REFERENCES CLASSES(id)
+);
+
+/* TODO: Decide if we want to keep this */
+CREATE TABLE IF NOT EXISTS MESSAGES (
+  id INTEGER PRIMARY KEY,
+  sender INTEGER NOT NULL,
+  receiver INTEGER NOT NULL,
+  send_timestamp INTEGER DEFAULT (datetime('now')),
+  content TEXT NOT NULL,
+  seen_timestamp INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS LOGIN_HISTORY (
+  user_id INTEGER NOT NULL,
+  login_timestamp INTEGER DEFAULT (datetime('now')),
+
+  PRIMARY KEY(user_id, login_timestamp)
+);
+
+
+/* TODO: Decide if we want to keep this */
+CREATE TABLE IF NOT EXISTS TAGS (
+  tag_name varchar(64) NOT NULL,
+  class_id INTEGER NOT NULL,
+
+  PRIMARY KEY(tag_name, class_id),
+  FOREIGN KEY(class_id) REFERENCES CLASSES(id)
+);
