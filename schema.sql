@@ -1,3 +1,5 @@
+/* SQLite doesn't have foreign keys enabled by default. So we have to turn it on. */
+PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS USERS (
   id INTEGER PRIMARY KEY,
@@ -36,11 +38,13 @@ CREATE TABLE IF NOT EXISTS NOTIFICATIONS (
   user_id INTEGER NOT NULL,
   seen INTEGER DEFAULT 0,
   content TEXT NOT NULL,
-  created_timestamp INTEGER DEFAULT (datetime('now'))
+  created_timestamp INTEGER DEFAULT (datetime('now')),
+
+  FOREIGN KEY(user_id) REFERENCES USERS(id)
 );
 
 CREATE TABLE IF NOT EXISTS ADMINS (
-  username PRIMARY KEY,
+  username varchar(32) PRIMARY KEY,
   password_hash char(128) NOT NULL,
   password_salt char(32) NOT NULL
 );
@@ -66,8 +70,8 @@ CREATE TABLE IF NOT EXISTS INSTRUCTOR_POSTS (
 );
 
 CREATE TABLE IF NOT EXISTS REVIEWS (
-  user_id INTEGER,
-  class_id INTEGER,
+  user_id INTEGER NOT NULL,
+  class_id INTEGER NOT NULL,
   created_timestamp INTEGER DEFAULT (datetime('now')),
   content TEXT,
   rating INTEGER,
