@@ -1,6 +1,17 @@
 var express = require('express');
 var app = express();
 
+// database setup
+var sequelize = require('sequelize')
+
+function initialiseDatabase() {
+  console.log('initialising db');
+  return new sequelize('learnrDB', null, null, {
+	  dialect: 'sqlite',
+	  storage: __dirname + '/learnrDB.sqlite'
+  });
+}
+
 // handlebars setup
 var exphbs  = require('express-handlebars');
 var hbs = exphbs.create({
@@ -23,14 +34,21 @@ app.get('/', function (req, res) {
 
 
 app.get('/demo', function (req, res) {
-	res.render('demo', {
-		leggedIn: false,
-		demo: true
+	db.query('SELECT COUNT(*) AS userCount FROM USERS').spread(function(results, metadata) {
+		res.render('demo', {
+			userCount: results[0].userCount,
+			leggedIn: false,
+			demo: true
+		});
+		
 	});
 });
 
 
 /* server start up --------------------------------------------------*/
+
+var db = initialiseDatabase();
+
 app.listen(9090, function () {
   console.log('listening on port 9090');
 });
