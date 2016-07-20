@@ -16,12 +16,15 @@ app.use(express.static('public'));
 
 /* page routing -----------------------------------------------------*/
 app.get('/', function (req, res) {
-	res.render('home');
+	res.render('home', {
+		loggedIn: true
+	});
 });
 
 
 app.get('/demo', function (req, res) {
 	res.render('demo', {
+		leggedIn: false,
 		demo: true
 	});
 });
