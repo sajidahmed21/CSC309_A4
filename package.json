@@ -1,0 +1,14 @@
+{
+  "name": "csc309-a4",
+  "version": "1.0.0",
+  "description": "csc309 a4 project: learnr",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://sk-csc309@github.com/sajidahmed21/CSC309_A4.git"
+  },
+  "homepage": "https://github.com/sajidahmed21/CSC309_A4",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
