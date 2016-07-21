@@ -174,19 +174,22 @@ var getProfileHandler = function(req, res){
 var signinHandler = function (req, res) {
     var signinUsername = req.body.signinUsername;
     var signinPassword = req.body.signinPassword;
-    db.query("SELECT password_hash, password_salt FROM LOGIN_CREDENTIALS WHERE username = '" + signinUsername + "'").spread(function (results, metadata) {
-        if (results[0].password_hash == signinPassword) {
-            var returnJSON = {
-                "success": "Login Success"
+    db.query("SELECT password FROM LOGIN_CREDENTIALS WHERE username = '" + signinUsername + "'").spread(function (results, metadata) {
+        bcrypt.compare(signinPassword, results[0].password, function(err, result) { 
+            if (err || result === false) {
+                console.log("Err in login");
+                var returnJSON = {
+                    "error": "Err in login"
+                }
+                sendBackJSON(returnJSON, res);
             }
-            sendBackJSON(returnJSON, res);
-        } else {
-            console.log("Err in login");
-            var returnJSON = {
-                "error": "Err in login"
+            else {
+                var returnJSON = {
+                    "success": "Login Success"
+                }
+                sendBackJSON(returnJSON, res);
             }
-            sendBackJSON(returnJSON, res);
-        }
+        })
     }).catch(function (err) {
         console.log("Err in signin");
         var returnJSON = {
