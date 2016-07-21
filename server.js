@@ -117,19 +117,28 @@ var changeProfilePicHandler = function(req, res){
     });
 };
 var changePasswordHandler = function (req, res){
-    var changePassword = req.body.changePassword;
-    var user_id = req.body.user_id;
-    db.query("UPDATE LOGIN_CREDENTIALS SET password_hash = '"+changePassword+"' WHERE user_id=" + user_id).spread(function(results, metadata){
-        var returnJSON = {
-            "success": "Change Password Success"
+    bcrypt.hash(req.body.changePassword, 8, function(err, hashedPassword) {
+        if (err) {
+            console.log('failed to hash password:');
+            console.log(err);
+            
+            sendBackJSON({"error": "server error"}, res);
+            return;
         }
-        sendBackJSON(returnJSON, res);
-    }).catch(function(err){
-        console.log("Err in change password");
-        var returnJSON = {
-            "error": "Err in change password"
-        }
-        sendBackJSON(returnJSON, res);
+        
+        var user_id = req.body.user_id;
+        db.query("UPDATE LOGIN_CREDENTIALS SET password = '"+ hashedPassword +"' WHERE user_id=" + user_id).spread(function(results, metadata){
+            var returnJSON = {
+                "success": "Change Password Success"
+            }
+            sendBackJSON(returnJSON, res);
+        }).catch(function(err){
+            console.log("Err in change password");
+            var returnJSON = {
+                "error": "Err in change password"
+            }
+            sendBackJSON(returnJSON, res);
+        });
     });
 };
 var unenrollHandler = function (req, res){
