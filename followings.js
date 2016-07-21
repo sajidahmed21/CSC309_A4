@@ -7,13 +7,15 @@ exports.followHandler = function (req, res){
     var followee = req.body.followee;
     db.query("INSERT INTO FOLLOWINGS (follower,followee ) VALUES (" + follower +"," + followee + ")" ).spread(function(results, metadata){
         var returnJSON = {
-            "success": "Success in following"
+            "status": "success",
+            "message": "Success in following"
         }
         sendBackJSON(returnJSON, res);
     }).catch(function(err){
         console.log("Err in follow");
         var returnJSON = {
-            "error": "Err in follow"
+            "status": "error",
+            "message": "Err in follow"
         }
         sendBackJSON(returnJSON, res);
     });
@@ -24,13 +26,15 @@ exports.unfollowHandler = function (req, res){
     var followee = req.body.followee;
     db.query("DELETE FROM FOLLOWINGS WHERE follower =" + follower +" AND followee = " + followee ).spread(function(results, metadata){
         var returnJSON = {
-            "success": "Success in unfollowing"
+            "status": "success",
+            "message": "Success in unfollowing"
         }
         sendBackJSON(returnJSON, res);
     }).catch(function(err){
         console.log("Err in unfollow");
         var returnJSON = {
-            "error": "Err in unfollow"
+            "status": "success",
+            "message": "Err in unfollow"
         }
         sendBackJSON(returnJSON, res);
     });
