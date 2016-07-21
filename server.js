@@ -1,7 +1,9 @@
 var express = require('express');
-var bodyParser = require('body-parser');
 var app = express();
 
+var bcrypt = require('bcryptjs');
+
+var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
 /*app.get('/check', function (req, res) {
@@ -195,52 +197,45 @@ var signinHandler = function (req, res) {
 }
 
 var signupHandler = function (req, res) {
-    db.query('SELECT COUNT(*) AS userCount FROM USERS').spread(function (results, metadata) {
+    bcrypt.hash(req.body.signupPassword, 8, function(err, hashedPassword) {
+        if (err) {
+            console.log('failed to hash password:');
+            console.log(err);
+            
+            sendBackJSON({"error": "server error"}, res);
+            return;
+        }
+        
         console.log("ab")
         console.log(req.body);
-        var id = results[0].userCount + 1;
-        var signupName = req.body.signupName;
-        var signupUsername = req.body.signupUsername;
-        var signupPassword = req.body.signupPassword;
-        var signupProfilePicture = req.body.signupProfilePicture;
-        var signupSalt = randomGenSalt();
-        db.query("INSERT INTO USERS (id, name, profile_picture_path) VALUES (" + id + ",'" + signupName + "','" + signupProfilePicture + "')").spread(function (result, metadata) {
-            loginInsert(id, signupUsername, signupPassword, signupSalt, res);
-        }).catch(function (err) {
-            console.log("Err in insert USERS");
-            var returnJSON = {
-                "error": "Err in insert USERS"
-            }
-            sendBackJSON(returnJSON, res);
+        
+        db.transaction(function (transaction) {
+    
+            var signupName = req.body.signupName;
+            var signupUsername = req.body.signupUsername;
+            var signupProfilePicture = req.body.signupProfilePicture;
+            return db.query("INSERT INTO USERS (name, profile_picture_path) VALUES ('" + signupName + "','" + signupProfilePicture + "')", {transaction: transaction}).then(function (result) {
+                var metadata = result[1];
+                return loginInsert(transaction, metadata.lastID, signupUsername, hashedPassword, res);
+            });
+        })
+        .catch(function(err) {
+            console.log("failed to create user:");
+            console.log(err);
+            
+            sendBackJSON({"error": "failed to create user"}, res);
         });
     });
 };
 
-var loginInsert = function (id, signupUsername, signupPassword, signupSalt, res) {
-    db.query("INSERT INTO LOGIN_CREDENTIALS (user_id, username, password_hash, password_salt) VALUES (" + id + ",'" + signupUsername + "','" + signupPassword + "','" + signupSalt + "')").spread(
-            function (result, metadata) {
-                var returnJSON = {
-                    "success": "Signup Success"
-                };
-                sendBackJSON(returnJSON, res);
-            })
-        .catch(function (err) {
-            console.log("Err in insert LOGIN_CREDENTIALS");
-            var returnJSON = {
-                "error": "Err in insert LOGIN_CREDENTIALS"
-            }
-            sendBackJSON(returnJSON, res);
-        });
-};
-
-var randomGenSalt = function () {
-    var randomText = "";
-    var charInclude = "abcdefghijklmnopqustuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-
-    for (var i = 0; i < 32; i++) {
-        randomText = randomText + charInclude.charAt(Math.floor(Math.random() * charInclude.length));
-    }
-    return randomText;
+var loginInsert = function (transaction, id, signupUsername, signupPassword, res) {
+    return db.query("INSERT INTO LOGIN_CREDENTIALS (user_id, username, password) VALUES (" + id + ",'" + signupUsername + "','" + signupPassword + "')", {transaction: transaction})
+    .then(function (result, metadata) {
+        var returnJSON = {
+            "success": "Signup Success"
+        };
+        sendBackJSON(returnJSON, res);
+    });
 };
 
 var sendBackJSON = function (retJSON, res) {
