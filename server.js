@@ -6,6 +6,13 @@ var bcrypt = require('bcryptjs');
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
+
+var recommendations = require('./recommendations');
+
+var common = require('./common');
+var sendBackJSON = common.sendBackJSON;
+var db = common.db;
+
 /*app.get('/check', function (req, res) {
     db.query('SELECT * FROM USERS').spread(function (results, metadata) {
         console.log(results);
@@ -250,25 +257,6 @@ var loginInsert = function (transaction, id, signupUsername, signupPassword, res
     });
 };
 
-var sendBackJSON = function (retJSON, res) {
-    res.writeHead(200, {
-        'Content-Type': 'application/json',
-        "Access-Control-Allow-Origin": "*"
-    });
-    res.write(JSON.stringify(retJSON));
-    res.end();
-};
-// database setup
-var sequelize = require('sequelize')
-
-function initialiseDatabase() {
-    console.log('initialising db');
-    return new sequelize('learnrDB', null, null, {
-        dialect: 'sqlite',
-        storage: __dirname + '/learnrDB.sqlite'
-    });
-}
-
 // handlebars setup
 var exphbs = require('express-handlebars');
 var hbs = exphbs.create({
@@ -328,11 +316,11 @@ app.delete('/user/course', function(req, res) {
     unenrollHandler(req, res);
 });
 
+app.get('/courses/recommended', recommendations.userCourses);
+
 
 
 /* server start up --------------------------------------------------*/
-
-var db = initialiseDatabase();
 
 app.listen(9090, function () {
     console.log('listening on port 9090');
