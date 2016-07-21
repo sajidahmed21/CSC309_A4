@@ -6,8 +6,12 @@ var bcrypt = require('bcryptjs');
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
+var server = require('http').Server(app);
+var socketIO = require('socket.io')(server);
+global.socketIO = socketIO;
 
 var recommendations = require('./recommendations');
+var messaging = require('./messaging');
 
 var common = require('./common');
 var sendBackJSON = common.sendBackJSON;
@@ -321,9 +325,11 @@ app.get('/courses/recommended', recommendations.userCourses);
 app.get('/courses/popular', recommendations.popularCourses);
 
 
+/* socket io --------------------------------------------------------*/
+socketIO.on('connection', messaging.onConnection);
 
 /* server start up --------------------------------------------------*/
 
-app.listen(9090, function () {
+server.listen(9090, function () {
     console.log('listening on port 9090');
 });
