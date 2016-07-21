@@ -10,8 +10,7 @@ CREATE TABLE IF NOT EXISTS USERS (
 CREATE TABLE IF NOT EXISTS LOGIN_CREDENTIALS (
   user_id INTEGER PRIMARY KEY,
   username varchar(32) UNIQUE NOT NULL,
-  password_hash char(128) NOT NULL,
-  password_salt char(32) NOT NULL,
+  password char(60) NOT NULL,
 
   FOREIGN KEY(user_id) REFERENCES USERS(id)
 );
