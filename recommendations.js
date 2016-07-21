@@ -3,12 +3,12 @@ var common = require('./common');
 var db = common.db;
 var sendBackJSON = common.sendBackJSON;
 
+
 exports.userCourses = function(req, res) {
     // todo: get userId from session
     if (req.query.user_id > 0) {
         var queryString =
-            'SELECT E.class_id, count(*) as user_count, ' +
-            'C.class_name ' +
+            'SELECT E.class_id, count(*) as user_count, C.class_name ' +
             'FROM ENROLMENT E ' +
             'INNER JOIN Classes C ' +
                 'ON C.id = E.class_id ' +
@@ -29,8 +29,8 @@ exports.userCourses = function(req, res) {
         db.query(queryString, {
             replacements: [req.query.user_id]
         })
-        .spread(function(result, metadata) {
-            sendBackJSON({"courses": result}, res);
+        .spread(function(results, metadata) {
+            sendBackJSON({"courses": results}, res);
         })
         .catch(function(err) {
             console.log('failed to fetch recommendations:');
@@ -42,4 +42,28 @@ exports.userCourses = function(req, res) {
     else {
         sendBackJSON({'error': 'no user is logged in'}, res);
     }
+}
+
+
+exports.popularCourses = function(req, res) {
+    var queryString =
+        'SELECT E.class_id, count(*) AS user_count, C.class_name ' +
+        'FROM ENROLMENT E ' +
+        'INNER JOIN CLASSES C ' +
+        	'ON C.id = E.class_id ' +
+        'GROUP BY E.class_id ' +
+        'ORDER BY user_count DESC ' +
+        'LIMIT 10 '
+    ;
+    
+    db.query(queryString)
+    .spread(function(results, metadata) {
+        sendBackJSON({"courses": results}, res);
+    })
+    .catch(function(err) {
+        console.log('failed to fetch popular courses:');
+        console.log(err);
+        
+        sendBackJSON({'error': 'server error'}, res);
+    });
 }

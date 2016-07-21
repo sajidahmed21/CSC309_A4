@@ -318,6 +318,8 @@ app.delete('/user/course', function(req, res) {
 
 app.get('/courses/recommended', recommendations.userCourses);
 
+app.get('/courses/popular', recommendations.popularCourses);
+
 
 
 /* server start up --------------------------------------------------*/
