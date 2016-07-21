@@ -3,7 +3,12 @@ var common = require('./common');
 var db = common.db;
 var sendBackJSON = common.sendBackJSON;
 
-
+/* Sends back a list of up to ten recommended courses for the logged in user.
+ *
+ * Recommended courses are determined by finding all of a user's classmates and
+ * finding the classes which those classmates are taking, returning them in
+ * order based on how many fellow classmates are also taking the other courses.
+ */
 exports.userCourses = function(req, res) {
     // todo: get userId from session
     if (req.query.user_id > 0) {
@@ -45,6 +50,7 @@ exports.userCourses = function(req, res) {
 }
 
 
+/* Sends back up to ten of the most popular courses. */
 exports.popularCourses = function(req, res) {
     var queryString =
         'SELECT E.class_id, count(*) AS user_count, C.class_name ' +
