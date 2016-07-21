@@ -2,6 +2,13 @@ var express = require('express');
 var app = express();
 
 var bcrypt = require('bcryptjs');
+var session = require('express-session');
+app.use(session({
+    secret: 'Any Secret - I dont know',
+    resave: true,
+    saveUninitialized: true
+}));
+
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
@@ -18,6 +25,7 @@ var followings = require('./followings');
 var common = require('./common');
 var sendBackJSON = common.sendBackJSON;
 var db = common.db;
+var checkAuthentication = common.checkAuthenticate;
 
 // handlebars setup
 var exphbs = require('express-handlebars');
@@ -48,6 +56,18 @@ app.get('/demo', function (req, res) {
         });
 
     });
+});
+//for testing authentication puropse
+app.get('/content', checkAuthentication, function (req, res) {
+    res.send("You can only see this after you've logged in.");
+});
+
+app.get('/text', function (res, req) {
+    var index = common.currentUser.indexOf('broke');
+    if (index != -1) {
+        common.currentUser.splice(index, 1);
+        console.log("broke");
+    }
 });
 
 app.post('/user/signin', user.signinHandler);

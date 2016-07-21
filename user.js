@@ -165,12 +165,16 @@ exports.signinHandler = function (req, res) {
         bcrypt.compare(signinPassword, results[0].password, function (err, result) {
             if (err || result === false) {
                 console.log("Err in login");
+                req.session.destroy();
                 var returnJSON = {
                     "status": "error",
                     "message": "Err in login"
                 }
                 sendBackJSON(returnJSON, res);
             } else {
+                common.currentUser.push(signinUsername);
+                req.session.user = signinUsername;
+                req.session.alive = true;
                 var returnJSON = {
                     "status": "success",
                     "message": "Login Success"
@@ -186,7 +190,7 @@ exports.signinHandler = function (req, res) {
         }
         sendBackJSON(returnJSON, res);
     });
-}
+};
 
 exports.signupHandler = function (req, res) {
     bcrypt.hash(req.body.signupPassword, 8, function (err, hashedPassword) {
