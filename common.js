@@ -7,13 +7,24 @@ exports.db = new sequelize('learnrDB', null, null, {
     storage: __dirname + '/learnrDB.sqlite'
 });
 
-exports.sendBackJSON = function (retJSON, res) {
-    res.writeHead(200, {
+exports.sendBackJSON = function (data, response) {
+    sendJSONResponse(200, data, response);
+};
+
+exports.sendBadRequestResponse = function (data, response) {
+    sendJSONResponse(400, data, response);
+};
+
+exports.sendUnauthorizedResponse = function (data, response) {
+    sendJSONResponse(401, data, response);
+};
+
+function sendJSONResponse(statusCode, data, response) {
+    response.writeHead(statusCode, {
         'Content-Type': 'application/json',
         "Access-Control-Allow-Origin": "*"
     });
-    res.write(JSON.stringify(retJSON));
-    res.end();
+    response.end(JSON.stringify(data));
 };
 
 exports.checkAuthenticate = function (req, res, next) {

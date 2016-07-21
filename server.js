@@ -22,6 +22,8 @@ var messaging = require('./messaging');
 var user = require('./user');
 var followings = require('./followings');
 
+var admin = require('./admin');
+
 var common = require('./common');
 var sendBackJSON = common.sendBackJSON;
 var db = common.db;
@@ -70,6 +72,8 @@ app.get('/text', function (res, req) {
     }
 });
 
+/* Users ------------------------------------------------------------*/
+
 app.post('/user/signin', user.signinHandler);
 
 app.post('/user/signup', user.signupHandler);
@@ -88,13 +92,23 @@ app.get('/user/profile', user.getProfileHandler);
 
 app.delete('/user/course', user.unenrollHandler);
 
+
+/* Courses  ---------------------------------------------------------*/
+
 app.get('/courses/recommended', recommendations.userCourses);
 
 app.get('/courses/popular', recommendations.popularCourses);
 
 
+/* Admins  ----------------------------------------------------------*/
+
+app.post('/admin/login', admin.handleLoginRequest);
+
+
 /* socket io --------------------------------------------------------*/
+
 socketIO.on('connection', messaging.onConnection);
+
 
 /* server start up --------------------------------------------------*/
 
