@@ -6,7 +6,10 @@ var session = require('express-session');
 app.use(session({
     secret: 'Any Secret - I dont know',
     resave: true,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 60000
+    }
 }));
 
 
@@ -78,19 +81,21 @@ app.post('/user/signin', user.signinHandler);
 
 app.post('/user/signup', user.signupHandler);
 
-app.post('/user/changeprofilepic', user.changeProfilePicHandler);
+app.post('/user/changeprofilepic', checkAuthentication, user.changeProfilePicHandler);
 
-app.post('/user/changename', user.changeNameHandler);
+app.post('/user/changename', checkAuthentication, user.changeNameHandler);
 
-app.post('/user/changepassword', user.changePasswordHandler);
+app.post('/user/changepassword', checkAuthentication, user.changePasswordHandler);
 
-app.post('/user/follow', followings.followHandler);
+app.post('/user/follow', checkAuthentication, followings.followHandler);
 
-app.delete('/user/unfollow', followings.unfollowHandler);
+app.delete('/user/unfollow', checkAuthentication, followings.unfollowHandler);
 
-app.get('/user/profile', user.getProfileHandler);
+app.get('/user/profile', checkAuthentication, user.getProfileHandler);
 
-app.delete('/user/course', user.unenrollHandler);
+app.post('/user/logout', user.logoutHandler);
+
+app.delete('/user/unenrollClasses', user.unenrollHandler);
 
 
 /* Courses  ---------------------------------------------------------*/

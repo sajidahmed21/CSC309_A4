@@ -243,3 +243,27 @@ exports.loginInsert = function (transaction, id, signupUsername, signupPassword,
             sendBackJSON(returnJSON, res);
         });
 };
+
+exports.logoutHandler = function (req, res) {
+    var username = req.session.user;
+    console.log(username);
+    if (req.session && req.session.alive && (common.currentUser.indexOf(req.session.user) >= 0)) {
+        console.log("INLOGGINOUT");
+        var index = common.currentUser.indexOf(username);
+        common.currentUser.splice(index, 1);
+        req.session.destroy();
+        var returnJSON = {
+            "status": "success",
+            "message": "Logout Success"
+        }
+        sendBackJSON(returnJSON, res);
+    }
+    else{
+        req.session.destroy();
+        var returnJSON = {
+            "status": "error",
+            "message": "Logout Error"
+        }
+        sendBackJSON(returnJSON, res);
+    }
+}
