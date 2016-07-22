@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LearnR</title>
+
+    <script src="http://{{hostname}}:{{port}}/assets/js/jquery-2.0.0.min.js"></script>
+    <script src="http://{{hostname}}:{{port}}/assets/js/footer.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+
+    <link rel="stylesheet" type="text/css" href="http://{{hostname}}:{{port}}/assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="http://{{hostname}}:{{port}}/assets/css/coursedesc-style.css">
+
+</head>
+<body class="global_font nomargin">
+	{{> nav }}
+	
+	<div id="course-profile">
+            <div class="course-banner">
+                <img alt="<course img>" src="{{imgPath}}">
+                <div id="course-title-box" class="standard-container">
+                    <h1 class="standard-font course-title">
+                            
+                        {{courseTitle}}
+                        </h1>
+
+                </div>
+
+            </div>
+            <div class="standard-container quick-info">
+                <div class="col-sm-4 qi-box">
+                    <h3 class="standard-font">Instructor </h3>
+                    <p class="standard-font"> {{instructor}} </p>
+                </div>
+                <div class="col-sm-4 qi-box">
+                    <h3 class="standard-font">Rating </h3>
+                    <p class="standard-font"> {{rating}}</p>
+                </div>
+                <div class="col-sm-4">
+                    <h3 class="standard-font">Enrollment </h3>
+                    <p class="standard-font">{{enrollment}}</p>
+                </div>
+
+            </div>
+            <div id="desc-content">
+
+                <div id="course-nav" class="standard-font">
+                    <ul>
+                        <li> <a href="#course-desc"> Course Description </a> </li>
+                        <li> <a href="#requirements"> Requirements </a> </li>
+                        <li> <a href="#course-enrollment"> Current Course Enrollment </a> </li>
+                    </ul>
+                </div>
+                <div id="course-desc" class="standard-container course-container">
+                    <h1 class="standard-font"> Course Description </h1>
+                    <p class="standard-font"> 
+                    	{{courseDesc}}
+                    </p>
+                </div>
+                <div id="requirements" class="standard-container course-container">
+                    <h1 class="standard-font"> Requirements </h1>
+                    <p class="standard-font">
+                        {{courseRequirements}}
+                    </p>
+
+                </div>
+
+                <div id="course-enrollment" class="standard-container course-container">
+                    <h1 class="standard-font"> Course Enrollment </h1>
+                    <table class="table table-hover">
+                        <thead>
+
+                            <tr>
+                                <th>Username</th>
+                                <th>Last Name</th>
+                            
+                            </tr>
+                        </thead>
+                        <tbody>
+                        	{{#each students}}
+                            <tr>
+                                <td>{{username}}</td>
+                                <td>{{lastName}}</td>
+                                
+                            </tr>
+                       	{{/each}}
+                        </tbody>
+                    </table>
+                </div>
+                <div id="comments" class="standard-container course-container">
+
+                    <div class="col-sm-12">
+                        <h3 class="standard-font">Reviews and Ratings</h3>
+                    </div>
+                    <!-- /col-sm-12 -->
+                    <div class="col-sm-1">
+                        <div class="thumbnail">
+                            <img class="img-responsive user-photo" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
+                        </div>
+                        <!-- /thumbnail -->
+                    </div>
+                    <!-- /col-sm-1 -->
+
+                    <div class="col-sm-11">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <strong>myusername</strong> <span class="text-muted">commented 5 days ago</span>
+                            </div>
+                            <div class="panel-body">
+                                Great Course !
+                            </div>
+                            <!-- /panel-body -->
+                        </div>
+                        <!-- /panel panel-default -->
+                    </div>
+                    <!-- /col-sm-5 -->
+
+
+
+                    <div class="add-comment">
+                        <div class="col-sm-1">
+                            <div class="thumbnail">
+                                <img class="img-responsive user-photo" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
+                            </div>
+                            <!-- /thumbnail -->
+                        </div>
+                        <!-- /col-sm-1 -->
+                        <div class="col-sm-11">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <strong>Guest</strong>
+                                </div>
+                                <textarea class="form-control" rows="3" placeholder="Add a comment here !"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-sm-offset-1 col-sm-1">
+                            <button class="standard-blue-button" type="submit">Submit</button>
+                        </div>
+                        <div class="col-sm-offset-1 col-sm-5">
+                            <div class="stars">
+                                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- add-comment -->
+                </div>
+
+            </div>
+        </div>
+        <div id="popup">
+        </div>
+        <footer>
+            <ul>
+                <li>
+                    <a id="reference" class="no-underline" href="#"> Image References </a>
+                </li>
+            </ul>
+            <div class="footer-logo">
+            </div>
+            <hr class="footer-line">
+        </footer>
+
+</body>
+</body>
+</html>
