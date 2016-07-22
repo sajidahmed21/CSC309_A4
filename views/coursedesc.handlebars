@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>LearnR</title>
 
-    <script src="http://{{hostname}}:{{port}}/assets/js/jquery-2.0.0.min.js"></script>
-    <script src="http://{{hostname}}:{{port}}/assets/js/footer.js"></script>
+    <script src="/js/jquery-2.0.0.min.js"></script>
+    <script src="/js/footer.js"></script>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
@@ -17,8 +17,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
 
-    <link rel="stylesheet" type="text/css" href="http://{{hostname}}:{{port}}/assets/css/style.css">
-    <link rel="stylesheet" type="text/css" href="http://{{hostname}}:{{port}}/assets/css/coursedesc-style.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/coursedesc-style.css">
 
 </head>
 <body class="global_font nomargin">
@@ -81,7 +81,7 @@
 
                             <tr>
                                 <th>Username</th>
-                                <th>Last Name</th>
+                                <th>Name</th>
                             
                             </tr>
                         </thead>
@@ -89,7 +89,7 @@
                         	{{#each students}}
                             <tr>
                                 <td>{{username}}</td>
-                                <td>{{lastName}}</td>
+                                <td>{{name}}</td>
                                 
                             </tr>
                        	{{/each}}

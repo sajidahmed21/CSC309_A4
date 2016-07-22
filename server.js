@@ -60,6 +60,29 @@ app.get('/demo', function (req, res) {
 
     });
 });
+
+app.get('/class/', function (req, res) {
+    res.render('coursedesc', {
+        loggedIn: false,
+        imgPath: 'img/origami.jpg',
+        courseTitle: 'Origami 101',
+        instructor: 'JB',
+        enrollment: 10,
+        courseDesc: 'Learning about origami',
+        courseRequirements: 'Paper',
+        students: [
+            {
+                username: 'QW',
+                name: 'Q W'
+            },
+            {
+                username: 'TY',
+                name: 'T Y'
+            }
+        ]
+    });
+});
+
 //for testing authentication puropse
 app.get('/content', checkAuthentication, function (req, res) {
     res.send("You can only see this after you've logged in.");
