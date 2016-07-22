@@ -21,6 +21,7 @@ var recommendations = require('./recommendations');
 var messaging = require('./messaging');
 var user = require('./user');
 var followings = require('./followings');
+var searchEngine = require('./searchEngine');
 
 var admin = require('./admin');
 
@@ -103,6 +104,11 @@ app.get('/courses/popular', recommendations.popularCourses);
 /* Admins  ----------------------------------------------------------*/
 
 app.post('/admin/login', admin.handleLoginRequest);
+
+
+/* Searches  --------------------------------------------------------*/
+
+app.get('/search', searchEngine.handleSearch);
 
 
 /* socket io --------------------------------------------------------*/
