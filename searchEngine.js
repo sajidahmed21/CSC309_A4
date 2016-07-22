@@ -114,6 +114,7 @@ function search(query, searchString, limit, callback) {
 }
 
 
+/* Takes in a name and username of a user and merges them into a readable string */
 function mergeNameAndUsername(name, username) {
     if (name && username) {
         return name + ' (' + username + ')';
@@ -178,6 +179,7 @@ function searchUsersByUsername(searchString, limit, callback) {
    });
 }
 
+
 /* Returns all items in results1 which do not appear in results2 (based on the
  * data field) or which have a higher score.
  */
@@ -230,6 +232,7 @@ function returnResults(results, res) {
 
 /* exported library functions ----------------------------------------------*/
 
+/* Handles all requests directed to the search service. */
 exports.handleSearch = function(req, res) {
     var searchString = req.query.q;
     var searchType = req.query.type;
