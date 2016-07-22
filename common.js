@@ -1,6 +1,7 @@
 var sequelize = require('sequelize');
 
-exports.currentUser = new Array();
+/* Logged in users */
+exports.currentUser = [];
 
 exports.db = new sequelize('learnrDB', null, null, {
     dialect: 'sqlite',
@@ -20,12 +21,9 @@ exports.sendUnauthorizedResponse = function (data, response) {
 };
 
 function sendJSONResponse(statusCode, data, response) {
-    response.writeHead(statusCode, {
-        'Content-Type': 'application/json',
-        "Access-Control-Allow-Origin": "*"
-    });
+    response.writeHead(statusCode, {'Content-Type': 'application/json'});
     response.end(JSON.stringify(data));
-};
+}
 
 exports.checkAuthenticate = function (req, res, next) {
     console.log(exports.currentUser);
