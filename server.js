@@ -12,6 +12,7 @@ app.use(session({
     }
 }));
 
+// set hostname and port here
 var hostname = 'localhost';
 var port = 9090;
 
@@ -27,7 +28,7 @@ var messaging = require('./messaging');
 var user = require('./user');
 var followings = require('./followings');
 var searchEngine = require('./searchEngine');
-
+var courses = require('./courses');
 var admin = require('./admin');
 
 var common = require('./common');
@@ -65,28 +66,17 @@ app.get('/demo', function (req, res) {
 
     });
 });
+ /*courses.get_course_rating,
+    courses.get_enrolled_students, 
+    courses.get_reviews,
+    courses.render_course_page*/
+app.get('/course/:id', 
+    courses.get_class_info, 
+    courses.get_course_rating, 
+    courses.get_enrolled_students, 
+    courses.get_reviews,
+    courses.render_course_page);
 
-app.get('/class', function (req, res) {
-    res.render('coursedesc', {
-        loggedIn: false,
-        imgPath: 'img/origami.jpg',
-        courseTitle: 'Origami 101',
-        instructor: 'JB',
-        enrollment: 10,
-        courseDesc: 'Learning about origami',
-        courseRequirements: 'Paper',
-        students: [
-            {
-                username: 'QW',
-                name: 'Q W'
-            },
-            {
-                username: 'TY',
-                name: 'T Y'
-            }
-        ]
-    });
-});
 
 //for testing authentication puropse
 app.get('/content', checkAuthentication, function (req, res) {
