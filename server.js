@@ -66,10 +66,7 @@ app.get('/demo', function (req, res) {
 
     });
 });
- /*courses.get_course_rating,
-    courses.get_enrolled_students, 
-    courses.get_reviews,
-    courses.render_course_page*/
+
 app.get('/course/:id', 
     courses.get_class_info, 
     courses.get_course_rating, 
