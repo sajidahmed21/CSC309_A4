@@ -12,6 +12,8 @@ app.use(session({
     }
 }));
 
+var hostname = 'localhost';
+var port = 9090;
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
@@ -64,7 +66,7 @@ app.get('/demo', function (req, res) {
     });
 });
 
-app.get('/class/', function (req, res) {
+app.get('/class', function (req, res) {
     res.render('coursedesc', {
         loggedIn: false,
         imgPath: 'img/origami.jpg',
@@ -146,6 +148,6 @@ socketIO.on('connection', messaging.onConnection);
 
 /* server start up --------------------------------------------------*/
 
-server.listen(9090, function () {
-    console.log('listening on port 9090');
-});
+server.listen(port, hostname, function() {
+    console.log(`Server running at http://${hostname}:${port}/`);
+  });
