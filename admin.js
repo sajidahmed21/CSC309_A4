@@ -36,7 +36,8 @@ exports.handleLoginRequest = function(request, response) {
     }
     
     /* Find the admin profile with the given username */
-    db.query('SELECT * FROM ADMINS WHERE username = $1', {bind: [username]}).spread(function(results) {
+    var queryString = 'SELECT * FROM ADMIN_CREDENTIALS WHERE username = $1';
+    db.query(queryString, {bind: [username]}).spread(function(results) {
         
         if (results === undefined || results.length !== 1) {  // Username doesn't exist
             sendInvalidCredentialsResponse(response);
@@ -45,7 +46,7 @@ exports.handleLoginRequest = function(request, response) {
         var admin = results[0];
         
         // Check if password is correct
-        if (bcrypt.compareSync(password, admin.password_hash)) { // Correct password
+        if (bcrypt.compareSync(password, admin.password)) { // Correct password
             var responseBody = {status: 'LOGIN_SUCCESSFUL'};
             sendJSONResponse(responseBody, response);
         }
