@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<!-- Head starts here. Define stylesheet and total width. -->
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LearnR</title>
+
+    <script src="assets/js/jquery-2.0.0.min.js" defer></script>
+    <script src="assets/js/messaging.js" defer></script>
+    <script src="assets/js/footer.js"></script>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/messaging.css">
+</head>
+
+<!-- Body starts here, where content is. -->
+
+<body class="global_font nomargin">
+    {{> nav }}
+
+    <main id="messaging" class="container">
+        <!-- divide the screen into two columns: one for the user list and one for the chat area -->
+        <div class="row">
+            <section id="user-list" class="hidden-xs col-sm-5 col-md-4 col-lg-3">
+                <div class="user row" data-user-id="41">
+                    <p class="user-name col-sm-4 col-md-3 col-lg-2">Shafid</p>
+                    <p class="last-message text-muted col-sm-8 col-md-9 col-lg-10">Hey!</p>
+                </div>
+                <div class="user row" data-user-id="43">
+                    <p class="user-name col-sm-4 col-md-3 col-lg-2">James</p>
+                    <p class="last-message text-muted col-sm-8 col-md-9 col-lg-10">Do you think we can...</p>
+                </div>
+                <div class="user row" data-user-id="27">
+                    <p class="user-name col-sm-4 col-md-3 col-lg-2">Alina</p>
+                    <p class="last-message text-muted col-sm-8 col-md-9 col-lg-10">So what did you pick for...</p>
+                </div>
+            </section>
+
+            <!-- chat area -->
+            <section id="chat-area" class="col-xs-12 col-sm-7 col-md-8 col-lg-9">
+                <!-- each loaded user conversation will have a div here -->
+                <div class="conversation row" data-partner-id="41">
+                </div>
+
+                <div class="conversation row" data-partner-id="27">
+                    chat area for alina
+                </div>
+
+                <!-- finally, the common input/send area -->
+                <div id="message-send-area" class="input-group">
+                    <input type="text" id="message-text" class="form-control" name="message-text" placeholder="Enter message..."></input>
+                    <span class="input-group-btn">
+							<button id="message-send" class="btn btn-primary">Send</button>
+						</span>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="popup">
+    </div>
+    <footer>
+        <ul>
+            <li>
+                <a id="reference" class="no-underline" href="#"> Image References </a>
+            </li>
+        </ul>
+        <div class="footer-logo">
+        </div>
+        <hr class="footer-line">
+    </footer>
+</body>
+
+</html>
