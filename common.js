@@ -49,10 +49,9 @@ exports.setLoggedInUserId = function(req, userId) {
  */
 exports.checkAuthentication = function (req, res, next) {
     if (userIsLoggedIn(req)) {
-        console.log("LOGGED IN USER REQ");
         return next();
     } else {
-        console.log("NOT LOGGED IN USER REQ");
+        console.log('access denied to request');
         return res.render('home', {
             errorContent: '<p><strong>Opps!</strong> You need to be logged in to access that.</p>',
             loggedIn: false

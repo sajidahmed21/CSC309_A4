@@ -15,46 +15,65 @@ exports.invalidateSession = function(sessionId) {
 };
 
 
-function sendData(receiverId, data) {
+/* Sends some data to a given user. Returns true if the user was sent data
+ * and false otherwise.
+ */
+function sendData(partnerId, data) {
+    var sentMessage = false;
+    
 	// send to all sockets where the receiving user is logged in
 	for (socketId in socketIO.sockets.sockets) {
 		var socket = socketIO.sockets.connected[socketId];
-		if (socket.userId === receiverId) {
-			console.log('sending to user [' + receiverId + ']: ');
+		console.log('socket is for [' + getSessionUserId(socket) + ']');
+		if (getSessionUserId(socket) == partnerId) {
+			console.log('sending to user [' + partnerId + ']: ');
 			console.log(data);
 			socket.emit('receive', data);
+			
+			sentMessage = true;
 		}
 	}
+	
+	return sentMessage;
+}
+
+
+/* Returns the userId from the express session or 0 if no user is logged in */
+function getSessionUserId(socket) {
+    return (socket.handshake && socket.handshake.session && socket.handshake.session.userId) ?
+    socket.handshake.session.userId : 0;
 }
 
 
 exports.onConnection = function(socket) {
-	// todo: using the provided sessionId, get the userId;
-	// if the userId is invalid (no one is logged in, reject the socket)
-	// once done, remove check for userid below
-	socket.userId = Math.floor(Math.random() * 10);
-	socket.sessionId = 0;
-	
-	console.log('user [' + socket.userId + '] connected');
+	console.log('user [' + getSessionUserId(socket) + '] connected');
 	
 	socket.on('send', function(message) {
-		if (!socket.userId) {
-			sendData(socket.userId, {'error': 'not logged in'});
+	    var userId = getSessionUserId(socket);
+	    
+		if (userId == 0 ) {
+			socket.emit('notLoggedIn');
 		}
-		else if (socket.userId == message.receiverId)
+		else if (userId === message.partnerId)
 		{
-			sendData(socket.userId, {'error': 'cannot send message to self'});
+			socket.emit('error', {message: 'cannot send message to self'});
 		}
 		else {
 			console.log('message [' + message.text + ']');
-			console.log('received for user [' + message.receiverId +']');
-		
-			sendData(message.receiverId, {text: message.text});
+			console.log('received for user [' + message.partnerId +']');
+		    
+		    // try to send the message and tell the sender of the status
+			var sentMessage = sendData(message.partnerId, {
+			    senderId: userId,
+			    text: message.text
+			});
+		    
+		    socket.emit(sentMessage ? 'sent' : 'sendError', {messageId: message.messageId});
 		}
     });
 	
-	socket.on('disconnect', function(){
-		console.log('user [' + socket.userId + '] disconnected');
+	socket.on('disconnect', function(socket){
+		console.log('user [' + getSessionUserId(socket) + '] disconnected');
 	});
 };
 

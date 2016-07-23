@@ -57,16 +57,22 @@ p.message {
     word-wrap: break-word;
 }
 
-p.received-message {
-    border-color: green;
-}
-
 p.sent-message {
-    border-color: orange;
-    
     text-align: right;
 }
 
+/* message states */
+p.pending-message {
+    border-color: orange;
+}
+
+p.failed-message {
+    border-color: red;
+}
+
+p.successful-message {
+    border-color: green;
+}
 
 /* landscape mobile and larger ---------------------------------------------*/
 @media screen and (min-width: 480px) {

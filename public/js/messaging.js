@@ -1,3 +1,10 @@
+var socket = io.connect();
+
+// unique message id for each sent message from this socket
+var nextMessageId = 1;
+
+var unconfirmedMessages = [];
+
 /* Hides all conversations except the one for the given partner id.
  * If no chat area exists for the given partner id, one will be created.
  *
@@ -11,7 +18,7 @@ function showConversation(partnerId) {
     $conversations.each(function(index, conversation) {
         var $conversation = $(conversation);
         
-        if ($conversation.attr('data-partner-id') === partnerId) {
+        if ($conversation.attr('data-partner-id') == partnerId) {
             foundTarget = true;
             $conversation.show();
         }
@@ -32,7 +39,7 @@ function findConversation(partnerId) {
     var $conversations = $('section#chat-area div.conversation');
     
     var $conversation = $conversations.filter(function(index, conversation) {
-        return $(conversation).attr('data-partner-id') === partnerId;
+        return $(conversation).attr('data-partner-id') == partnerId;
     })
     
     return $conversation.length === 1 ? $conversation : null;
@@ -157,7 +164,10 @@ function setOnClickEvents() {
 
 
 /* Adds a message to a conversation with the given partner. It will be styled
- * as if it was sent by the current user. */
+ * as if it was sent by the current user.
+ *
+ * Returns the jQuerified version of the message div.
+ */
 function addSentMessage(partnerId, message) {
     // first, find and verify that the conversation exists
     var $conversation = findConversation(partnerId);
@@ -167,12 +177,15 @@ function addSentMessage(partnerId, message) {
         return;
     }
     
-    // send the message through the socket 
-    // append the message
-    $conversation.append($('<p>', {
-        class: 'message sent-message col-xs-10 col-xs-offset-2',
+    var $message = $('<p>', {
+        class: 'message sent-message pending-message col-xs-10 col-xs-offset-2',
         text: message
-    }));
+    });
+    
+    // then append it to the conversation
+    $conversation.append($message);
+    
+    return $message;
 }
 
 
@@ -211,8 +224,20 @@ function sendMessage() {
         // clear the message area
         $messageTextInput.val('');
         
-        // for now, just add the sent message
-        addSentMessage(window.currentPartnerId, messageText);
+        // send the message through the socket
+        socket.emit('send', {
+            partnerId: window.currentPartnerId,
+            text: messageText,
+            messageId: nextMessageId
+        });
+        
+        // add the sent message to the conversations
+        var $message = addSentMessage(window.currentPartnerId, messageText);
+        
+        // keep track of the message in an array of unconfirmed messages
+        unconfirmedMessages[nextMessageId] = $message;
+        
+        nextMessageId++;
     }
     
     return;
@@ -247,12 +272,56 @@ function addUser(userId, name, lastMessage) {
 }
 
 
+/* Updates the styling of the given unconfirmed message depending on whether
+ * it was successfully sent or not.
+ */
+function updateUnconfirmedMessageStatus(messageId, wasSuccessful) {
+    $message = unconfirmedMessages[messageId];
+    
+    if (!$message) {
+        console.log('received update about an unknown unconfirmed message [' + messageId + ']');
+        return;
+    }
+    
+    // update the message in the conversation
+    $message.removeClass('pending-mesage');
+    $message.addClass(wasSuccessful ? 'successful-message' : 'failed-message');
+    
+    //remove it from the array of unconfirmed messages
+    unconfirmedMessages[messageId] = null;
+}
+
+
+/* Sets all listening requests for the socket. */
+function setSocketEvents() {
+    socket.on('notLoggedIn', function() {
+        alert('Opps, you\'re not logged in!');
+        window.location.href = '/';
+    });
+    
+    socket.on('receive', function(data) {
+        addReceivedMessage(data.senderId, data.text);
+    });
+    
+    // successful transmission of message
+    socket.on('sent', function(data) {
+        updateUnconfirmedMessageStatus(data.messageId, true);
+    });
+    
+    socket.on('sendError', function(data) {
+        updateUnconfirmedMessageStatus(data.messageId, false);
+    });
+}
+
+
 window.onload = function() {
     // set the resizing of the messaging area and trigger it immediately
     $(window).resize(resizeMessagingArea);
     resizeMessagingArea();
     
     setOnClickEvents();
+    
+    setSocketEvents();
     
     // load the first chat area (which for the mockup is hiding all
     // chat areas except the first
