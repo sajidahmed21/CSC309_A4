@@ -2,16 +2,26 @@ var common = require('./common');
 var socketIO = global.socketIO;
 
 
-/* Closes any sockets found with a matching sessionId.
- * Should be called when a user logs out.
+/* Returns an array of all sockets that belong to a given user. */
+function getUserSockets(userId) {
+    var sockets = []
+    
+    for (socketId in socketIO.sockets.connected) {
+        var socket = socketIO.sockets.connected[socketId];
+        
+        if (getSessionUserId(socket) == userId) {
+            sockets.push(socket);
+        }
+    }
+    return sockets;
+}
+
+
+/* Returns true if the given user is online (logged in and has an active socket
+ * for messaging.
  */
-exports.invalidateSession = function(sessionId) {
-	for (socketId in socketIO.sockets.sockets) {
-		var socket = socketIO.sockets.connected[socketId];
-		if (socket.sessionId === sessionId) {
-			socket.close();
-		}
-	}
+exports.userIsOnline = function(userId) {
+	return getUserSockets(userId).length > 0;
 };
 
 
@@ -19,22 +29,22 @@ exports.invalidateSession = function(sessionId) {
  * and false otherwise.
  */
 function sendData(partnerId, data) {
-    var sentMessage = false;
+    var sockets = getUserSockets(partnerId);
     
-	// send to all sockets where the receiving user is logged in
-	for (socketId in socketIO.sockets.sockets) {
-		var socket = socketIO.sockets.connected[socketId];
-		console.log('socket is for [' + getSessionUserId(socket) + ']');
-		if (getSessionUserId(socket) == partnerId) {
-			console.log('sending to user [' + partnerId + ']: ');
-			console.log(data);
-			socket.emit('receive', data);
-			
-			sentMessage = true;
-		}
-	}
+    // if the user isn't online, return false
+    if (sockets.length === 0) {
+        return false;
+    }
+    
+    console.log('sending to user [' + partnerId + ']: ');
+	console.log(data);
+    
+	// otherwise send the message to each of those sockets
+	sockets.forEach(function(socket) {
+		socket.emit('receive', data);
+	});
 	
-	return sentMessage;
+	return true;
 }
 
 
@@ -45,6 +55,7 @@ function getSessionUserId(socket) {
 }
 
 
+/* To be called when the client-side socket.io code attempts to connect. */
 exports.onConnection = function(socket) {
 	console.log('user [' + getSessionUserId(socket) + '] connected');
 	
@@ -79,6 +90,7 @@ exports.onConnection = function(socket) {
 };
 
 
+/* Renders the messaging page. */
 exports.renderPage = function(req, res) {
     res.render('messaging', {
         loggedIn: common.userIsLoggedIn(req)

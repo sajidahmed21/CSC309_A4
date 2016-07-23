@@ -208,6 +208,9 @@ function addReceivedMessage(partnerId, message) {
         class: 'message received-message col-xs-10',
         text: message
     }));
+    
+    // update the conversation's last message field
+    //updateLastMessage(partnerId, message);
 }
 
 
@@ -233,6 +236,9 @@ function sendMessage() {
         
         // add the sent message to the conversations
         var $message = addSentMessage(window.currentPartnerId, messageText);
+        
+        // update the conversation's last message field
+        //updateLastMessage(window.currentPartnerId, message);
         
         // keep track of the message in an array of unconfirmed messages
         unconfirmedMessages[nextMessageId] = $message;
@@ -330,13 +336,4 @@ window.onload = function() {
     // load the first chat area (which for the mockup is hiding all
     // chat areas except the first
     $(document.getElementsByClassName('user')[0]).click();
-    
-    // add in some dummy messages
-    addReceivedMessage('41', 'What are you up to?');
-    addSentMessage('41', 'Nothing much, you?');
-    addReceivedMessage('41', 'Hey!');
-    
-    // add in a few dummy user rows
-    addUser(12, 'Bob', 'My name is Bob.');
-    addUser(13, 'Olaf', 'My name is Olaf.');
 }
