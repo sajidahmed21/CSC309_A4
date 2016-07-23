@@ -53,6 +53,9 @@ exports.checkAuthentication = function (req, res, next) {
         return next();
     } else {
         console.log("NOT LOGGED IN USER REQ");
-        return res.sendStatus(404);
+        return res.render('home', {
+            errorContent: '<p><strong>Opps!</strong> You need to be logged in to access that.</p>',
+            loggedIn: false
+        });
     }
 };

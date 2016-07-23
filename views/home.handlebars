@@ -28,6 +28,12 @@
 <body class="global_font nomargin">
     {{> nav}}
 
+	{{#if errorContent}}
+		<div id="error-message" class="alert alert-danger" role="alert">
+			{{{errorContent}}}
+		</div>
+	{{/if}}
+	
     <img class="homepage_img" src="/img/study.jpg" height="600px">
     <section id="recommended-classes" class="row">
         <h1 class="standard-title-top-course">Top Recommend Classes</h1>
