@@ -257,8 +257,7 @@ exports.logoutHandler = function (req, res) {
             "message": "Logout Success"
         }
         sendBackJSON(returnJSON, res);
-    }
-    else{
+    } else {
         req.session.destroy();
         var returnJSON = {
             "status": "error",

@@ -1,6 +1,6 @@
 var express = require('express');
 var app = express();
-
+var fs = require('fs');
 var bcrypt = require('bcryptjs');
 var session = require('express-session');
 app.use(session({
@@ -48,11 +48,13 @@ app.use(express.static('public'));
 
 /* page routing -----------------------------------------------------*/
 app.get('/', function (req, res) {
-    res.render('home', {
-        loggedIn: true
-    });
+    res.render('home');
 });
 
+app.get('/profile', function (req, res){
+    res.render('profile');
+});
+    
 app.get('/demo', function (req, res) {
     db.query('SELECT COUNT(*) AS userCount FROM USERS').spread(function (results, metadata) {
         res.render('demo', {
@@ -91,7 +93,7 @@ app.get('/content', checkAuthentication, function (req, res) {
     res.send("You can only see this after you've logged in.");
 });
 
-app.get('/text', function (res, req) {
+app.get('/text', function (req, res) {
     var index = common.currentUser.indexOf('broke');
     if (index != -1) {
         common.currentUser.splice(index, 1);
