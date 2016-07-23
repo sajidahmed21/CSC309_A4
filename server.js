@@ -76,6 +76,17 @@ app.get('/course/:id',
     courses.get_reviews,
     courses.render_course_page);
 
+app.post('/creatcourse', function(req, res) {
+    //check img size, dimensions etc, revalidate, and then enter into database
+
+});
+app.get('/course-signup', function(req, res) {
+    // if logged in render page 
+    // otherwise display page that says the user must be signed in to create a course. 
+        res.render('createcourse', {
+            loggedIn: true
+        });
+});
 
 //for testing authentication puropse
 app.get('/content', checkAuthentication, function (req, res) {
