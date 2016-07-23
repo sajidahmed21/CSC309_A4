@@ -145,24 +145,6 @@ function resizeMessagingArea() {
 }
 
 
-/* Sets all onClick events required */
-function setOnClickEvents() {
-    // cick event for all user in the users list
-    $('section#user-list div.user').each(function(index, user) {
-        $(user).click(onClickUser);
-    });
-    
-    // message sending events
-    $('div#message-send-area button#message-send').click(sendMessage);
-    $('div#message-send-area input#message-text').keypress(function(e) {
-        // if the enter key is hit, send the message
-        if (e.which === 13) {
-            sendMessage();
-        }
-    });
-}
-
-
 /* Adds a message to a conversation with the given partner. It will be styled
  * as if it was sent by the current user.
  *
@@ -210,7 +192,7 @@ function addReceivedMessage(partnerId, message) {
     }));
     
     // update the conversation's last message field
-    //updateLastMessage(partnerId, message);
+    updateLastMessage(partnerId, message);
 }
 
 
@@ -238,7 +220,7 @@ function sendMessage() {
         var $message = addSentMessage(window.currentPartnerId, messageText);
         
         // update the conversation's last message field
-        //updateLastMessage(window.currentPartnerId, message);
+        updateLastMessage(window.currentPartnerId, messageText);
         
         // keep track of the message in an array of unconfirmed messages
         unconfirmedMessages[nextMessageId] = $message;
@@ -247,6 +229,26 @@ function sendMessage() {
     }
     
     return;
+}
+
+
+/* Updates the styling of the given unconfirmed message depending on whether
+ * it was successfully sent or not.
+ */
+function updateUnconfirmedMessageStatus(messageId, wasSuccessful) {
+    $message = unconfirmedMessages[messageId];
+    
+    if (!$message) {
+        console.log('received update about an unknown unconfirmed message [' + messageId + ']');
+        return;
+    }
+    
+    // update the message in the conversation
+    $message.removeClass('pending-mesage');
+    $message.addClass(wasSuccessful ? 'successful-message' : 'failed-message');
+    
+    //remove it from the array of unconfirmed messages
+    unconfirmedMessages[messageId] = null;
 }
 
 
@@ -278,23 +280,39 @@ function addUser(userId, name, lastMessage) {
 }
 
 
-/* Updates the styling of the given unconfirmed message depending on whether
- * it was successfully sent or not.
- */
-function updateUnconfirmedMessageStatus(messageId, wasSuccessful) {
-    $message = unconfirmedMessages[messageId];
-    
-    if (!$message) {
-        console.log('received update about an unknown unconfirmed message [' + messageId + ']');
-        return;
+/* Updates the last message text in the user side bar for the given partner. */
+function updateLastMessage(userId, message) {
+    // trim the message so that is isn't too long
+    if (message.length > 17)
+    {
+        message = message.substring(0, 17) + '...';
     }
     
-    // update the message in the conversation
-    $message.removeClass('pending-mesage');
-    $message.addClass(wasSuccessful ? 'successful-message' : 'failed-message');
+    // find the user row in question
+    var $userRow = $('section#user-list .user').filter(function(index, userRow) {
+        return $(userRow).attr('data-user-id') == userId;
+    });
     
-    //remove it from the array of unconfirmed messages
-    unconfirmedMessages[messageId] = null;
+    // then set the text
+    $userRow.children('p.last-message').text(message);
+}
+
+
+/* Sets all onClick events required */
+function setOnClickEvents() {
+    // cick event for all user in the users list
+    $('section#user-list div.user').each(function(index, user) {
+        $(user).click(onClickUser);
+    });
+    
+    // message sending events
+    $('div#message-send-area button#message-send').click(sendMessage);
+    $('div#message-send-area input#message-text').keypress(function(e) {
+        // if the enter key is hit, send the message
+        if (e.which === 13) {
+            sendMessage();
+        }
+    });
 }
 
 
