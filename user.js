@@ -270,3 +270,11 @@ exports.logoutHandler = function (req, res) {
         sendBackJSON(returnJSON, res);
     }
 }
+
+/* Renders the profile for the user with the userId equal to profileUserId. */
+exports.renderProfilePage = function(req, res, profileUserId) {
+    res.render('profile', {
+        loggedIn: common.userIsLoggedIn(req),
+        userIsOwner: profileUserId == common.getLoggedInUserId(req)
+    });
+}

@@ -29,17 +29,30 @@ function getLoggedInUserId(req) {
 
 exports.getLoggedInUserId = getLoggedInUserId;
 
+
+/* Returns true if a user is logged in and false otherwise. */
+function userIsLoggedIn(req) {
+    return getLoggedInUserId(req) != 0;
+}
+
+exports.userIsLoggedIn = userIsLoggedIn;
+
 /* Sets the given userId as the logged in user. */
 exports.setLoggedInUserId = function(req, userId) {
     req.session.userId = userId;
 }
 
-exports.checkAuthenticate = function (req, res, next) {
-    if (getLoggedInUserId(req) != 0) {
-        console.log("IN");
+/* To be called as a part of a chain in the routing.
+ *
+ * Calls the next function if the user is logged in and otherwise redirects the
+ * user with a 404 error.
+ */
+exports.checkAuthentication = function (req, res, next) {
+    if (userIsLoggedIn(req)) {
+        console.log("LOGGED IN USER REQ");
         return next();
     } else {
-        console.log("NOTIN");
+        console.log("NOT LOGGED IN USER REQ");
         return res.sendStatus(404);
     }
 };

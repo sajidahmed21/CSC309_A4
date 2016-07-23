@@ -34,7 +34,9 @@ var admin = require('./admin');
 var common = require('./common');
 var sendBackJSON = common.sendBackJSON;
 var db = common.db;
-var checkAuthentication = common.checkAuthenticate;
+var checkAuthentication = common.checkAuthentication;
+var getLoggedInUserId = common.getLoggedInUserId;
+var userIsLoggedIn = common.userIsLoggedIn;
 
 // handlebars setup
 var exphbs = require('express-handlebars');
@@ -51,18 +53,24 @@ app.use(express.static('public'));
 
 /* page routing -----------------------------------------------------*/
 app.get('/', function (req, res) {
-    res.render('home');
+    res.render('home', {
+        loggedIn: userIsLoggedIn(req),
+    });
 });
 
-app.get('/profile', function (req, res){
-    res.render('profile');
+app.get('/profile', checkAuthentication, function (req, res) {
+    user.renderProfilePage(req, res, getLoggedInUserId(req));
+});
+
+app.get('/profile/:id', checkAuthentication, function (req, res) {
+    user.renderProfilePage(req, res, req.params.id);
 });
     
 app.get('/demo', function (req, res) {
     db.query('SELECT COUNT(*) AS userCount FROM USERS').spread(function (results, metadata) {
         res.render('demo', {
             userCount: results[0].userCount,
-            leggedIn: false,
+            leggedIn: userIsLoggedIn(req),
             demo: true
         });
 

@@ -1,3 +1,4 @@
+var common = require('./common');
 var socketIO = global.socketIO;
 
 
@@ -59,5 +60,7 @@ exports.onConnection = function(socket) {
 
 
 exports.renderPage = function(req, res) {
-    res.render('messaging');
+    res.render('messaging', {
+        loggedIn: common.userIsLoggedIn(req)
+    });
 }

@@ -167,6 +167,7 @@ function addSentMessage(partnerId, message) {
         return;
     }
     
+    // send the message through the socket 
     // append the message
     $conversation.append($('<p>', {
         class: 'message sent-message col-xs-10 col-xs-offset-2',

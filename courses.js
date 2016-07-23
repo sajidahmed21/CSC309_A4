@@ -84,7 +84,7 @@ exports.render_course_page = function(req, res, next) {
 	console.log(res.rating);
 	console.log(res.reviews);
 		res.render('coursedesc', {
-			loggedIn: true,
+			loggedIn: common.userIsLoggedIn(req),
 			imgPath: res.class_info[0].banner_picture_path,
 			courseTitle: res.class_info[0].class_name,
 			instructor: res.class_info[0].instructor,
