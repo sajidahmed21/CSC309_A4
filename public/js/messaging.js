@@ -75,7 +75,8 @@ function createConversation(partnerId) {
 function onClickUser(e) {
     e.preventDefault();
     
-    var userId = $(this).attr('data-user-id');
+    var $this = $(this);
+    var userId = $this.attr('data-user-id');
     
     // if the user is already being shown, do nothing
     if (userId === window.currentPartnerId) {
@@ -86,13 +87,18 @@ function onClickUser(e) {
     
     // otherwise, show the chat area
     if (showConversation(userId)) {
-        // if the chat area already existed, do nothing
+        // if the chat area already existed, just clear the new message styling
+        $this.removeClass('new-message-exists');
         ;
     }
     else {
         createConversation(userId);
         // this is a new chat area, so load previous messages?
     }
+    
+    // remove the selected class from all user rows and add it only to this one
+    $('section#user-list .user').removeClass('selected');
+    $this.addClass('selected');
     
     return;
 }
@@ -192,7 +198,7 @@ function addReceivedMessage(partnerId, message) {
     }));
     
     // update the conversation's last message field
-    updateLastMessage(partnerId, message);
+    updateLastMessage(partnerId, message, true);
 }
 
 
@@ -220,7 +226,7 @@ function sendMessage() {
         var $message = addSentMessage(window.currentPartnerId, messageText);
         
         // update the conversation's last message field
-        updateLastMessage(window.currentPartnerId, messageText);
+        updateLastMessage(window.currentPartnerId, messageText, false);
         
         // keep track of the message in an array of unconfirmed messages
         unconfirmedMessages[nextMessageId] = $message;
@@ -281,7 +287,7 @@ function addUser(userId, name, lastMessage) {
 
 
 /* Updates the last message text in the user side bar for the given partner. */
-function updateLastMessage(userId, message) {
+function updateLastMessage(userId, message, receivedMessage) {
     // trim the message so that is isn't too long
     if (message.length > 17)
     {
@@ -295,6 +301,15 @@ function updateLastMessage(userId, message) {
     
     // then set the text
     $userRow.children('p.last-message').text(message);
+    
+    // mark the user row depending on whether or not this was a received message
+    // for another conversation
+    if (receivedMessage && userId != window.currentPartnerId) {
+        $userRow.addClass('new-message-exists');
+    }
+    else {
+        $userRow.removeClass('new-message-exists');
+    }
 }
 
 

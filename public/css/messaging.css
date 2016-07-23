@@ -26,8 +26,23 @@ section#user-list div.user {
     cursor: pointer;
 }
 
-section#user-list div.user:hover {
+/* make the user row a light red if there is a new message */
+section#user-list div.user.new-message-exists {
+    background-color: #F9D9D8;
+}
+
+/* make the last message text bold if there is a new message */
+section#user-list div.user.new-message-exists p.last-message {
+    font-weight: bold;
+}
+
+/* add a light background to the selected user */
+section#user-list div.user.selected {
     background-color: #badcf3;
+}
+
+section#user-list div.user:hover {
+    background-color: #f5f5f5;
 }
 
 /* make each user row a bit larger, and eliminate the margin added by p */
