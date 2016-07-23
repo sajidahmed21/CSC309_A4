@@ -34,7 +34,9 @@ var admin = require('./admin');
 var common = require('./common');
 var sendBackJSON = common.sendBackJSON;
 var db = common.db;
-var checkAuthentication = common.checkAuthenticate;
+var checkAuthentication = common.checkAuthentication;
+var getLoggedInUserId = common.getLoggedInUserId;
+var userIsLoggedIn = common.userIsLoggedIn;
 
 // handlebars setup
 var exphbs = require('express-handlebars');
@@ -51,18 +53,24 @@ app.use(express.static('public'));
 
 /* page routing -----------------------------------------------------*/
 app.get('/', function (req, res) {
-    res.render('home');
+    res.render('home', {
+        loggedIn: userIsLoggedIn(req),
+    });
 });
 
-app.get('/profile', function (req, res){
-    res.render('profile');
+app.get('/profile', checkAuthentication, function (req, res) {
+    user.renderProfilePage(req, res, getLoggedInUserId(req));
+});
+
+app.get('/profile/:id', checkAuthentication, function (req, res) {
+    user.renderProfilePage(req, res, req.params.id);
 });
     
 app.get('/demo', function (req, res) {
     db.query('SELECT COUNT(*) AS userCount FROM USERS').spread(function (results, metadata) {
         res.render('demo', {
             userCount: results[0].userCount,
-            leggedIn: false,
+            leggedIn: userIsLoggedIn(req),
             demo: true
         });
 
@@ -102,6 +110,18 @@ app.get('/text', function (req, res) {
 });
 
 /* Users ------------------------------------------------------------*/
+/*app.get('/enroll', function (req, res) {
+    db.query("INSERT INTO CLASSES (id, class_name, instructor) VALUES (1, 'TESTCOURSE', 3)").spread(function (results, metadata) {
+        db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (18, 1)").spread(function (results, metadata) {
+            console.log("JOIN 1");
+        })
+    });
+    db.query("INSERT INTO CLASSES (id, class_name, instructor) VALUES (2, 'TESTCOURSE2', 3)").spread(function (results, metadata) {
+        db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (18, 2)").spread(function (results, metadata) {
+            console.log("JOIN 2");
+        })
+    });
+});*/
 
 app.post('/user/signin', user.signinHandler);
 
@@ -138,12 +158,17 @@ app.post('/admin/login', admin.handleLoginRequest);
 
 /* Searches  --------------------------------------------------------*/
 
+app.get('/messaging', checkAuthentication, messaging.renderPage);
+
+
+/* Searches  --------------------------------------------------------*/
+
 app.get('/search', searchEngine.handleSearch);
 
 
 /* socket io --------------------------------------------------------*/
 
-socketIO.on('connection', messaging.onConnection);
+socketIO.on('connection', checkAuthentication, messaging.onConnection);
 
 
 /* server start up --------------------------------------------------*/

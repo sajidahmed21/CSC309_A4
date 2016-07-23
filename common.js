@@ -1,6 +1,5 @@
 var sequelize = require('sequelize');
 
-/* Logged in users */
 exports.currentUser = [];
 
 exports.db = new sequelize('learnrDB', null, null, {
@@ -25,13 +24,40 @@ function sendJSONResponse(statusCode, data, response) {
     response.end(JSON.stringify(data));
 }
 
-exports.checkAuthenticate = function (req, res, next) {
-    console.log(exports.currentUser);
-    if (req.session && req.session.alive && (exports.currentUser.indexOf(req.session.user) >= 0)) {
-        console.log("IN");
+/* Returns the userId of the logged in user or 0 if the user is not logged in. */
+function getLoggedInUserId(req) {
+    return (req.session && req.session.userId) ? req.session.userId : 0;
+}
+
+exports.getLoggedInUserId = getLoggedInUserId;
+
+
+/* Returns true if a user is logged in and false otherwise. */
+function userIsLoggedIn(req) {
+    return getLoggedInUserId(req) != 0;
+}
+
+exports.userIsLoggedIn = userIsLoggedIn;
+
+/* Sets the given userId as the logged in user. */
+exports.setLoggedInUserId = function(req, userId) {
+    req.session.userId = userId;
+}
+
+/* To be called as a part of a chain in the routing.
+ *
+ * Calls the next function if the user is logged in and otherwise redirects the
+ * user with a 404 error.
+ */
+exports.checkAuthentication = function (req, res, next) {
+    if (userIsLoggedIn(req)) {
+        console.log("LOGGED IN USER REQ");
         return next();
     } else {
-        console.log("NOTIN");
-        return res.sendStatus(404);
+        console.log("NOT LOGGED IN USER REQ");
+        return res.render('home', {
+            errorContent: '<p><strong>Opps!</strong> You need to be logged in to access that.</p>',
+            loggedIn: false
+        });
     }
 };

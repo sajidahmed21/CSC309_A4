@@ -50,7 +50,7 @@
                                 <li>
                                     <a class="nopadding" href="./profile.html"><img src="/img/profile.png" alt="Profile" height="40" width="40" class="profile_icon"></li>
                                 </a>
-                                <a id="logout-anchor" class="standard-clear-button" href="./index.html">Logout</a>
+                                <button id="logout-anchor" class="standard-clear-button" >Logout</button>
 
                             </ul>
                         </div>
@@ -63,8 +63,9 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-4">
-            <h2 class="standard-font">User Name</h2></div>
+            <h2 class="standard-font"> {{name}} </h2></div>
         <div class="col-md-5">
+            <button id="changename_btn" type="button" class="btn standard-green-button">Change Name</button>
             <button id="changepassword_btn" type="button" class="btn standard-green-button">Change Password</button>
             <button id="deleteuser_btn" type="button" class="btn btn-danger standard-red-button">Delete Account</button>
         </div>
@@ -75,6 +76,7 @@
             <h2 class="standard-font">Enrolled Classes</h2></div>
         <div class="col-md-5"></div>
     </div>
+    {{#each classes}}
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-9">
@@ -82,39 +84,21 @@
                 <div class="row">
                     <div class="col-md-10">
                         <div>
-                            <h1 class="standard-title class_title">Class 1</h1>
+                            <h1 class="standard-title class_title">{{this.class_name}}</h1>
                         </div>
+                        <div id="course_id" style="display:none;">{{this.id}}</div>
                         <div>
-                            <h1 class="standard-title professor_title">Professor 1</h1>
+                            <h1 class="standard-title professor_title">{{this.instructor}}</h1>
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <button type="button" class="btn btn-danger standard-red-button drop_course_btn">Drop Course</button>
+                        <button id="{{@this.id}}" type="button" class="btn btn-danger standard-red-button drop_course_btn">Drop Course</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-3"></div>
-        <div class="col-md-9">
-            <div class="class_container">
-                <div class="row">
-                    <div class="col-md-10">
-                        <div>
-                            <h1 class="standard-title class_title">Class 2</h1>
-                        </div>
-                        <div>
-                            <h1 class="standard-title professor_title">Professor 2</h1>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <button id="unenroll_btn" type="button" class="btn btn-danger standard-red-button drop_course_btn">Drop Course</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    {{/each}}
     <div id="unenroll_form">
         <div class="col-md-6">
             <div class="standard-container">

@@ -31,12 +31,12 @@ app.get('/enrolls', function (req, res) {
 });
 app.get('/enroll', function (req, res) {
     db.query("INSERT INTO CLASSES (id, class_name, instructor) VALUES (1, 'TESTCOURSE', 3)").spread(function (results, metadata) {
-        db.query("INESRT INTO ENROLMENT (user_id, class_id) VALUES (5, 1)").spread(function (results, metadata) {
+        db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (18, 1)").spread(function (results, metadata) {
             console.log("JOIN 1");
         })
     });
     db.query("INSERT INTO CLASSES (id, class_name, instructor) VALUES (2, 'TESTCOURSE2', 3)").spread(function (results, metadata) {
-        db.query("INESRT INTO ENROLMENT (user_id, class_id) VALUES (5, 2)").spread(function (results, metadata) {
+        db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (18, 2)").spread(function (results, metadata) {
             console.log("JOIN 2");
         })
     });
@@ -44,11 +44,13 @@ app.get('/enroll', function (req, res) {
 var common = require('./common');
 var bcrypt = require('bcryptjs');
 var sendBackJSON = common.sendBackJSON;
+var sendUnauthorizedResponse = common.sendUnauthorizedResponse;
+var setLoggedInUserId = common.setLoggedInUserId;
 var db = common.db;
 
 exports.changeNameHandler = function (req, res) {
     var changeName = req.body.changeName;
-    var user_id = req.body.user_id;
+    var user_id = req.session.thisid;
     db.query("UPDATE USERS SET name = '" + changeName + "' WHERE id=" + user_id).spread(function (results, metadata) {
         var returnJSON = {
             "status": "success",
@@ -94,7 +96,7 @@ exports.changePasswordHandler = function (req, res) {
             return;
         }
 
-        var user_id = req.body.user_id;
+        var user_id = req.session.thisid;
         db.query("UPDATE LOGIN_CREDENTIALS SET password = '" + hashedPassword + "' WHERE user_id=" + user_id).spread(function (results, metadata) {
             var returnJSON = {
                 "status": "success",
@@ -131,21 +133,26 @@ exports.unenrollHandler = function (req, res) {
 };
 
 exports.getProfileHandler = function (req, res) {
-    var id = req.param('user_id');
+    console.log("GETPROFILE" + req.session.thisid);
+    var id = req.session.thisid;
     db.query("SELECT name, profile_picture_path FROM USERS WHERE id = '" + id + "'").spread(function (results, metadata) {
-        db.query("SELECT id, class_name FROM ENROLMENT, CLASSES WHERE id=class_id AND user_id =" + id).spread(function (result, meta) {
+        var name = results[0].name;
+        db.query("SELECT CLASSES.id AS id, CLASSES.class_name AS class_name, USERS.name AS instructor FROM ENROLMENT, CLASSES, USERS WHERE USERS.id=CLASSES.instructor AND CLASSES.id=ENROLMENT.class_id AND ENROLMENT.user_id =" + id).spread(function (result, meta) {
             console.log(result);
-
-            var returnJSON = {
-                "status": "success",
-                "data": {
-                    "name": results[0].name,
-                    "profile_picture_path": results[0].profile_picture_path,
-                    "courses": result
-                },
-                "message": "Success for getting profile",
-            }
-            sendBackJSON(returnJSON, res);
+            res.render('profile',{
+                name: name,
+                classes: result
+            });
+//            var returnJSON = {
+//                "status": "success",
+//                "data": {
+//                    "name": results[0].name,
+//                    "profile_picture_path": results[0].profile_picture_path,
+//                    "courses": result
+//                },
+//                "message": "Success for getting profile",
+//            }
+//            sendBackJSON(returnJSON, res);
         })
 
     }).catch(function (err) {
@@ -161,7 +168,9 @@ exports.getProfileHandler = function (req, res) {
 exports.signinHandler = function (req, res) {
     var signinUsername = req.body.signinUsername;
     var signinPassword = req.body.signinPassword;
-    db.query("SELECT password FROM LOGIN_CREDENTIALS WHERE username = '" + signinUsername + "'").spread(function (results, metadata) {
+    db.query("SELECT user_id, password FROM LOGIN_CREDENTIALS WHERE username = '" + signinUsername + "'").spread(function (results, metadata) {
+        var thisid = results[0].user_id;
+        console.log(thisid);
         bcrypt.compare(signinPassword, results[0].password, function (err, result) {
             if (err || result === false) {
                 console.log("Err in login");
@@ -170,11 +179,16 @@ exports.signinHandler = function (req, res) {
                     "status": "error",
                     "message": "Err in login"
                 }
-                sendBackJSON(returnJSON, res);
+                sendUnauthorizedResponse(returnJSON, res);
             } else {
                 common.currentUser.push(signinUsername);
                 req.session.user = signinUsername;
                 req.session.alive = true;
+                console.log(thisid);
+                req.session.thisid = thisid;
+                console.log(req.session.user);
+                console.log("signinHandler "+req.session.thisid);
+                setLoggedInUserId(req, results[0].user_id);
                 var returnJSON = {
                     "status": "success",
                     "message": "Login Success"
@@ -188,17 +202,18 @@ exports.signinHandler = function (req, res) {
             "status": "error",
             "message": "Err in login"
         }
-        sendBackJSON(returnJSON, res);
+        sendUnauthorizedResponse(returnJSON, res);
     });
 };
 
 exports.signupHandler = function (req, res) {
     bcrypt.hash(req.body.signupPassword, 8, function (err, hashedPassword) {
         if (err) {
+            req.session.destroy();
             console.log('failed to hash password:');
             console.log(err);
 
-            sendBackJSON({
+            sendUnauthorizedResponse({
                 "error": "server error"
             }, res);
             return;
@@ -216,26 +231,35 @@ exports.signupHandler = function (req, res) {
                     transaction: transaction
                 }).then(function (result) {
                     var metadata = result[1];
-                    return exports.loginInsert(transaction, metadata.lastID, signupUsername, hashedPassword, res);
+                    return exports.loginInsert(transaction, metadata.lastID, signupUsername, hashedPassword, res, req);
                 });
             })
             .catch(function (err) {
+                req.session.destroy();
                 console.log("failed to create user:");
                 console.log(err);
                 var returnJSON = {
                     "status": "error",
                     "message": "failed to create user"
                 }
-                sendBackJSON(returnJSON, res);
+                sendUnauthorizedResponse(returnJSON, res);
             });
     });
 };
 
-exports.loginInsert = function (transaction, id, signupUsername, signupPassword, res) {
+exports.loginInsert = function (transaction, id, signupUsername, signupPassword, res, req) {
     return db.query("INSERT INTO LOGIN_CREDENTIALS (user_id, username, password) VALUES (" + id + ",'" + signupUsername + "','" + signupPassword + "')", {
             transaction: transaction
         })
         .then(function (result, metadata) {
+            console.log("LOGININSERT" + id);
+            common.currentUser.push(signupUsername);
+            req.session.user = signupUsername;
+            req.session.alive = true;
+            req.session.thisid = id;
+            // automatically log the user in
+            setLoggedInUserId(req, id);
+
             var returnJSON = {
                 "status": "success",
                 "message": "Signup Success"
@@ -251,6 +275,8 @@ exports.logoutHandler = function (req, res) {
         console.log("INLOGGINOUT");
         var index = common.currentUser.indexOf(username);
         common.currentUser.splice(index, 1);
+        req.session.username = undefined;
+        req.session.thisid = undefined;
         req.session.destroy();
         var returnJSON = {
             "status": "success",
@@ -258,6 +284,8 @@ exports.logoutHandler = function (req, res) {
         }
         sendBackJSON(returnJSON, res);
     } else {
+        req.session.username = undefined;
+        req.session.thisid = undefined;
         req.session.destroy();
         var returnJSON = {
             "status": "error",
@@ -265,4 +293,12 @@ exports.logoutHandler = function (req, res) {
         }
         sendBackJSON(returnJSON, res);
     }
+}
+
+/* Renders the profile for the user with the userId equal to profileUserId. */
+exports.renderProfilePage = function(req, res, profileUserId) {
+    res.render('profile', {
+        loggedIn: common.userIsLoggedIn(req),
+        userIsOwner: profileUserId == common.getLoggedInUserId(req)
+    });
 }
