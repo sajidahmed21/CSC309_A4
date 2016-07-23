@@ -45,6 +45,7 @@ var common = require('./common');
 var bcrypt = require('bcryptjs');
 var sendBackJSON = common.sendBackJSON;
 var sendUnauthorizedResponse = common.sendUnauthorizedResponse;
+var setLoggedInUserId = common.setLoggedInUserId;
 var db = common.db;
 
 exports.changeNameHandler = function (req, res) {
@@ -187,6 +188,7 @@ exports.signinHandler = function (req, res) {
                 req.session.thisid = thisid;
                 console.log(req.session.user);
                 console.log("signinHandler "+req.session.thisid);
+                setLoggedInUserId(req, results[0].user_id);
                 var returnJSON = {
                     "status": "success",
                     "message": "Login Success"
@@ -255,6 +257,8 @@ exports.loginInsert = function (transaction, id, signupUsername, signupPassword,
             req.session.user = signupUsername;
             req.session.alive = true;
             req.session.id = id;
+            // automatically log the user in
+            setLoggedInUserId(req, id);
 
             var returnJSON = {
                 "status": "success",
@@ -289,4 +293,12 @@ exports.logoutHandler = function (req, res) {
         }
         sendBackJSON(returnJSON, res);
     }
+}
+
+/* Renders the profile for the user with the userId equal to profileUserId. */
+exports.renderProfilePage = function(req, res, profileUserId) {
+    res.render('profile', {
+        loggedIn: common.userIsLoggedIn(req),
+        userIsOwner: profileUserId == common.getLoggedInUserId(req)
+    });
 }

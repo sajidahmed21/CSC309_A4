@@ -1,3 +1,4 @@
+var common = require('./common');
 var socketIO = global.socketIO;
 
 
@@ -56,3 +57,10 @@ exports.onConnection = function(socket) {
 		console.log('user [' + socket.userId + '] disconnected');
 	});
 };
+
+
+exports.renderPage = function(req, res) {
+    res.render('messaging', {
+        loggedIn: common.userIsLoggedIn(req)
+    });
+}
