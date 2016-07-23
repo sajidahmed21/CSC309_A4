@@ -195,6 +195,7 @@ exports.signinHandler = function (req, res) {
 exports.signupHandler = function (req, res) {
     bcrypt.hash(req.body.signupPassword, 8, function (err, hashedPassword) {
         if (err) {
+            req.session.destroy();
             console.log('failed to hash password:');
             console.log(err);
 
@@ -216,10 +217,11 @@ exports.signupHandler = function (req, res) {
                     transaction: transaction
                 }).then(function (result) {
                     var metadata = result[1];
-                    return exports.loginInsert(transaction, metadata.lastID, signupUsername, hashedPassword, res);
+                    return exports.loginInsert(transaction, metadata.lastID, signupUsername, hashedPassword, res, req);
                 });
             })
             .catch(function (err) {
+                req.session.destroy();
                 console.log("failed to create user:");
                 console.log(err);
                 var returnJSON = {
@@ -231,11 +233,15 @@ exports.signupHandler = function (req, res) {
     });
 };
 
-exports.loginInsert = function (transaction, id, signupUsername, signupPassword, res) {
+exports.loginInsert = function (transaction, id, signupUsername, signupPassword, res, req) {
     return db.query("INSERT INTO LOGIN_CREDENTIALS (user_id, username, password) VALUES (" + id + ",'" + signupUsername + "','" + signupPassword + "')", {
             transaction: transaction
         })
         .then(function (result, metadata) {
+            common.currentUser.push(signupUsername);
+            req.session.user = signupUsername;
+            req.session.alive = true;
+
             var returnJSON = {
                 "status": "success",
                 "message": "Signup Success"
