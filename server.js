@@ -127,12 +127,17 @@ app.post('/admin/login', admin.handleLoginRequest);
 
 /* Searches  --------------------------------------------------------*/
 
+app.get('/messaging', checkAuthentication, messaging.renderPage);
+
+
+/* Searches  --------------------------------------------------------*/
+
 app.get('/search', searchEngine.handleSearch);
 
 
 /* socket io --------------------------------------------------------*/
 
-socketIO.on('connection', messaging.onConnection);
+socketIO.on('connection', checkAuthentication, messaging.onConnection);
 
 
 /* server start up --------------------------------------------------*/

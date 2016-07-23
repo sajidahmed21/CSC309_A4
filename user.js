@@ -44,6 +44,7 @@ app.get('/enroll', function (req, res) {
 var common = require('./common');
 var bcrypt = require('bcryptjs');
 var sendBackJSON = common.sendBackJSON;
+var setLoggedInUserId = common.setLoggedInUserId;
 var db = common.db;
 
 exports.changeNameHandler = function (req, res) {
@@ -161,7 +162,7 @@ exports.getProfileHandler = function (req, res) {
 exports.signinHandler = function (req, res) {
     var signinUsername = req.body.signinUsername;
     var signinPassword = req.body.signinPassword;
-    db.query("SELECT password FROM LOGIN_CREDENTIALS WHERE username = '" + signinUsername + "'").spread(function (results, metadata) {
+    db.query("SELECT password, user_id FROM LOGIN_CREDENTIALS WHERE username = '" + signinUsername + "'").spread(function (results, metadata) {
         bcrypt.compare(signinPassword, results[0].password, function (err, result) {
             if (err || result === false) {
                 console.log("Err in login");
@@ -172,9 +173,7 @@ exports.signinHandler = function (req, res) {
                 }
                 sendBackJSON(returnJSON, res);
             } else {
-                common.currentUser.push(signinUsername);
-                req.session.user = signinUsername;
-                req.session.alive = true;
+                setLoggedInUserId(req, results[0].user_id);
                 var returnJSON = {
                     "status": "success",
                     "message": "Login Success"
@@ -238,9 +237,8 @@ exports.loginInsert = function (transaction, id, signupUsername, signupPassword,
             transaction: transaction
         })
         .then(function (result, metadata) {
-            common.currentUser.push(signupUsername);
-            req.session.user = signupUsername;
-            req.session.alive = true;
+            // automatically log the user in
+            setLoggedInUserId(req, id);
 
             var returnJSON = {
                 "status": "success",
