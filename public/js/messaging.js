@@ -1,3 +1,10 @@
+var socket = io.connect();
+
+// unique message id for each sent message from this socket
+var nextMessageId = 1;
+
+var unconfirmedMessages = [];
+
 /* Hides all conversations except the one for the given partner id.
  * If no chat area exists for the given partner id, one will be created.
  *
@@ -11,7 +18,7 @@ function showConversation(partnerId) {
     $conversations.each(function(index, conversation) {
         var $conversation = $(conversation);
         
-        if ($conversation.attr('data-partner-id') === partnerId) {
+        if ($conversation.attr('data-partner-id') == partnerId) {
             foundTarget = true;
             $conversation.show();
         }
@@ -32,7 +39,7 @@ function findConversation(partnerId) {
     var $conversations = $('section#chat-area div.conversation');
     
     var $conversation = $conversations.filter(function(index, conversation) {
-        return $(conversation).attr('data-partner-id') === partnerId;
+        return $(conversation).attr('data-partner-id') == partnerId;
     })
     
     return $conversation.length === 1 ? $conversation : null;
@@ -68,7 +75,8 @@ function createConversation(partnerId) {
 function onClickUser(e) {
     e.preventDefault();
     
-    var userId = $(this).attr('data-user-id');
+    var $this = $(this);
+    var userId = $this.attr('data-user-id');
     
     // if the user is already being shown, do nothing
     if (userId === window.currentPartnerId) {
@@ -79,13 +87,18 @@ function onClickUser(e) {
     
     // otherwise, show the chat area
     if (showConversation(userId)) {
-        // if the chat area already existed, do nothing
+        // if the chat area already existed, just clear the new message styling
+        $this.removeClass('new-message-exists');
         ;
     }
     else {
         createConversation(userId);
         // this is a new chat area, so load previous messages?
     }
+    
+    // remove the selected class from all user rows and add it only to this one
+    $('section#user-list .user').removeClass('selected');
+    $this.addClass('selected');
     
     return;
 }
@@ -138,26 +151,11 @@ function resizeMessagingArea() {
 }
 
 
-/* Sets all onClick events required */
-function setOnClickEvents() {
-    // cick event for all user in the users list
-    $('section#user-list div.user').each(function(index, user) {
-        $(user).click(onClickUser);
-    });
-    
-    // message sending events
-    $('div#message-send-area button#message-send').click(sendMessage);
-    $('div#message-send-area input#message-text').keypress(function(e) {
-        // if the enter key is hit, send the message
-        if (e.which === 13) {
-            sendMessage();
-        }
-    });
-}
-
-
 /* Adds a message to a conversation with the given partner. It will be styled
- * as if it was sent by the current user. */
+ * as if it was sent by the current user.
+ *
+ * Returns the jQuerified version of the message div.
+ */
 function addSentMessage(partnerId, message) {
     // first, find and verify that the conversation exists
     var $conversation = findConversation(partnerId);
@@ -167,12 +165,15 @@ function addSentMessage(partnerId, message) {
         return;
     }
     
-    // send the message through the socket 
-    // append the message
-    $conversation.append($('<p>', {
-        class: 'message sent-message col-xs-10 col-xs-offset-2',
+    var $message = $('<p>', {
+        class: 'message sent-message pending-message col-xs-10 col-xs-offset-2',
         text: message
-    }));
+    });
+    
+    // then append it to the conversation
+    $conversation.append($message);
+    
+    return $message;
 }
 
 
@@ -195,6 +196,9 @@ function addReceivedMessage(partnerId, message) {
         class: 'message received-message col-xs-10',
         text: message
     }));
+    
+    // update the conversation's last message field
+    updateLastMessage(partnerId, message, true);
 }
 
 
@@ -211,11 +215,46 @@ function sendMessage() {
         // clear the message area
         $messageTextInput.val('');
         
-        // for now, just add the sent message
-        addSentMessage(window.currentPartnerId, messageText);
+        // send the message through the socket
+        socket.emit('send', {
+            partnerId: window.currentPartnerId,
+            text: messageText,
+            messageId: nextMessageId
+        });
+        
+        // add the sent message to the conversations
+        var $message = addSentMessage(window.currentPartnerId, messageText);
+        
+        // update the conversation's last message field
+        updateLastMessage(window.currentPartnerId, messageText, false);
+        
+        // keep track of the message in an array of unconfirmed messages
+        unconfirmedMessages[nextMessageId] = $message;
+        
+        nextMessageId++;
     }
     
     return;
+}
+
+
+/* Updates the styling of the given unconfirmed message depending on whether
+ * it was successfully sent or not.
+ */
+function updateUnconfirmedMessageStatus(messageId, wasSuccessful) {
+    $message = unconfirmedMessages[messageId];
+    
+    if (!$message) {
+        console.log('received update about an unknown unconfirmed message [' + messageId + ']');
+        return;
+    }
+    
+    // update the message in the conversation
+    $message.removeClass('pending-mesage');
+    $message.addClass(wasSuccessful ? 'successful-message' : 'failed-message');
+    
+    //remove it from the array of unconfirmed messages
+    unconfirmedMessages[messageId] = null;
 }
 
 
@@ -247,6 +286,77 @@ function addUser(userId, name, lastMessage) {
 }
 
 
+/* Updates the last message text in the user side bar for the given partner. */
+function updateLastMessage(userId, message, receivedMessage) {
+    // trim the message so that is isn't too long
+    if (message.length > 17)
+    {
+        message = message.substring(0, 17) + '...';
+    }
+    
+    // find the user row in question
+    var $userRow = $('section#user-list .user').filter(function(index, userRow) {
+        return $(userRow).attr('data-user-id') == userId;
+    });
+    
+    // then set the text
+    $userRow.children('p.last-message').text(message);
+    
+    // mark the user row depending on whether or not this was a received message
+    // for another conversation
+    if (receivedMessage && userId != window.currentPartnerId) {
+        $userRow.addClass('new-message-exists');
+    }
+    else {
+        $userRow.removeClass('new-message-exists');
+    }
+}
+
+
+/* Sets all onClick events required */
+function setOnClickEvents() {
+    // cick event for all user in the users list
+    $('section#user-list div.user').each(function(index, user) {
+        $(user).click(onClickUser);
+    });
+    
+    // message sending events
+    $('div#message-send-area button#message-send').click(sendMessage);
+    $('div#message-send-area input#message-text').keypress(function(e) {
+        // if the enter key is hit, send the message
+        if (e.which === 13) {
+            sendMessage();
+        }
+    });
+}
+
+
+/* Sets all listening requests for the socket. */
+function setSocketEvents() {
+    socket.on('notLoggedIn', function() {
+        alert('Opps, you\'re not logged in!');
+        window.location.href = '/';
+    });
+    
+    socket.on('receive', function(data) {
+        addReceivedMessage(data.senderId, data.text);
+    });
+    
+    socket.on('failure', function(data) {
+        alert(data.message);
+    });
+    
+    // successful transmission of message
+    socket.on('sent', function(data) {
+        updateUnconfirmedMessageStatus(data.messageId, true);
+    });
+    
+    socket.on('sendError', function(data) {
+        updateUnconfirmedMessageStatus(data.messageId, false);
+    });
+}
+
+
 window.onload = function() {
     // set the resizing of the messaging area and trigger it immediately
     $(window).resize(resizeMessagingArea);
@@ -254,16 +364,9 @@ window.onload = function() {
     
     setOnClickEvents();
     
+    setSocketEvents();
+    
     // load the first chat area (which for the mockup is hiding all
     // chat areas except the first
     $(document.getElementsByClassName('user')[0]).click();
-    
-    // add in some dummy messages
-    addReceivedMessage('41', 'What are you up to?');
-    addSentMessage('41', 'Nothing much, you?');
-    addReceivedMessage('41', 'Hey!');
-    
-    // add in a few dummy user rows
-    addUser(12, 'Bob', 'My name is Bob.');
-    addUser(13, 'Olaf', 'My name is Olaf.');
 }

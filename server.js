@@ -2,15 +2,34 @@ var express = require('express');
 var app = express();
 var fs = require('fs');
 var bcrypt = require('bcryptjs');
-var session = require('express-session');
-app.use(session({
+
+
+// socket.io for messaging
+var server = require('http').Server(app);
+var socketIO = require('socket.io')(server);
+global.socketIO = socketIO;
+
+
+// shared session management between regular requests and socket.io ones
+var session = require('express-session')({
     secret: 'Any Secret - I dont know',
     resave: true,
     saveUninitialized: true,
     cookie: {
         maxAge: 60000
     }
+});
+var sharedSession = require("express-socket.io-session");
+
+app.use(session);
+
+
+socketIO.use(sharedSession(session, {
+    secret: 'Any Secret - I dont know',
+    resave: true,
+    saveUninitialized: true
 }));
+
 
 // set hostname and port here
 var hostname = 'localhost';
@@ -19,10 +38,8 @@ var port = 9090;
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
-var server = require('http').Server(app);
-var socketIO = require('socket.io')(server);
-global.socketIO = socketIO;
 
+// custom modules
 var recommendations = require('./recommendations');
 var messaging = require('./messaging');
 var user = require('./user');
@@ -157,7 +174,7 @@ app.get('/search', searchEngine.handleSearch);
 
 /* socket io --------------------------------------------------------*/
 
-socketIO.on('connection', checkAuthentication, messaging.onConnection);
+socketIO.on('connection', messaging.onConnection);
 
 
 /* server start up --------------------------------------------------*/
