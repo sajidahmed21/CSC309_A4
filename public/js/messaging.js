@@ -303,6 +303,10 @@ function setSocketEvents() {
         addReceivedMessage(data.senderId, data.text);
     });
     
+    socket.on('failure', function(data) {
+        alert(data.message);
+    });
+    
     // successful transmission of message
     socket.on('sent', function(data) {
         updateUnconfirmedMessageStatus(data.messageId, true);

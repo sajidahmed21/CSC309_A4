@@ -52,11 +52,12 @@ exports.onConnection = function(socket) {
 	    var userId = getSessionUserId(socket);
 	    
 		if (userId == 0 ) {
+		    console.log('prevented attempt to send message without being logged in');
 			socket.emit('notLoggedIn');
 		}
-		else if (userId === message.partnerId)
-		{
-			socket.emit('error', {message: 'cannot send message to self'});
+		else if (userId == message.partnerId) {
+		    console.log('prevented attempt to send message to self');
+			socket.emit('failure', {message: 'cannot send message to self'});
 		}
 		else {
 			console.log('message [' + message.text + ']');
