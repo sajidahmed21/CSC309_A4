@@ -91,6 +91,18 @@ app.get('/text', function (req, res) {
 });
 
 /* Users ------------------------------------------------------------*/
+/*app.get('/enroll', function (req, res) {
+    db.query("INSERT INTO CLASSES (id, class_name, instructor) VALUES (1, 'TESTCOURSE', 3)").spread(function (results, metadata) {
+        db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (18, 1)").spread(function (results, metadata) {
+            console.log("JOIN 1");
+        })
+    });
+    db.query("INSERT INTO CLASSES (id, class_name, instructor) VALUES (2, 'TESTCOURSE2', 3)").spread(function (results, metadata) {
+        db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (18, 2)").spread(function (results, metadata) {
+            console.log("JOIN 2");
+        })
+    });
+});*/
 
 app.post('/user/signin', user.signinHandler);
 

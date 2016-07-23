@@ -165,9 +165,10 @@ var loginPage = function () {
             success: function (data) {
                 hidePopup();
                 console.log(data);
-                window.location.href = "/profile";
+                window.location.href = "/user/profile";
             },
             failure: function (errMsg) {
+                console.log(errMsg);
                 hidePopup();
                 alert('Please select another username');
             }
@@ -312,9 +313,10 @@ var signupPage = function () {
             success: function (data) {
                 hidePopup();
                 console.log(data);
-                window.location.href = "/profile";
+                window.location.href = "/user/profile";
             },
             failure: function (errMsg) {
+                console.log(errMsg)
                 hidePopup();
                 alert('Please select another username');
             }
