@@ -256,7 +256,7 @@ exports.loginInsert = function (transaction, id, signupUsername, signupPassword,
             common.currentUser.push(signupUsername);
             req.session.user = signupUsername;
             req.session.alive = true;
-            req.session.id = id;
+            req.session.thisid = id;
             // automatically log the user in
             setLoggedInUserId(req, id);
 
