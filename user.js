@@ -132,8 +132,9 @@ exports.unenrollHandler = function (req, res) {
     })
 };
 
-exports.getProfileHandler = function (req, res) {
-    console.log("GETPROFILE" + req.session.thisid);
+/* Renders the profile for the user with the userId equal to profileUserId. */
+exports.getProfileHandler = function (req, res, profileUserId) {
+    console.log("GETPROFILE" + profileUserId);
     var id = req.session.thisid;
     db.query("SELECT name, profile_picture_path FROM USERS WHERE id = '" + id + "'").spread(function (results, metadata) {
         var name = results[0].name;
@@ -141,7 +142,9 @@ exports.getProfileHandler = function (req, res) {
             console.log(result);
             res.render('profile',{
                 name: name,
-                classes: result
+                classes: result,
+                loggedIn: common.userIsLoggedIn(req),
+                userIsOwner: profileUserId == common.getLoggedInUserId(req)
             });
 //            var returnJSON = {
 //                "status": "success",
@@ -293,12 +296,4 @@ exports.logoutHandler = function (req, res) {
         }
         sendBackJSON(returnJSON, res);
     }
-}
-
-/* Renders the profile for the user with the userId equal to profileUserId. */
-exports.renderProfilePage = function(req, res, profileUserId) {
-    res.render('profile', {
-        loggedIn: common.userIsLoggedIn(req),
-        userIsOwner: profileUserId == common.getLoggedInUserId(req)
-    });
 }

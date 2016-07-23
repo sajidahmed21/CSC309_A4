@@ -74,14 +74,6 @@ app.get('/', function (req, res) {
         loggedIn: userIsLoggedIn(req),
     });
 });
-
-app.get('/profile', checkAuthentication, function (req, res) {
-    user.renderProfilePage(req, res, getLoggedInUserId(req));
-});
-
-app.get('/profile/:id', checkAuthentication, function (req, res) {
-    user.renderProfilePage(req, res, req.params.id);
-});
     
 app.get('/demo', function (req, res) {
     db.query('SELECT COUNT(*) AS userCount FROM USERS').spread(function (results, metadata) {
@@ -143,7 +135,13 @@ app.post('/user/follow', checkAuthentication, followings.followHandler);
 
 app.delete('/user/unfollow', checkAuthentication, followings.unfollowHandler);
 
-app.get('/user/profile', checkAuthentication, user.getProfileHandler);
+app.get('/user/profile', checkAuthentication, function (req, res) {
+    user.getProfileHandler(req, res, getLoggedInUserId(req));
+});
+
+app.get('/user/profile/:id', checkAuthentication, function (req, res) {
+    user.getProfileHandler(req, res, req.params.id);
+});
 
 app.post('/user/logout', user.logoutHandler);
 
