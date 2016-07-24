@@ -15,7 +15,7 @@ app.use(session({
 // set hostname and port here
 var hostname = 'localhost';
 var port = 9090;
-
+var expressValidator = require('express-validator')
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
@@ -86,13 +86,15 @@ app.get('/course/:id',
 
 app.post('/creatcourse', function(req, res) {
     //check img size, dimensions etc, revalidate, and then enter into database
+    console.log(req.files, req.body)
 
 });
 app.get('/course-signup', function(req, res) {
+    userIsLoggedIn(req);
     // if logged in render page 
     // otherwise display page that says the user must be signed in to create a course. 
         res.render('createcourse', {
-            loggedIn: true
+            loggedIn:  true
         });
 });
 

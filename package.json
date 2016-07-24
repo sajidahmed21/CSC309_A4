@@ -19,6 +19,7 @@
     "express-session": "1.14.0",
     "sequelize": "3.23.6",
     "socket.io": "1.4.8",
-    "sqlite3": "3.1.4"
+    "sqlite3": "3.1.4",
+    "express-validator": "2.20.8"
   }
 }
