@@ -59,12 +59,29 @@ function getSessionUserId(socket) {
 exports.onConnection = function(socket) {
 	console.log('user [' + getSessionUserId(socket) + '] connected');
 	
+	if (getSessionUserId(socket) === 0) {
+        console.log('prevented attempt to send message without being logged in');
+		socket.emit('notLoggedIn');
+		socket.disconnect();
+    }
+	
+	// if this is the user's first open socket
+	if (getUserSockets(getSessionUserId(socket)).length === 1) {
+        // notify all sockets of the user's status change
+        socketIO.sockets.emit('status', {
+            type: 'user-online',
+            userId: getSessionUserId(socket)
+        });
+    }
+	
 	socket.on('send', function(message) {
 	    var userId = getSessionUserId(socket);
 	    
-		if (userId == 0 ) {
+		if (userId === 0 ) {
 		    console.log('prevented attempt to send message without being logged in');
 			socket.emit('notLoggedIn');
+			socket.disconnect();
+			console.log(getUserSockets(getSessionUserId(socket)));
 		}
 		else if (userId == message.partnerId) {
 		    console.log('prevented attempt to send message to self');
@@ -85,7 +102,17 @@ exports.onConnection = function(socket) {
     });
 	
 	socket.on('disconnect', function(socket){
-		console.log('user [' + getSessionUserId(socket) + '] disconnected');
+	    var userId = getSessionUserId(socket);
+		console.log('user [' + userId + '] disconnected');
+		
+		// check to make sure that the user has no other sockets open
+		if (getUserSockets(userId).length === 0) {
+	        // notify all sockets of the user's status change
+	        socketIO.sockets.emit('status', {
+	            type: 'user-offline',
+	            userId: userId
+            });
+	    }
 	});
 };
 

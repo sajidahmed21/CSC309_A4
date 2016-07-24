@@ -52,6 +52,17 @@ section#user-list div.user p {
     margin-bottom: 0;
 }
 
+/* by default, make the offline icons red and hide them */
+section#user-list i.offline-icon {
+    display: none;
+    color: #d60000;
+}
+
+/* show the offline icon if the user is marked as being offline */
+section#user-list div.user.offline i.offline-icon {
+    display: inline;
+}
+
 /* messages */
 /* remove the negative margin so that the conversation rows have some padding;
  * also add in scrolling if needed

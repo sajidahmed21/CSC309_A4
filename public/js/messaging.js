@@ -3,7 +3,18 @@ var socket = io.connect();
 // unique message id for each sent message from this socket
 var nextMessageId = 1;
 
+// list of unconfirmed messages which have a pending status until the server
+// responds about them
 var unconfirmedMessages = [];
+
+
+/* Returns a jQuerified version of the user row matching a given userId. */
+function findUserRow(userId) {
+    return $('section#user-list .user').filter(function(index, userRow) {
+        return $(userRow).attr('data-user-id') == userId;
+    });
+}
+
 
 /* Hides all conversations except the one for the given partner id.
  * If no chat area exists for the given partner id, one will be created.
@@ -21,6 +32,16 @@ function showConversation(partnerId) {
         if ($conversation.attr('data-partner-id') == partnerId) {
             foundTarget = true;
             $conversation.show();
+            
+            // also, if the user is offline, disable sending messages
+            if (findUserRow(partnerId).hasClass('offline')) {
+                document.getElementById('message-text').disabled = true;
+                document.getElementById('message-send').disabled = true;
+            }
+            else {
+                document.getElementById('message-text').disabled = false;
+                document.getElementById('message-send').disabled = false;
+            }
         }
         else {
             $conversation.hide();
@@ -295,9 +316,7 @@ function updateLastMessage(userId, message, receivedMessage) {
     }
     
     // find the user row in question
-    var $userRow = $('section#user-list .user').filter(function(index, userRow) {
-        return $(userRow).attr('data-user-id') == userId;
-    });
+    var $userRow = findUserRow(userId);
     
     // then set the text
     $userRow.children('p.last-message').text(message);
@@ -353,6 +372,18 @@ function setSocketEvents() {
     
     socket.on('sendError', function(data) {
         updateUnconfirmedMessageStatus(data.messageId, false);
+    });
+    
+    socket.on('status', function(data) {
+        $userRow = findUserRow(data.userId);
+        
+        // update the user row's status depending on the type of update
+        if (data.type == 'user-offline') {
+            $userRow.addClass('offline');
+        }
+        else if (data.type == 'user-online') {
+            $userRow.removeClass('offline');
+        }
     });
 }
 
