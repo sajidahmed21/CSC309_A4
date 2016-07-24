@@ -108,8 +108,12 @@ function limitResults(limit, results) {
  * An array of additional bindings can be used, with its parameters starting
  * at $2.
  */
-function search(query, searchString, limit, additionalBindings, callback) {
-    db.query(query, {bind: ['%' + searchString + '%'].concat(additionalBindings)})
+function search(query, searchString, likeSearch, limit, additionalBindings, callback) {
+    if (likeSearch) {
+        searchString = '%' + searchString + '%';
+    }
+    
+    db.query(query, {bind: [searchString].concat(additionalBindings)})
     .spread(function(results, metadata) {
        scoreResults(searchString, 'matchingString', results);
        sortResults(results);
@@ -145,7 +149,7 @@ function searchUsersByName(searchString, limit, userId, callback) {
         'WHERE U.name LIKE $1 AND U.id != $2 '
     ;
     
-   search(query, searchString, limit, [userId], function(results) {
+   search(query, searchString, true, limit, [userId], function(results) {
        // add a value field and strip out unneeded fields
        results.forEach(function(result) {
            result.value = mergeNameAndUsername(result.name, result.username);
@@ -171,7 +175,7 @@ function searchUsersByUsername(searchString, userId, limit, callback) {
         'WHERE LC.username LIKE $1 AND U.id != $2 '
     ;
     
-    search(query, searchString, limit, [userId], function(results) {
+    search(query, searchString, true, limit, [userId], function(results) {
         // add a value field and strip out unneeded fields
         results.forEach(function(result) {
             result.value = mergeNameAndUsername(result.name, result.username);
@@ -234,6 +238,32 @@ function searchUsers(searchString, limit, userId, callback) {
 }
 
 
+/* Searches for a specific user by userid and calls the callback with the results. */
+function searchForUser(searchString, callback) {
+    var query =
+        'SELECT U.name, LC.username, U.id AS data, ' +
+            'LC.username AS matchingString ' +
+        'FROM USERS U ' +
+        'LEFT OUTER JOIN LOGIN_CREDENTIALS LC ' +
+            'ON LC.user_id = U.id ' +
+        'WHERE U.id = $1 '
+    ;
+    
+    search(query, searchString, false, null, [], function(results) {
+        // add a value field and strip out unneeded fields
+        results.forEach(function(result) {
+            result.value = mergeNameAndUsername(result.name, result.username);
+
+            result['matchingString'] = undefined;
+            result['name'] = undefined;
+            result['username'] = undefined;
+        });
+
+        callback(results);
+   });
+}
+
+
 /* Wraps the results as required by jQuery's autocomplete library and sends
  * it as the response.
  */
@@ -276,9 +306,14 @@ exports.handleSearch = function(req, res) {
                 });
                 break;
             
+            case 'userbyid':
+                searchForUser(searchString, function(results) {
+                    returnResults(results, res);
+                });
+                break;
+            
             case 'onlineusers':
                 searchUsers(searchString, limit, userId, function(results) {
-                    console.log(results);
                     // next, filter out ones which are not online
                     results = results.filter(function(result) {
                         return messaging.userIsOnline(result.data);
