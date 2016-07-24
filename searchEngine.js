@@ -109,11 +109,9 @@ function limitResults(limit, results) {
  * at $2.
  */
 function search(query, searchString, likeSearch, limit, additionalBindings, callback) {
-    if (likeSearch) {
-        searchString = '%' + searchString + '%';
-    }
+    var searchParameter = likeSearch ? '%' + searchString + '%' : searchString;
     
-    db.query(query, {bind: [searchString].concat(additionalBindings)})
+    db.query(query, {bind: [searchParameter].concat(additionalBindings)})
     .spread(function(results, metadata) {
        scoreResults(searchString, 'matchingString', results);
        sortResults(results);
@@ -170,7 +168,7 @@ function searchUsersByName(searchString, limit, userId, callback) {
 
 
 /* Searches for users by username and calls the callback with the results. */
-function searchUsersByUsername(searchString, userId, limit, callback) {
+function searchUsersByUsername(searchString, limit, userId, callback) {
     var query =
         'SELECT U.name, LC.username, U.id AS data, ' +
             'LC.username AS matchingString ' +
