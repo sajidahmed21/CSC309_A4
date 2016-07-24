@@ -142,7 +142,7 @@ app.post('/user/changepassword', checkAuthentication, user.changePasswordHandler
 
 app.post('/user/follow', checkAuthentication, followings.followHandler);
 
-app.delete('/user/unfollow', checkAuthentication, followings.unfollowHandler);
+app.post('/user/unfollow', checkAuthentication, followings.unfollowHandler);
 
 app.get('/user/profile', checkAuthentication, function (req, res) {
     user.getProfileHandler(req, res, getLoggedInUserId(req));

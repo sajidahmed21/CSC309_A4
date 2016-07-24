@@ -138,11 +138,18 @@ exports.getProfileHandler = function (req, res, profileUserId) {
     db.query("SELECT name, profile_picture_path FROM USERS WHERE id = '" + profileUserId + "'").spread(function (results, metadata) {
         var name = results[0].name;
         db.query("SELECT CLASSES.id AS id, CLASSES.class_name AS class_name, USERS.name AS instructor FROM ENROLMENT, CLASSES, USERS WHERE USERS.id=CLASSES.instructor AND CLASSES.id=ENROLMENT.class_id AND ENROLMENT.user_id =" + profileUserId).spread(function (result, meta) {
+            db.query("SELECT EXISTS(SELECT 1 FROM FOLLOWINGS WHERE follower =" + common.getLoggedInUserId(req) +" AND followee=" + profileUserId+" ) AS checkfollow;").spread(function (resultInner, metaInner)
+            {
+            var boolFollow = false;
+            if(resultInner[0]['checkfollow'] ==1)
+                boolFollow = true;
             console.log(result);
             res.render('profile', {
                 name: name,
                 classes: result,
                 loggedIn: common.userIsLoggedIn(req),
+                current_id: profileUserId,
+                followed: boolFollow,
                 userIsOwner: profileUserId == common.getLoggedInUserId(req)
             });
             //            var returnJSON = {
@@ -155,6 +162,7 @@ exports.getProfileHandler = function (req, res, profileUserId) {
             //                "message": "Success for getting profile",
             //            }
             //            sendBackJSON(returnJSON, res);
+            })
         })
 
     }).catch(function (err) {
