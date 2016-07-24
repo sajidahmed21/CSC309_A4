@@ -63,6 +63,38 @@ section#user-list div.user.offline i.offline-icon {
     display: inline;
 }
 
+/* trim long messages in the last message field */
+section#user-list p.last-message {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* user search autocomplete styling */
+#user-search {
+    margin-bottom: 8px;
+}
+
+#user-search .autocomplete-suggestions {
+    border: 1px solid #999;
+    background: #fff;
+    cursor: default; }
+    
+#user-search .autocomplete-suggestion {
+    padding: 10px 5px;
+    font-size: 1.2em;
+    white-space: nowrap;
+}
+
+#user-search .autocomplete-selected {
+    background: #f0f0f0;
+}
+
+#user-search .autocomplete-suggestions strong {
+    font-weight: normal;
+    color: #3399ff;
+}
+
 /* messages */
 /* remove the negative margin so that the conversation rows have some padding;
  * also add in scrolling if needed
@@ -98,6 +130,12 @@ p.failed-message {
 
 p.successful-message {
     border-color: green;
+}
+
+
+/* hide the message input area if there are no conversations */
+section#chat-area #message-send-area:first-child {
+    display: none;
 }
 
 /* landscape mobile and larger ---------------------------------------------*/

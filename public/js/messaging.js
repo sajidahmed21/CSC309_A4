@@ -8,11 +8,15 @@ var nextMessageId = 1;
 var unconfirmedMessages = [];
 
 
-/* Returns a jQuerified version of the user row matching a given userId. */
+/* Returns a jQuerified version of the user row matching a given userId or
+ * null if no matching row was found.
+ */
 function findUserRow(userId) {
-    return $('section#user-list .user').filter(function(index, userRow) {
+    var row = $('section#user-list .user').filter(function(index, userRow) {
         return $(userRow).attr('data-user-id') == userId;
-    });
+    })[0];
+    
+    return row ? $(row) : null;
 }
 
 
@@ -208,6 +212,23 @@ function addReceivedMessage(partnerId, message) {
     if ($conversation === null) {
         $conversation = createConversation(partnerId);
         
+        // make a call for the user's name and then add a user row
+        $.ajax({
+            url: '/search?type=userbyid&query=' + partnerId,
+            success: function(results) {
+                suggestion = results.suggestions ? results.suggestions[0] : null;
+                
+                if (!suggestion) {
+                    console.log('failed to fetch user data');
+                }
+                else {
+                    addUser(partnerId, suggestion.value, '');
+                    // set the last message manually to trigger styling changes
+                    updateLastMessage(partnerId, message, true);
+                }
+            }
+        });
+        
         // and immediately hide it as it isn't the active conversation
         $conversation.hide();
     }
@@ -218,8 +239,10 @@ function addReceivedMessage(partnerId, message) {
         text: message
     }));
     
-    // update the conversation's last message field
-    updateLastMessage(partnerId, message, true);
+    // update the conversation's last message field if we didn't just create it
+    if (findUserRow(partnerId) !== null) {
+        updateLastMessage(partnerId, message, true);
+    }
 }
 
 
@@ -279,7 +302,9 @@ function updateUnconfirmedMessageStatus(messageId, wasSuccessful) {
 }
 
 
-/* Creates a new row in the user list for a given user. */
+/* Creates a new row in the user list for a given user and returns a
+ * jQuerified version of the row.
+ */
 function addUser(userId, name, lastMessage) {
     // generate HTML
     var $userRow = $('<div>', {
@@ -288,12 +313,12 @@ function addUser(userId, name, lastMessage) {
     });
     
     $userRow.append($('<p>', {
-        class: 'user-name col-sm-4 col-md-3 col-lg-2',
+        class: 'user-name col-sm-12',
         text: name
     }));
     
     $userRow.append($('<p>', {
-        class: 'last-message text-muted col-sm-8 col-md-9 col-lg-10',
+        class: 'last-message text-muted col-sm-12',
         text: lastMessage
     }));
     
@@ -303,18 +328,12 @@ function addUser(userId, name, lastMessage) {
     // add to user list
     $userRow.appendTo($('section#user-list'));
     
-    return;
+    return $userRow;
 }
 
 
 /* Updates the last message text in the user side bar for the given partner. */
 function updateLastMessage(userId, message, receivedMessage) {
-    // trim the message so that is isn't too long
-    if (message.length > 17)
-    {
-        message = message.substring(0, 17) + '...';
-    }
-    
     // find the user row in question
     var $userRow = findUserRow(userId);
     
@@ -377,14 +396,39 @@ function setSocketEvents() {
     socket.on('status', function(data) {
         $userRow = findUserRow(data.userId);
         
-        // update the user row's status depending on the type of update
-        if (data.type == 'user-offline') {
-            $userRow.addClass('offline');
-        }
-        else if (data.type == 'user-online') {
-            $userRow.removeClass('offline');
+        // only react if we have this user in the user list
+        if ($userRow !== null) {
+            // update the user row's status depending on the type of update
+            if (data.type == 'user-offline') {
+                $userRow.addClass('offline');
+            }
+            else if (data.type == 'user-online') {
+                $userRow.removeClass('offline');
+            }
         }
     });
+}
+
+
+/* Shows the conversation with the user of the selected suggestion. If the
+ * conversation does not exist, one will be created.
+ */
+function onSelectUserSearch(suggestion) {
+    // clear the text area
+    $('#user-search-text').val('');
+    
+    var partnerId = suggestion.data;
+    if (findConversation(partnerId) === null) {
+        createConversation(partnerId);
+    }
+    
+    var $userRow = findUserRow(partnerId);
+    if ($userRow === null) {
+        $userRow = addUser(partnerId, suggestion.value, '');
+    }
+    
+    // show the user's conversation
+    $userRow.click();
 }
 
 
@@ -396,6 +440,17 @@ window.onload = function() {
     setOnClickEvents();
     
     setSocketEvents();
+    
+    // initialise the user search
+    $('input#user-search-text').autocomplete({
+        serviceUrl: '/search',
+        params: {type: 'onlineusers', limit: 8},
+        noCache: true, // don't use a cache as user statuses may change
+        minLength: 0,
+        autoFocus: true,
+        appendTo: $('div#user-search-dropdown'),
+        onSelect: onSelectUserSearch
+    });
     
     // load the first chat area (which for the mockup is hiding all
     // chat areas except the first
