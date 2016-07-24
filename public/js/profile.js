@@ -1,8 +1,8 @@
 $(document).ready(function () {
     initialize();
     $('.drop_course_btn').click(function () {
-        var $unenroll_form = $('#unenroll_form');
-        $unenroll_form.css('display', 'block');
+        console.log(this.value);
+        dropCourse(this.value);
     });
     $('#changepassword_btn').click(function () {
         changePassword();
@@ -22,7 +22,141 @@ $(document).ready(function () {
     $('#logout-anchor').click(function () {
         logout();
     });
+    $('#unfollow_btn').click(function () {
+        unfollow(this.value);
+    });
+    $('#follow_btn').click(function () {
+        follow(this.value);
+    });
 });
+
+var unfollow = function (followee_id) {
+    var body = {
+        "followee": followee_id
+    }
+    console.log('send');
+    $.ajax({
+        type: "POST",
+        url: "/user/unfollow",
+        data: JSON.stringify(body),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+            hidePopup();
+            console.log(data);
+            window.location.href = "/user/profile/" + followee_id;
+        },
+        error: function (data) {
+            hidePopup();
+            window.location.href = "/";
+            $("body").html(data.responseText);
+        }
+    });
+}
+
+var follow = function (followee_id) {
+    var body = {
+        "followee": followee_id
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "/user/follow",
+        data: JSON.stringify(body),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+            hidePopup();
+            console.log(data);
+            window.location.href = "/user/profile/" + followee_id;
+        },
+        error: function (data) {
+            hidePopup();
+            window.location.href = "/";
+            $("body").html(data.responseText);
+        }
+    });
+}
+
+var dropCourse = function (dropCourse_id) {
+    var $popup = $('#popup');
+    $popup.empty();
+
+    $outer = $('<div/>', {
+        id: 'unenroll_form'
+    });
+
+    $middle = $('<div/>', {
+        class: 'col-md-6'
+    });
+
+    $container = $('<div/>', {
+        class: 'standard-container'
+    });
+
+    $cancelwrapper = $('<div/>');
+
+    $cancelicon = $('<span/>', {
+        class: 'glyphicon glyphicon-remove cancel_icon'
+    });
+    $cancelicon.click(function () {
+        hidePopup();
+    });
+    $cancelwrapper.append($cancelicon);
+
+    $container.append($cancelwrapper);
+
+    $form = $('<form/>');
+
+    $title = $('<h1/>', {
+        class: 'standard-title'
+    });
+    $title.text('Unenroll').appendTo($form);
+
+    $input = $('<p/>', {
+        class: 'standard-body'
+    });
+    $input.text('Are you sure you want to unenroll?');
+
+    $input.appendTo($form);
+
+    $input = $('<input/>', {
+        type: 'button',
+        value: 'Unenroll',
+        class: 'btn btn-danger standard-red-button block_btn'
+    });
+
+    $input.click(function () {
+        var body = {
+            "dropCourse_id": dropCourse_id
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/user/unenrollClasses",
+            data: JSON.stringify(body),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                hidePopup();
+                console.log(data);
+                window.location.href = "/user/profile";
+            },
+            error: function (data) {
+                hidePopup();
+                window.location.href = "/";
+                $("body").html(data.responseText);
+            }
+        });
+    });
+
+    $input.appendTo($form);
+
+    $form.appendTo($container);
+    $container.appendTo($middle);
+    $middle.appendTo($outer);
+    $outer.appendTo($popup);
+};
 
 var logout = function () {
     $.ajax({
@@ -36,13 +170,13 @@ var logout = function () {
             console.log(data);
             window.location.href = "/";
         },
-        failure: function (errMsg) {
-            console.log(errMsg);
+        error: function (data) {
             hidePopup();
-            alert('Please select another username');
+            window.location.href = "/";
+            $("body").html(data.responseText);
         }
     });
-}
+};
 
 var initialize = function () {
     hidePopup();
@@ -173,9 +307,31 @@ var deleteUser = function () {
     $paraharph.appendTo($form);
 
     $input = $('<input/>', {
-        type: 'submit',
+        type: 'button',
         value: 'Delete',
         class: 'btn btn-danger standard-red-button block_btn'
+    });
+
+    $input.click(function () {
+        var body = {};
+
+        $.ajax({
+            type: "POST",
+            url: "/user/deleteuser",
+            data: JSON.stringify(body),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                hidePopup();
+                console.log(data);
+                window.location.href = "/";
+            },
+            error: function (data) {
+                hidePopup();
+                window.location.href = "/";
+                $("body").html(data.responseText);
+            }
+        });
     });
 
     $input.appendTo($form);
@@ -248,7 +404,7 @@ var changePassword = function () {
         value: 'Edit Now!',
         class: 'btn standard-green-button block_btn'
     });
-    
+
     $input.click(function () {
         var body = {
             "changePassword": $('#userPassword').val()
@@ -264,14 +420,14 @@ var changePassword = function () {
                 hidePopup();
                 console.log(data);
             },
-            failure: function (errMsg) {
-                console.log(errMsg);
+            error: function (data) {
                 hidePopup();
-                alert('Please select another username');
+                window.location.href = "/";
+                $("body").html(data.responseText);
             }
         });
     });
-    
+
     $input.appendTo($form);
 
     $form.appendTo($container);
@@ -313,7 +469,7 @@ var changeName = function () {
     $title = $('<h1/>', {
         class: 'standard-title'
     });
-    $title.text('Change Password').appendTo($form);
+    $title.text('Change Name').appendTo($form);
 
     $input = $('<input/>', {
         id: 'changeName',
@@ -331,7 +487,7 @@ var changeName = function () {
         value: 'Edit Now!',
         class: 'btn standard-green-button block_btn'
     });
-    
+
     $input.click(function () {
         var body = {
             "changeName": $('#changeName').val()
@@ -348,14 +504,14 @@ var changeName = function () {
                 console.log(data);
                 window.location.href = "/user/profile";
             },
-            failure: function (errMsg) {
-                console.log(errMsg);
+            error: function (data) {
                 hidePopup();
-                alert('Please select another username');
+                window.location.href = "/";
+                $("body").html(data.responseText);
             }
         });
     });
-    
+
     $input.appendTo($form);
 
     $form.appendTo($container);

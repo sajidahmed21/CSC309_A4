@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+    
+<html lang="en">
+    <head>
+        <meta name="author" content="LearnR">
+        <meta name="description" content="LearnR Admin Home Page">
+        <meta name="keywords" content="LearnR, Admin Home, Admin">
+        <meta name="Copyright" content="LearnR Team">
+        
+		<!-- This is to prevent some mobile device browsers from scaling down page -->
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		
+	    <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">-->
+		
+        <link rel="stylesheet" type="text/css" href="/css/style.css">
+		<link rel="stylesheet" type="text/css" href="/css/admin_home.css">
+		
+		<!-- jQuery UI library-->
+		<!--<link rel="stylesheet" href="assets/jquery-ui/jquery-ui.min.css">-->
+		<!--<script src="assets/jquery-ui/external/jquery/jquery.js" defer</script>-->
+		
+		<script src="/js/jquery-3.0.0.min.js" defer type="text/javascript"></script>
+		<script src="/js/jquery.autocomplete.js" defer type="text/javascript"></script>
+		
+		<!--<script src="assets/jquery-ui/jquery-ui.min.js" defer</script>-->
+		<script src="/js/admin.js" defer type="text/javascript"></script>
+        
+    </head>
+    
+    <body>
+		<header class="global_font">
+			<h1>LearnR</h1>
+			<h2>Admin</h2>
+			
+			<a id="logout-anchor" class="standard-clear-button" href="admin_login.html">Logout</a> <!-- TODO: Remove href -->
+			<img src="/img/profile.png" alt="Profile" height="40" width="45" class="profile_icon">
+			<h3 id="admin-username">admin.username</h3>
+
+            <nav>
+				<ul id="tabs-list">
+					<li><a id="analytics-tab" href="#">Analytics</a></li>
+					<li><a id="users-tab" href="#">Users</a></li>
+					<li><a id="class-tab" href="#">Class</a></li>
+				</ul>
+			</nav>
+		</header>
+		
+		<main id="main-content" class="global_font">
+			
+		</main>
+    </body>
+</html>

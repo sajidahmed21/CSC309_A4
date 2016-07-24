@@ -1,4 +1,6 @@
 var sequelize = require('sequelize');
+var bcrypt = require('bcryptjs');
+exports.bcrypt = bcrypt;
 
 exports.currentUser = [];
 
@@ -42,21 +44,33 @@ exports.userIsLoggedIn = userIsLoggedIn;
 /* Sets the given userId as the logged in user. */
 exports.setLoggedInUserId = function(req, userId) {
     req.session.userId = userId;
-}
+};
 
 /* To be called as a part of a chain in the routing.
  *
  * Calls the next function if the user is logged in and otherwise redirects the
- * user with a 404 error.
+ * user to the home page with a message about needing to log in.
  */
 exports.checkAuthentication = function (req, res, next) {
     if (userIsLoggedIn(req)) {
         return next();
     } else {
+        if(req.method.toLowerCase() == 'post')
+            res.status(400);
         console.log('access denied to request');
         return res.render('home', {
             errorContent: '<p><strong>Opps!</strong> You need to be logged in to access that.</p>',
             loggedIn: false
         });
     }
+};
+
+/* Standard function for generation unique session id */
+exports.generateUniqueId = function () {
+    return bcrypt.hashSync(Math.random().toString(), 8);
+};
+
+/* Standard function for checking passwords */
+exports.comparePassword = function (password, passwordHash) {
+    return bcrypt.compareSync(password, passwordHash);
 };

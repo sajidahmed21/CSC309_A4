@@ -13,6 +13,10 @@
     padding: 0px !important;
 }
 
+.invis{
+    display:none;
+}
+
 .standard-clear-button {
     color: #777;
     border: 1px solid #bdc3c7;
@@ -131,7 +135,7 @@
     box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
 }
 
-.no-underline{
+.no-underline {
     font-style: none !important;
 }
 
@@ -351,15 +355,14 @@ p.class-name {
     font-weight: 200;
 }
 
-.dropdown-menu{
+.dropdown-menu {
     border-radius: 0;
     color: #777777;
     background-color: #ffffff;
 }
 
-.dropdown-menu ul{
-    
-}
+.dropdown-menu ul {}
+
 
 /* global style ends*/
 
@@ -420,7 +423,7 @@ p.class-name {
     margin-top: 14px;
 }
 
-.standard_ref_list{
+.standard_ref_list {
     margin-top: 20px;
 }
 
@@ -429,6 +432,41 @@ p.class-name {
 
 
 /* profile page style starts*/
+
+#profile_name {
+    color: #ffffff;
+    text-align: center;
+    padding-top: 22px;
+    font-size: 600%;
+}
+
+#green_background {
+    background-color: #1abc9c;
+}
+
+#light_green_background {
+    background-color: #2ecc71;
+}
+
+#blue_background {
+    background-color: #3498db;
+}
+
+#yellow_background {
+    background-color: #f1c40f;
+}
+
+#orange_background {
+    background-color: #f39c12;
+}
+
+#red_background {
+    background-color: #e74c3c;
+}
+
+#grey_background {
+    background-color: #95a5a6;
+}
 
 .profilepage_img {
     width: 100%;
@@ -451,6 +489,8 @@ p.class-name {
     left: 13%;
     background-color: #ecf0f1;
     border: 5px solid #ffffff;
+    width: 150px;
+    height: 150px;
 }
 
 .class_container {

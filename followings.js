@@ -3,7 +3,7 @@ var sendBackJSON = common.sendBackJSON;
 var db = common.db;
 
 exports.followHandler = function (req, res){
-    var follower = req.body.follower;
+    var follower = req.session.thisid;
     var followee = req.body.followee;
     db.query("INSERT INTO FOLLOWINGS (follower,followee ) VALUES (" + follower +"," + followee + ")" ).spread(function(results, metadata){
         var returnJSON = {
@@ -22,8 +22,10 @@ exports.followHandler = function (req, res){
 };
 
 exports.unfollowHandler = function (req, res){
-    var follower = req.body.follower;
+    var follower = req.session.thisid;
     var followee = req.body.followee;
+    console.log(follower);
+    console.log(followee);
     db.query("DELETE FROM FOLLOWINGS WHERE follower =" + follower +" AND followee = " + followee ).spread(function(results, metadata){
         var returnJSON = {
             "status": "success",

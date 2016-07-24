@@ -1,0 +1,44 @@
+<html lang="en">
+    <head>
+        <meta name="author" content="LearnR">
+        <meta name="description" content="LearnR Admin Login Page">
+        <meta name="keywords" content="LearnR, Admin Login, Admin">
+        <meta name="Copyright" content="LearnR Team">
+        
+        <title>TS Admin Login</title>
+        
+		<!-- This is to prevent some mobile device browsers from scaling down page -->
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		
+	    <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">-->
+		
+        <link rel="stylesheet" type="text/css" href="/css/style.css">
+		<link rel="stylesheet" type="text/css" href="/css/admin_login.css">
+    </head>
+    
+    <body class="global_font">
+        <div id="admin_login_form">
+        <div class="col-md-6">
+            <div class="standard-container">
+                <form action="/admin/login" method="POST">
+                    <h1 id="main_title" class="standard-title">LearnR</h1>
+                    <h2 id="admin_title" class="standard-title">Admin</h2>
+					
+					<!-- Admin id must contain only alphabets and numbers and must be of length between 6 - 20 characters -->
+                    <input name="admin_id" type="text" placeholder="Admin"
+					       required="required" pattern="^[a-zA-Z0-9]{6,20}$" class="standard-red-input" />
+					
+					<!-- Password must be between 6 - 20 characters and contain at least 1 alphabet, 1 number, and 1 special character -->
+                    <input name="password" type="password" placeholder="Password" required="required"
+						   pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&\-])[A-Za-z\d$@$!%*#?&\-]{6,20}$" class="standard-red-input" />
+                    <input type="submit" value="Login" class="btn btn-danger standard-red-button block_btn" />
+                </form>
+            </div>
+        </div>
+    </div>
+    </body>
+</html>

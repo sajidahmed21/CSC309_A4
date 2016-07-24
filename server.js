@@ -16,7 +16,7 @@ var session = require('express-session')({
     resave: true,
     saveUninitialized: true,
     cookie: {
-        maxAge: 60000
+        maxAge: 30000
     }
 });
 var sharedSession = require("express-socket.io-session");
@@ -37,6 +37,9 @@ var port = 9090;
 var expressValidator = require('express-validator')
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 
 
 // custom modules
@@ -74,7 +77,8 @@ app.get('/', function (req, res) {
         loggedIn: userIsLoggedIn(req),
     });
 });
-    
+
+/* TODO: Remove */
 app.get('/demo', function (req, res) {
     db.query('SELECT COUNT(*) AS userCount FROM USERS').spread(function (results, metadata) {
         res.render('demo', {
@@ -86,10 +90,10 @@ app.get('/demo', function (req, res) {
     });
 });
 
-app.get('/course/:id', 
-    courses.get_class_info, 
-    courses.get_course_rating, 
-    courses.get_enrolled_students, 
+app.get('/1/:id',
+    courses.get_class_info,
+    courses.get_course_rating,
+    courses.get_enrolled_students,
     courses.get_reviews,
     courses.render_course_page);
 
@@ -121,7 +125,16 @@ app.get('/text', function (req, res) {
 });
 
 /* Users ------------------------------------------------------------*/
-/*app.get('/enroll', function (req, res) {
+
+app.get('/enrolls', function (req, res) {
+    db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (18, 1)").spread(function (results, metadata) {
+        console.log("JOIN 1");
+    })
+    db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (18, 2)").spread(function (results, metadata) {
+        console.log("JOIN 2");
+    })
+})
+app.get('/enroll', function (req, res) {
     db.query("INSERT INTO CLASSES (id, class_name, instructor) VALUES (1, 'TESTCOURSE', 3)").spread(function (results, metadata) {
         db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (18, 1)").spread(function (results, metadata) {
             console.log("JOIN 1");
@@ -132,7 +145,7 @@ app.get('/text', function (req, res) {
             console.log("JOIN 2");
         })
     });
-});*/
+});
 
 app.post('/user/signin', user.signinHandler);
 
@@ -146,7 +159,7 @@ app.post('/user/changepassword', checkAuthentication, user.changePasswordHandler
 
 app.post('/user/follow', checkAuthentication, followings.followHandler);
 
-app.delete('/user/unfollow', checkAuthentication, followings.unfollowHandler);
+app.post('/user/unfollow', checkAuthentication, followings.unfollowHandler);
 
 app.get('/user/profile', checkAuthentication, function (req, res) {
     user.getProfileHandler(req, res, getLoggedInUserId(req));
@@ -156,9 +169,11 @@ app.get('/user/profile/:id', checkAuthentication, function (req, res) {
     user.getProfileHandler(req, res, req.params.id);
 });
 
-app.post('/user/logout', user.logoutHandler);
+app.post('/user/logout', checkAuthentication, user.logoutHandler);
 
-app.delete('/user/unenrollClasses', user.unenrollHandler);
+app.post('/user/unenrollClasses', checkAuthentication, user.unenrollHandler);
+
+app.post('/user/deleteuser', checkAuthentication, user.deleteUserHandler);
 
 
 /* Courses  ---------------------------------------------------------*/
@@ -169,6 +184,8 @@ app.get('/courses/popular', recommendations.popularCourses);
 
 
 /* Admins  ----------------------------------------------------------*/
+
+app.get('/admin', admin.checkAuthentication, admin.handleAdminHomeRequest);
 
 app.post('/admin/login', admin.handleLoginRequest);
 
@@ -190,6 +207,6 @@ socketIO.on('connection', messaging.onConnection);
 
 /* server start up --------------------------------------------------*/
 
-server.listen(port, hostname, function() {
+server.listen(port, hostname, function () {
     console.log(`Server running at http://${hostname}:${port}/`);
-  });
+});

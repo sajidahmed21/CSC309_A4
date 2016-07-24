@@ -167,10 +167,9 @@ var loginPage = function () {
                 console.log(data);
                 window.location.href = "/user/profile";
             },
-            failure: function (errMsg) {
-                console.log(errMsg);
+            error: function (data) {
                 hidePopup();
-                alert('Please select another username');
+                $("body").html(data.responseText);
             }
         });
     });
@@ -275,7 +274,7 @@ var signupPage = function () {
 
     $input.appendTo($form);
 
-    $input = $('<input/>', {
+    /*$input = $('<input/>', {
         id: 'userEmail',
         name: 'userEmail',
         type: 'email',
@@ -284,8 +283,8 @@ var signupPage = function () {
         class: 'standard-input'
     });
 
-    $input.appendTo($form);
-
+    $input.appendTo($form);*/
+    
     $input = $('<input/>', {
         type: 'button',
         value: 'Join Now!',
@@ -301,6 +300,7 @@ var signupPage = function () {
             "signupName": $('#name').val(),
             "signupUsername": $('#userName').val(),
             "signupPassword": $('#userPassword').val(),
+            "userPasswordConfirm": $('#userPasswordConfirm').val(),
             "signupProfilePicture": "sfkjsdn"
         }
 
@@ -315,10 +315,9 @@ var signupPage = function () {
                 console.log(data);
                 window.location.href = "/user/profile";
             },
-            failure: function (errMsg) {
-                console.log(errMsg)
+            error: function (data) {
                 hidePopup();
-                alert('Please select another username');
+                $("body").html(data.responseText);
             }
         });
     });
