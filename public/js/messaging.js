@@ -20,6 +20,20 @@ function findUserRow(userId) {
 }
 
 
+/* Disables typing and sending of messages. */
+function disableMessageSending() {
+    document.getElementById('message-text').disabled = true;
+    document.getElementById('message-send').disabled = true;
+}
+
+
+/* Enables typing and sending of messages. */
+function enableMessageSending() {
+    document.getElementById('message-text').disabled = false;
+    document.getElementById('message-send').disabled = false;
+}
+
+
 /* Hides all conversations except the one for the given partner id.
  * If no chat area exists for the given partner id, one will be created.
  *
@@ -42,12 +56,10 @@ function showConversation(partnerId) {
             
             // also, if the user is offline, disable sending messages
             if (findUserRow(partnerId).hasClass('offline')) {
-                document.getElementById('message-text').disabled = true;
-                document.getElementById('message-send').disabled = true;
+                disableMessageSending();
             }
             else {
-                document.getElementById('message-text').disabled = false;
-                document.getElementById('message-send').disabled = false;
+                enableMessageSending();
             }
         }
         else {
@@ -315,10 +327,20 @@ function addUser(userId, name, lastMessage) {
         'data-user-id': userId
     });
     
-    $userRow.append($('<p>', {
-        class: 'user-name col-sm-12',
-        text: name
+    var $userInfo = $('<div>', {
+        class: 'col-sm-12'
+    });
+    
+    $userInfo.append($('<i>', {
+        class: 'offline-icon glyphicon glyphicon-remove-sign'
     }));
+    
+    $userInfo.append($('<p>', {
+        class: 'user-name',
+        text: ' ' + name
+    }));
+    
+    $userRow.append($userInfo);
     
     $userRow.append($('<p>', {
         class: 'last-message text-muted col-sm-12',
@@ -404,6 +426,11 @@ function setSocketEvents() {
             // update the user row's status depending on the type of update
             if (data.type == 'user-offline') {
                 $userRow.addClass('offline');
+                
+                // if this was the active conversation, disable sending
+                if (data.userId == window.currentPartnerId) {
+                    disableMessageSending();
+                }
             }
             else if (data.type == 'user-online') {
                 $userRow.removeClass('offline');
@@ -435,7 +462,7 @@ function onSelectUserSearch(suggestion) {
 }
 
 
-window.onload = function() {
+$(function() {
     // set the resizing of the messaging area and trigger it immediately
     $(window).resize(resizeMessagingArea);
     resizeMessagingArea();
@@ -461,4 +488,4 @@ window.onload = function() {
     // load the first chat area (which for the mockup is hiding all
     // chat areas except the first
     $(document.getElementsByClassName('user')[0]).click();
-}
+});

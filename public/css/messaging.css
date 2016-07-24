@@ -63,6 +63,11 @@ section#user-list div.user.offline i.offline-icon {
     display: inline;
 }
 
+/* make the name be inline with the offline icon */
+section#user-list div.user p.user-name {
+    display: inline;
+}
+
 /* trim long messages in the last message field */
 section#user-list p.last-message {
     white-space: nowrap;

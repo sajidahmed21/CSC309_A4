@@ -57,26 +57,26 @@ function getSessionUserId(socket) {
 
 /* To be called when the client-side socket.io code attempts to connect. */
 exports.onConnection = function(socket) {
-	console.log('user [' + getSessionUserId(socket) + '] connected');
+    var userId = getSessionUserId(socket);
+    
+	console.log('user [' + userId + '] connected');
 	
-	if (getSessionUserId(socket) === 0) {
+	if (userId === 0) {
         console.log('prevented attempt to send message without being logged in');
 		socket.emit('notLoggedIn');
 		socket.disconnect();
     }
 	
 	// if this is the user's first open socket
-	if (getUserSockets(getSessionUserId(socket)).length === 1) {
+	if (getUserSockets(userId).length === 1) {
         // notify all sockets of the user's status change
         socketIO.sockets.emit('status', {
             type: 'user-online',
-            userId: getSessionUserId(socket)
+            userId: userId
         });
     }
 	
 	socket.on('send', function(message) {
-	    var userId = getSessionUserId(socket);
-	    
 		if (userId === 0 ) {
 		    console.log('prevented attempt to send message without being logged in');
 			socket.emit('notLoggedIn');
@@ -102,7 +102,6 @@ exports.onConnection = function(socket) {
     });
 	
 	socket.on('disconnect', function(socket){
-	    var userId = getSessionUserId(socket);
 		console.log('user [' + userId + '] disconnected');
 		
 		// check to make sure that the user has no other sockets open
