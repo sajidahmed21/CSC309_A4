@@ -24,6 +24,8 @@ var loggedInAdmins = [];
  * admin to the home page with a message about needing to log in.
  */
 exports.checkAuthentication = function(request, response, next) {
+    getAnalyticsData();
+    
     for (var i = 0; i < loggedInAdmins.length; i++) {
         var admin = loggedInAdmins[i];
         if (admin.sessionId === request.session.id && admin.uniqueId === request.session.unique_id) {
@@ -110,4 +112,39 @@ function onSuccessfulLogin(request, response) {
     
     //var responseBody = {status: 'LOGIN_SUCCESSFUL'};
     //sendJSONResponse(responseBody, response);
+}
+
+
+
+/* Analytics */
+
+function getAnalyticsData() {
+    /* --- SQL Queries --- */
+    
+    /* Total number of users */
+    var totalUsers = '(SELECT COUNT(*) AS totalUsers FROM USERS)';
+    
+    /* Number of unique users who have enrolled for at least one class */
+    var usersEnrolledInClass = '(SELECT COUNT(DISTINCT user_id) AS numUsersEnrolledInClass FROM ENROLMENT)';
+    
+    /* Avg num of unique users per day */
+    var avgLogins = '(SELECT AVG(numLogins) AS avgNumLoginsPerDay ' +
+                     'FROM (SELECT COUNT(DISTINCT user_id) AS numLogins FROM LOGIN_HISTORY GROUP BY date(login_timestamp)))';
+    
+    /* Total number of classes */
+    var numClasses = '(SELECT COUNT(*) AS numClasses FROM CLASSES)';
+    
+    /* Avg num of users per class */
+    var avgUsersPerClass = '(SELECT (SELECT COUNT(*) FROM USERS) / (SELECT COUNT(*) FROM CLASSES) AS avgUsersPerClass)';
+    
+    /* Avg rating over all classes */
+    var avgClassRating = '(SELECT (COALESCE(AVG(rating), \'-\')) AS avgClassRating FROM REVIEWS)';
+    
+    /* The final query to be passed in for execution */
+    var finalQuery = 'SELECT * FROM ' + totalUsers + ', ' + usersEnrolledInClass + ', ' + avgLogins + ', ' +
+                      numClasses + ', ' + avgUsersPerClass + ', ' + avgClassRating;
+    
+    db.query(finalQuery).spread(function (results) {
+        console.log(results);
+    });
 }
