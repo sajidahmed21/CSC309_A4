@@ -86,7 +86,7 @@ app.get('/demo', function (req, res) {
     });
 });
 
-app.get('/course/:id', 
+app.get('/1/:id', 
     courses.get_class_info, 
     courses.get_course_rating, 
     courses.get_enrolled_students, 
