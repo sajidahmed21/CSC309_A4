@@ -469,7 +469,7 @@ var changeName = function () {
     $title = $('<h1/>', {
         class: 'standard-title'
     });
-    $title.text('Change Password').appendTo($form);
+    $title.text('Change Name').appendTo($form);
 
     $input = $('<input/>', {
         id: 'changeName',

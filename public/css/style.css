@@ -13,6 +13,10 @@
     padding: 0px !important;
 }
 
+.invis{
+    display:none;
+}
+
 .standard-clear-button {
     color: #777;
     border: 1px solid #bdc3c7;

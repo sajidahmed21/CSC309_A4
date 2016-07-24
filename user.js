@@ -139,38 +139,37 @@ exports.getProfileHandler = function (req, res, profileUserId) {
     db.query("SELECT name, profile_picture_path FROM USERS WHERE id = '" + profileUserId + "'").spread(function (results, metadata) {
         var name = results[0].name;
         var background_color = results[0].profile_picture_path;
-        if( color.indexOf(background_color) < 0)
+        if (color.indexOf(background_color) < 0)
             background_color = 'grey_background';
         var firstLetterProfile = name.charAt(0);
-        if(firstLetterProfile >= 'a' && firstLetterProfile <='z')
+        if (firstLetterProfile >= 'a' && firstLetterProfile <= 'z')
             firstLetterProfile = firstLetterProfile.toUpperCase();
         db.query("SELECT CLASSES.id AS id, CLASSES.class_name AS class_name, USERS.name AS instructor FROM ENROLMENT, CLASSES, USERS WHERE USERS.id=CLASSES.instructor AND CLASSES.id=ENROLMENT.class_id AND ENROLMENT.user_id =" + profileUserId).spread(function (result, meta) {
-            db.query("SELECT EXISTS(SELECT 1 FROM FOLLOWINGS WHERE follower =" + common.getLoggedInUserId(req) +" AND followee=" + profileUserId+" ) AS checkfollow;").spread(function (resultInner, metaInner)
-            {
-            var boolFollow = false;
-            if(resultInner[0]['checkfollow'] ==1)
-                boolFollow = true;
-            console.log(result);
-            res.render('profile', {
-                profile_name: firstLetterProfile,
-                background_color: background_color,
-                name: name,
-                classes: result,
-                loggedIn: common.userIsLoggedIn(req),
-                current_id: profileUserId,
-                followed: boolFollow,
-                userIsOwner: profileUserId == common.getLoggedInUserId(req)
-            });
-            //            var returnJSON = {
-            //                "status": "success",
-            //                "data": {
-            //                    "name": results[0].name,
-            //                    "profile_picture_path": results[0].profile_picture_path,
-            //                    "courses": result
-            //                },
-            //                "message": "Success for getting profile",
-            //            }
-            //            sendBackJSON(returnJSON, res);
+            db.query("SELECT EXISTS(SELECT 1 FROM FOLLOWINGS WHERE follower =" + common.getLoggedInUserId(req) + " AND followee=" + profileUserId + " ) AS checkfollow;").spread(function (resultInner, metaInner) {
+                var boolFollow = false;
+                if (resultInner[0]['checkfollow'] == 1)
+                    boolFollow = true;
+                console.log(result);
+                res.render('profile', {
+                    profile_name: firstLetterProfile,
+                    background_color: background_color,
+                    name: name,
+                    classes: result,
+                    loggedIn: common.userIsLoggedIn(req),
+                    current_id: profileUserId,
+                    followed: boolFollow,
+                    userIsOwner: profileUserId == common.getLoggedInUserId(req)
+                });
+                //            var returnJSON = {
+                //                "status": "success",
+                //                "data": {
+                //                    "name": results[0].name,
+                //                    "profile_picture_path": results[0].profile_picture_path,
+                //                    "courses": result
+                //                },
+                //                "message": "Success for getting profile",
+                //            }
+                //            sendBackJSON(returnJSON, res);
             })
         })
 
@@ -226,6 +225,22 @@ exports.signinHandler = function (req, res) {
 };
 
 exports.signupHandler = function (req, res) {
+    if (req.body.signupPassword.length < 8)
+    {
+        res.status(400);
+        return res.render('home', {
+            errorContent: '<p><strong>Opps!</strong> Your password must be at least length of 8!</p>',
+            loggedIn: false
+        });
+    }
+    if (req.body.signupPassword != req.body.userPasswordConfirm) {
+        console.log("return");
+        res.status(400);
+        return res.render('home', {
+            errorContent: '<p><strong>Opps!</strong> Your password do not match!</p>',
+            loggedIn: false
+        });
+    }
     bcrypt.hash(req.body.signupPassword, 8, function (err, hashedPassword) {
         if (err) {
             req.session.destroy();
@@ -242,10 +257,10 @@ exports.signupHandler = function (req, res) {
         console.log(req.body);
 
         db.transaction(function (transaction) {
-            
+
                 var signupName = req.body.signupName;
                 var signupUsername = req.body.signupUsername;
-                var signupProfilePicture = color[Math.floor(Math.random()*5)];
+                var signupProfilePicture = color[Math.floor(Math.random() * 5)];
                 return db.query("INSERT INTO USERS (name, profile_picture_path) VALUES ('" + signupName + "','" + signupProfilePicture + "')", {
                     transaction: transaction
                 }).then(function (result) {
@@ -284,6 +299,12 @@ exports.loginInsert = function (transaction, id, signupUsername, signupPassword,
                 "message": "Signup Success"
             };
             sendBackJSON(returnJSON, res);
+        }).catch(function (err) {
+            res.status(400);
+            return res.render('home', {
+                errorContent: '<p><strong>Opps!</strong> The username has been taken! Please choose another username!</p>',
+                loggedIn: false
+            });
         });
 };
 
