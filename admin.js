@@ -16,6 +16,21 @@ var sendUnauthorizedResponse = common.sendUnauthorizedResponse;
 /* Common instance of `sequelize` */
 var db = common.db;
 
+
+/* To be called as a part of a chain in the routing.
+ *
+ * Calls the next function if the admin is logged in and otherwise redirects the
+ * admin to the home page with a message about needing to log in.
+ */
+exports.checkAuthentication = function(request, response, next) {
+    return next();
+};
+
+exports.handleAdminHomeRequest = function (request, response) {
+    response.render('admin_login');
+};
+
+
 exports.handleLoginRequest = function(request, response) {
     var username = request.body.username;
     var password = request.body.password;

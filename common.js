@@ -42,7 +42,7 @@ exports.userIsLoggedIn = userIsLoggedIn;
 /* Sets the given userId as the logged in user. */
 exports.setLoggedInUserId = function(req, userId) {
     req.session.userId = userId;
-}
+};
 
 /* To be called as a part of a chain in the routing.
  *

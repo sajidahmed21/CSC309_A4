@@ -75,6 +75,7 @@ app.get('/', function (req, res) {
     });
 });
 
+/* TODO: Remove */
 app.get('/demo', function (req, res) {
     db.query('SELECT COUNT(*) AS userCount FROM USERS').spread(function (results, metadata) {
         res.render('demo', {
@@ -167,6 +168,8 @@ app.get('/courses/popular', recommendations.popularCourses);
 
 
 /* Admins  ----------------------------------------------------------*/
+
+app.get('/admin', admin.checkAuthentication, admin.handleAdminHomeRequest);
 
 app.post('/admin/login', admin.handleLoginRequest);
 
