@@ -37,6 +37,9 @@ function showConversation(partnerId) {
             foundTarget = true;
             $conversation.show();
             
+            // show the send area
+            $('#message-send-area').show();
+            
             // also, if the user is offline, disable sending messages
             if (findUserRow(partnerId).hasClass('offline')) {
                 document.getElementById('message-text').disabled = true;
@@ -451,6 +454,9 @@ window.onload = function() {
         appendTo: $('div#user-search-dropdown'),
         onSelect: onSelectUserSearch
     });
+    
+    // hide the message send area until we enter a conversation
+    $('#message-send-area').hide();
     
     // load the first chat area (which for the mockup is hiding all
     // chat areas except the first

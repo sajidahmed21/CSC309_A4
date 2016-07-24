@@ -133,11 +133,6 @@ p.successful-message {
 }
 
 
-/* hide the message input area if there are no conversations */
-section#chat-area #message-send-area:first-child {
-    display: none;
-}
-
 /* landscape mobile and larger ---------------------------------------------*/
 @media screen and (min-width: 480px) {
 }
