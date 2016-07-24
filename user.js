@@ -280,6 +280,7 @@ exports.logoutHandler = function (req, res) {
         req.session.username = undefined;
         req.session.thisid = undefined;
         req.session.destroy();
+        setLoggedInUser(0);
         var returnJSON = {
             "status": "success",
             "message": "Logout Success"
@@ -289,6 +290,7 @@ exports.logoutHandler = function (req, res) {
         req.session.username = undefined;
         req.session.thisid = undefined;
         req.session.destroy();
+        setLoggedInUser(0);
         var returnJSON = {
             "status": "error",
             "message": "Logout Error"
