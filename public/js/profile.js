@@ -44,12 +44,12 @@ var unfollow = function (followee_id) {
         success: function (data) {
             hidePopup();
             console.log(data);
-            window.location.href = "/user/profile/"+followee_id;
+            window.location.href = "/user/profile/" + followee_id;
         },
-        failure: function (errMsg) {
-            console.log(errMsg);
+        error: function (data) {
             hidePopup();
-            alert('Please select another username');
+            window.location.href = "/";
+            $("body").html(data.responseText);
         }
     });
 }
@@ -68,12 +68,12 @@ var follow = function (followee_id) {
         success: function (data) {
             hidePopup();
             console.log(data);
-            window.location.href = "/user/profile/"+followee_id;
+            window.location.href = "/user/profile/" + followee_id;
         },
-        failure: function (errMsg) {
-            console.log(errMsg);
+        error: function (data) {
             hidePopup();
-            alert('Please select another username');
+            window.location.href = "/";
+            $("body").html(data.responseText);
         }
     });
 }
@@ -142,10 +142,10 @@ var dropCourse = function (dropCourse_id) {
                 console.log(data);
                 window.location.href = "/user/profile";
             },
-            failure: function (errMsg) {
-                console.log(errMsg);
+            error: function (data) {
                 hidePopup();
-                alert('Please select another username');
+                window.location.href = "/";
+                $("body").html(data.responseText);
             }
         });
     });
@@ -170,10 +170,10 @@ var logout = function () {
             console.log(data);
             window.location.href = "/";
         },
-        failure: function (errMsg) {
-            console.log(errMsg);
+        error: function (data) {
             hidePopup();
-            alert('Please select another username');
+            window.location.href = "/";
+            $("body").html(data.responseText);
         }
     });
 };
@@ -326,10 +326,10 @@ var deleteUser = function () {
                 console.log(data);
                 window.location.href = "/";
             },
-            failure: function (errMsg) {
-                console.log(errMsg);
+            error: function (data) {
                 hidePopup();
-                alert('Please select another username');
+                window.location.href = "/";
+                $("body").html(data.responseText);
             }
         });
     });
@@ -420,10 +420,10 @@ var changePassword = function () {
                 hidePopup();
                 console.log(data);
             },
-            failure: function (errMsg) {
-                console.log(errMsg);
+            error: function (data) {
                 hidePopup();
-                alert('Please select another username');
+                window.location.href = "/";
+                $("body").html(data.responseText);
             }
         });
     });
@@ -504,10 +504,10 @@ var changeName = function () {
                 console.log(data);
                 window.location.href = "/user/profile";
             },
-            failure: function (errMsg) {
-                console.log(errMsg);
+            error: function (data) {
                 hidePopup();
-                alert('Please select another username');
+                window.location.href = "/";
+                $("body").html(data.responseText);
             }
         });
     });

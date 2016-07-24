@@ -167,10 +167,9 @@ var loginPage = function () {
                 console.log(data);
                 window.location.href = "/user/profile";
             },
-            failure: function (errMsg) {
-                console.log(errMsg);
+            error: function (data) {
                 hidePopup();
-                alert('Please select another username');
+                $("body").html(data.responseText);
             }
         });
     });

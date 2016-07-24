@@ -26,6 +26,12 @@
 
 <body class="global_font nomargin">
     {{> nav }}
+    
+    {{#if errorContent}}
+		<div id="error-message" class="alert alert-danger" role="alert">
+			{{{errorContent}}}
+		</div>
+	{{/if}}
 	
     <img class="profilepage_img" src="/img/profile_background.jpg">
     <div id="{{background_color}}" class="img-circle profile_pic" height="150" width="150">

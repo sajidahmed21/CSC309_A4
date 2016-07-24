@@ -193,11 +193,11 @@ exports.signinHandler = function (req, res) {
             if (err || result === false) {
                 console.log("Err in login");
                 req.session.destroy();
-                var returnJSON = {
-                    "status": "error",
-                    "message": "Err in login"
-                }
-                sendUnauthorizedResponse(returnJSON, res);
+                res.status(400);
+                return res.render('home', {
+                    errorContent: '<p><strong>Opps!</strong> Your username and password do not match!</p>',
+                    loggedIn: false
+                });
             } else {
                 common.currentUser.push(signinUsername);
                 req.session.user = signinUsername;
@@ -215,18 +215,16 @@ exports.signinHandler = function (req, res) {
             }
         })
     }).catch(function (err) {
-        console.log("Err in signin");
-        var returnJSON = {
-            "status": "error",
-            "message": "Err in login"
-        }
-        sendUnauthorizedResponse(returnJSON, res);
+        res.status(400);
+        return res.render('home', {
+            errorContent: '<p><strong>Opps!</strong> Your username and password do not match!</p>',
+            loggedIn: false
+        });
     });
 };
 
 exports.signupHandler = function (req, res) {
-    if (req.body.signupPassword.length < 8)
-    {
+    if (req.body.signupPassword.length < 8) {
         res.status(400);
         return res.render('home', {
             errorContent: '<p><strong>Opps!</strong> Your password must be at least length of 8!</p>',
