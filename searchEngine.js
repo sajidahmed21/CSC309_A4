@@ -120,16 +120,21 @@ function search(query, searchString, limit, additionalBindings, callback) {
 }
 
 
-/* Takes in a name and username of a user and merges them into a readable string */
-function mergeNameAndUsername(name, username) {
-    if (name && username) {
-        return name + ' (' + username + ')';
+/* Takes in two strings and attempts to create a string 'primary (secondary)'
+ * out of them. However if only one of the two string is provided, the created
+ * string is equal to whichever was provided.
+ *
+ * Returns the string.
+ */
+function mergeStrings(primary, secondary) {
+    if (primary && secondary) {
+        return primary + ' (' + secondary + ')';
     }
-    else if (username) {
-        return username;
+    else if (primary) {
+        return primary;
     }
     else {
-        return name;
+        return secondary;
     }
 }
 
@@ -148,7 +153,7 @@ function searchUsersByName(searchString, limit, userId, callback) {
    search(query, searchString, limit, [userId], function(results) {
        // add a value field and strip out unneeded fields
        results.forEach(function(result) {
-           result.value = mergeNameAndUsername(result.name, result.username);
+           result.value = mergeStrings(result.name, result.username);
 
            result['matchingString'] = undefined;
            result['name'] = undefined;
@@ -174,7 +179,7 @@ function searchUsersByUsername(searchString, userId, limit, callback) {
     search(query, searchString, limit, [userId], function(results) {
         // add a value field and strip out unneeded fields
         results.forEach(function(result) {
-            result.value = mergeNameAndUsername(result.name, result.username);
+            result.value = mergeStrings(result.name, result.username);
 
             result['matchingString'] = undefined;
             result['name'] = undefined;
@@ -234,6 +239,31 @@ function searchUsers(searchString, limit, userId, callback) {
 }
 
 
+function searchClasses(searchString, limit, callback) {
+    var query =
+        'SELECT C.id AS data, C.class_name, U.name AS instructor, ' +
+            'C.class_name AS matchingString ' +
+        'FROM CLASSES C ' +
+        'INNER JOIN USERS U ' +
+            'ON C.instructor = U.id ' +
+        'WHERE C.class_name LIKE $1 '
+    ;
+    
+    search(query, searchString, limit, [], function(results) {
+        // add a value field and strip out unneeded fields
+        results.forEach(function(result) {
+            result.value = mergeStrings(result.class_name, result.instructor);
+
+            result['matchingString'] = undefined;
+            result['class_name'] = undefined;
+            result['instructor'] = undefined;
+        });
+
+        callback(results);
+   });
+}
+
+
 /* Wraps the results as required by jQuery's autocomplete library and sends
  * it as the response.
  */
@@ -284,6 +314,12 @@ exports.handleSearch = function(req, res) {
                         return messaging.userIsOnline(result.data);
                     });
                     
+                    returnResults(results, res);
+                });
+                break;
+            
+            case 'classes':
+                searchClasses(searchString, limit, function(results) {
                     returnResults(results, res);
                 });
                 break;
