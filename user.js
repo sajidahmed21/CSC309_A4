@@ -139,22 +139,22 @@ exports.getProfileHandler = function (req, res, profileUserId) {
         var name = results[0].name;
         db.query("SELECT CLASSES.id AS id, CLASSES.class_name AS class_name, USERS.name AS instructor FROM ENROLMENT, CLASSES, USERS WHERE USERS.id=CLASSES.instructor AND CLASSES.id=ENROLMENT.class_id AND ENROLMENT.user_id =" + profileUserId).spread(function (result, meta) {
             console.log(result);
-            res.render('profile',{
+            res.render('profile', {
                 name: name,
                 classes: result,
                 loggedIn: common.userIsLoggedIn(req),
                 userIsOwner: profileUserId == common.getLoggedInUserId(req)
             });
-//            var returnJSON = {
-//                "status": "success",
-//                "data": {
-//                    "name": results[0].name,
-//                    "profile_picture_path": results[0].profile_picture_path,
-//                    "courses": result
-//                },
-//                "message": "Success for getting profile",
-//            }
-//            sendBackJSON(returnJSON, res);
+            //            var returnJSON = {
+            //                "status": "success",
+            //                "data": {
+            //                    "name": results[0].name,
+            //                    "profile_picture_path": results[0].profile_picture_path,
+            //                    "courses": result
+            //                },
+            //                "message": "Success for getting profile",
+            //            }
+            //            sendBackJSON(returnJSON, res);
         })
 
     }).catch(function (err) {
@@ -189,7 +189,7 @@ exports.signinHandler = function (req, res) {
                 console.log(thisid);
                 req.session.thisid = thisid;
                 console.log(req.session.user);
-                console.log("signinHandler "+req.session.thisid);
+                console.log("signinHandler " + req.session.thisid);
                 setLoggedInUserId(req, results[0].user_id);
                 var returnJSON = {
                     "status": "success",
@@ -297,4 +297,31 @@ exports.logoutHandler = function (req, res) {
         }
         sendBackJSON(returnJSON, res);
     }
-}
+};
+
+exports.deleteUserHandler = function (req, res) {
+    var user_id = req.session.thisid;
+    db.query("DELETE FROM LOGIN_CREDENTIALS WHERE user_id=" + user_id).spread(function (results, metadata) {
+        db.query("DELETE FROM USERS WHERE id=" + user_id).spread(function (results, metadata) {
+            var returnJSON = {
+                "status": "success",
+                "message": "Delete Success"
+            }
+            sendBackJSON(returnJSON, res);
+        }).catch(function (err) {
+            console.log("Err in delete course");
+            var returnJSON = {
+                "status": "error",
+                "message": "Err in delete inner"
+            }
+            sendBackJSON(returnJSON, res);
+        })
+    }).catch(function (err) {
+        console.log("Err in delete course");
+        var returnJSON = {
+            "status": "error",
+            "message": "Err in delete user outer"
+        }
+        sendBackJSON(returnJSON, res);
+    })
+};

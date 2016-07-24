@@ -253,9 +253,31 @@ var deleteUser = function () {
     $paraharph.appendTo($form);
 
     $input = $('<input/>', {
-        type: 'submit',
+        type: 'button',
         value: 'Delete',
         class: 'btn btn-danger standard-red-button block_btn'
+    });
+    
+    $input.click(function () {
+        var body = {};
+
+        $.ajax({
+            type: "POST",
+            url: "/user/deleteuser",
+            data: JSON.stringify(body),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                hidePopup();
+                console.log(data);
+                window.location.href = "/"; 
+            },
+            failure: function (errMsg) {
+                console.log(errMsg);
+                hidePopup();
+                alert('Please select another username');
+            }
+        });
     });
 
     $input.appendTo($form);

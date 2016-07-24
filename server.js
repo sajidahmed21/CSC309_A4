@@ -156,6 +156,8 @@ app.post('/user/logout', user.logoutHandler);
 
 app.post('/user/unenrollClasses', user.unenrollHandler);
 
+app.post('/user/deleteuser', user.deleteUserHandler);
+
 
 /* Courses  ---------------------------------------------------------*/
 
