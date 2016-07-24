@@ -434,6 +434,11 @@ function setSocketEvents() {
             }
             else if (data.type == 'user-online') {
                 $userRow.removeClass('offline');
+                
+                 // if this was the active conversation, enable sending
+                    if (data.userId == window.currentPartnerId) {
+                        enableMessageSending();
+                    }
             }
         }
     });
