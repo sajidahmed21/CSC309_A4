@@ -124,16 +124,21 @@ function search(query, searchString, likeSearch, limit, additionalBindings, call
 }
 
 
-/* Takes in a name and username of a user and merges them into a readable string */
-function mergeNameAndUsername(name, username) {
-    if (name && username) {
-        return name + ' (' + username + ')';
+/* Takes in two strings and attempts to create a string 'primary (secondary)'
+ * out of them. However if only one of the two string is provided, the created
+ * string is equal to whichever was provided.
+ *
+ * Returns the string.
+ */
+function mergeStrings(primary, secondary) {
+    if (primary && secondary) {
+        return primary + ' (' + secondary + ')';
     }
-    else if (username) {
-        return username;
+    else if (primary) {
+        return primary;
     }
     else {
-        return name;
+        return secondary;
     }
 }
 
@@ -152,7 +157,7 @@ function searchUsersByName(searchString, limit, userId, callback) {
    search(query, searchString, true, limit, [userId], function(results) {
        // add a value field and strip out unneeded fields
        results.forEach(function(result) {
-           result.value = mergeNameAndUsername(result.name, result.username);
+           result.value = mergeStrings(result.name, result.username);
 
            result['matchingString'] = undefined;
            result['name'] = undefined;
@@ -178,7 +183,7 @@ function searchUsersByUsername(searchString, userId, limit, callback) {
     search(query, searchString, true, limit, [userId], function(results) {
         // add a value field and strip out unneeded fields
         results.forEach(function(result) {
-            result.value = mergeNameAndUsername(result.name, result.username);
+            result.value = mergeStrings(result.name, result.username);
 
             result['matchingString'] = undefined;
             result['name'] = undefined;
@@ -264,6 +269,32 @@ function searchForUser(searchString, callback) {
 }
 
 
+/* Searches for classes based on the class name. */
+function searchClasses(searchString, limit, callback) {
+    var query =
+        'SELECT C.id AS data, C.class_name, U.name AS instructor, ' +
+            'C.class_name AS matchingString ' +
+        'FROM CLASSES C ' +
+        'INNER JOIN USERS U ' +
+            'ON C.instructor = U.id ' +
+        'WHERE C.class_name LIKE $1 '
+    ;
+    
+    search(query, searchString, true, limit, [], function(results) {
+        // add a value field and strip out unneeded fields
+        results.forEach(function(result) {
+            result.value = mergeStrings(result.class_name, result.instructor);
+
+            result['matchingString'] = undefined;
+            result['class_name'] = undefined;
+            result['instructor'] = undefined;
+        });
+
+        callback(results);
+   });
+}
+
+
 /* Wraps the results as required by jQuery's autocomplete library and sends
  * it as the response.
  */
@@ -276,7 +307,7 @@ function returnResults(results, res) {
 /* Handles all requests directed to the search service. */
 exports.handleSearch = function(req, res) {
     var searchString = req.query.query;
-    var searchType = req.query.type;
+    var searchType = req.query.type ? req.query.type : '';
     var limit = req.query.limit ? req.query.limit : null;
     var userId = common.getLoggedInUserId(req);
     
@@ -286,8 +317,46 @@ exports.handleSearch = function(req, res) {
     if (!searchString) {
         sendBadRequestResponse({'status': 'no search query provided'}, res);
     }
+    // if a user isn't logged in and the search is for users, reject is
+    else if (userId == 0 && searchType.startsWith('user')) {
+        sendBadRequestResponse({'status': 'search type not allowed'}, res);
+    }
     else {
         switch(searchType) {
+            // default: all allowed types
+            case '':
+                searchClasses(searchString, null, function(classResults) {
+                    // add a field to the results so that the caller knows the type
+                    classResults.forEach(function(result) {
+                        result.type = 'class';
+                    });
+                    
+                    // if logged in, search users as well
+                    
+                    //  !!!!!! remove true
+                    
+                    if (true || userId != 0) {
+                        searchUsers(searchString, null, userId, function(userResults) {
+                            // add a field to the results so that the caller knows the type
+                            userResults.forEach(function(result) {
+                                result.type = 'user';
+                            });
+                            
+                            // concatenate the results and sort them again
+                            var results = classResults.concat(userResults);
+                            sortResults(results);
+                            
+                            limitResults(limit, results);
+                            returnResults(results, res);
+                        });
+                    }
+                    else {
+                        limitResults(classResults, results);
+                        returnResults(classResults, res);
+                    }
+                });
+                break;
+            
             case 'usersbyname':
                 searchUsersByName(searchString, limit, userId, function(results) {
                     returnResults(results, res);
@@ -319,6 +388,12 @@ exports.handleSearch = function(req, res) {
                         return messaging.userIsOnline(result.data);
                     });
                     
+                    returnResults(results, res);
+                });
+                break;
+            
+            case 'classes':
+                searchClasses(searchString, limit, function(results) {
                     returnResults(results, res);
                 });
                 break;
