@@ -1,4 +1,6 @@
 var sequelize = require('sequelize');
+var bcrypt = require('bcryptjs');
+exports.bcrypt = bcrypt;
 
 exports.currentUser = [];
 
@@ -59,4 +61,14 @@ exports.checkAuthentication = function (req, res, next) {
             loggedIn: false
         });
     }
+};
+
+/* Standard function for generation unique session id */
+exports.generateUniqueId = function () {
+    return bcrypt.hashSync(Math.random().toString(), 8);
+};
+
+/* Standard function for checking passwords */
+exports.comparePassword = function (password, passwordHash) {
+    return bcrypt.compareSync(password, passwordHash);
 };

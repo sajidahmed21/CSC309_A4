@@ -24,11 +24,17 @@
         <div id="admin_login_form">
         <div class="col-md-6">
             <div class="standard-container">
-                <form action="admin_home.html" method="get">
+                <form action="/admin/login" method="POST">
                     <h1 id="main_title" class="standard-title">LearnR</h1>
                     <h2 id="admin_title" class="standard-title">Admin</h2>
-                    <input name="adminName" type="text" placeholder="Admin" required="required" class="standard-red-input" />
-                    <input name="adminPassword" type="password" placeholder="Password" required="required" class="standard-red-input" />
+					
+					<!-- Admin id must contain only alphabets and numbers and must be of length between 6 - 20 characters -->
+                    <input name="admin_id" type="text" placeholder="Admin"
+					       required="required" pattern="^[a-zA-Z0-9]{6,20}$" class="standard-red-input" />
+					
+					<!-- Password must be between 6 - 20 characters and contain at least 1 alphabet, 1 number, and 1 special character -->
+                    <input name="password" type="password" placeholder="Password" required="required"
+						   pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&\-])[A-Za-z\d$@$!%*#?&\-]{6,20}$" class="standard-red-input" />
                     <input type="submit" value="Login" class="btn btn-danger standard-red-button block_btn" />
                 </form>
             </div>

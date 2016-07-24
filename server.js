@@ -37,6 +37,9 @@ var port = 9090;
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 
 
 // custom modules
