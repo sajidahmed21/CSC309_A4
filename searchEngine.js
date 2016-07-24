@@ -276,7 +276,7 @@ function returnResults(results, res) {
 /* Handles all requests directed to the search service. */
 exports.handleSearch = function(req, res) {
     var searchString = req.query.query;
-    var searchType = req.query.type;
+    var searchType = req.query.type ? req.query.type : '';
     var limit = req.query.limit ? req.query.limit : null;
     var userId = common.getLoggedInUserId(req);
     
@@ -286,8 +286,45 @@ exports.handleSearch = function(req, res) {
     if (!searchString) {
         sendBadRequestResponse({'status': 'no search query provided'}, res);
     }
+    // if a user isn't logged in and the search is for users, reject is
+    else if (userId == 0 && searchType.startsWith('user')) {
+        sendBadRequestResponse({'status': 'search type not allowed'}, res);
+    }
     else {
         switch(searchType) {
+            // default: all allowed types
+            case '':
+                searchClasses(searchString, null, function(classResults) {
+                    // add a field to the results so that the caller knows the type
+                    classResults.forEach(function(result) {
+                        result.type = 'class';
+                    });
+                    
+                    // if logged in, search users as well
+                    
+                    //  !!!!!! remove true
+                    
+                    if (true || userId != 0) {
+                        searchUsers(searchString, null, userId, function(userResults) {
+                            // add a field to the results so that the caller knows the type
+                            userResults.forEach(function(result) {
+                                result.type = 'user';
+                            });
+                            
+                            // concatenate the results and sort them again
+                            var results = classResults.concat(userResults);
+                            sortResults(results);
+                            
+                            limitResults(limit, results);
+                            returnResults(results, res);
+                        });
+                    }
+                    else {
+                        limitResults(classResults, results);
+                        returnResults(classResults, res);
+                    }
+                });
+                break;
             case 'usersbyname':
                 searchUsersByName(searchString, limit, userId, function(results) {
                     returnResults(results, res);
@@ -308,7 +345,6 @@ exports.handleSearch = function(req, res) {
             
             case 'onlineusers':
                 searchUsers(searchString, limit, userId, function(results) {
-                    console.log(results);
                     // next, filter out ones which are not online
                     results = results.filter(function(result) {
                         return messaging.userIsOnline(result.data);
