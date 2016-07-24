@@ -114,8 +114,8 @@ exports.changePasswordHandler = function (req, res) {
     });
 };
 exports.unenrollHandler = function (req, res) {
-    var user_id = req.param('user_id');
-    var class_id = req.param('class_id');
+    var user_id = req.session.thisid;
+    var class_id = req.body.dropCourse_id;
     db.query("DELETE FROM ENROLMENT WHERE user_id=" + user_id + " AND class_id =" + class_id).spread(function (results, metadata) {
         var returnJSON = {
             "status": "success",
