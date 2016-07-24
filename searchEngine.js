@@ -4,6 +4,8 @@ var db = common.db;
 var sendBadRequestResponse = common.sendBadRequestResponse;
 var sendBackJSON = common.sendBackJSON;
 
+var messaging = require('./messaging');
+
 
 /* helper functions --------------------------------------------------------*/
 
@@ -181,16 +183,20 @@ function searchUsersByUsername(searchString, limit, callback) {
 
 
 /* Returns all items in results1 which do not appear in results2 (based on the
- * data field) or which have a higher score.
+ * data field) or which have a higher score. If keepEquals is true, items from
+ * results1 which have a duplicate in results2 of the same score will be kept.
  */
-function _mergeResults(results1, results2) {
+function _mergeResults(results1, results2, keepEquals) {
     return results1.filter(function(result1) {
         var duplicateResult = results2.find(function(result2) {
             // return true if the userIds match
             return result1.data == result2.data;
         });
         
-        return (!duplicateResult || duplicateResult.score < result1.score);
+        var betterScore = (duplicateResult.score < result1.score) ||
+            (keepEquals && duplicateResult.score == result1.score);
+        
+        return (!duplicateResult || betterScore);
     });
 }
 
@@ -199,7 +205,7 @@ function _mergeResults(results1, results2) {
  * belong in the other or which have a higher score.
  */
 function mergeResults(results1, results2) {
-    return _mergeResults(results1, results2).concat(_mergeResults(results2, results1));
+    return _mergeResults(results1, results2, true).concat(_mergeResults(results2, results1, false));
 }
 
 
@@ -260,6 +266,17 @@ exports.handleSearch = function(req, res) {
             
             case 'users':
                 searchUsers(searchString, limit, function(results) {
+                    returnResults(results, res);
+                });
+                break;
+            
+            case 'onlineusers':
+                searchUsers(searchString, limit, function(results) {
+                    // next, filter out ones which are not online
+                    results = results.filter(function(result) {
+                        return messaging.userIsOnline(result.data);
+                    });
+                    
                     returnResults(results, res);
                 });
                 break;
