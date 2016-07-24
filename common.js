@@ -55,6 +55,8 @@ exports.checkAuthentication = function (req, res, next) {
     if (userIsLoggedIn(req)) {
         return next();
     } else {
+        if(req.method.toLowerCase() == 'post')
+            res.status(400);
         console.log('access denied to request');
         return res.render('home', {
             errorContent: '<p><strong>Opps!</strong> You need to be logged in to access that.</p>',

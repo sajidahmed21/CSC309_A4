@@ -47,6 +47,7 @@ var sendBackJSON = common.sendBackJSON;
 var sendUnauthorizedResponse = common.sendUnauthorizedResponse;
 var setLoggedInUserId = common.setLoggedInUserId;
 var db = common.db;
+var color = ['green_background', 'light_green_background', 'blue_background', 'yellow_background', 'orange_background', 'red_background'];
 
 exports.changeNameHandler = function (req, res) {
     var changeName = req.body.changeName;
@@ -137,24 +138,39 @@ exports.getProfileHandler = function (req, res, profileUserId) {
     console.log("GETPROFILE" + profileUserId);
     db.query("SELECT name, profile_picture_path FROM USERS WHERE id = '" + profileUserId + "'").spread(function (results, metadata) {
         var name = results[0].name;
+        var background_color = results[0].profile_picture_path;
+        if (color.indexOf(background_color) < 0)
+            background_color = 'grey_background';
+        var firstLetterProfile = name.charAt(0);
+        if (firstLetterProfile >= 'a' && firstLetterProfile <= 'z')
+            firstLetterProfile = firstLetterProfile.toUpperCase();
         db.query("SELECT CLASSES.id AS id, CLASSES.class_name AS class_name, USERS.name AS instructor FROM ENROLMENT, CLASSES, USERS WHERE USERS.id=CLASSES.instructor AND CLASSES.id=ENROLMENT.class_id AND ENROLMENT.user_id =" + profileUserId).spread(function (result, meta) {
-            console.log(result);
-            res.render('profile', {
-                name: name,
-                classes: result,
-                loggedIn: common.userIsLoggedIn(req),
-                userIsOwner: profileUserId == common.getLoggedInUserId(req)
-            });
-            //            var returnJSON = {
-            //                "status": "success",
-            //                "data": {
-            //                    "name": results[0].name,
-            //                    "profile_picture_path": results[0].profile_picture_path,
-            //                    "courses": result
-            //                },
-            //                "message": "Success for getting profile",
-            //            }
-            //            sendBackJSON(returnJSON, res);
+            db.query("SELECT EXISTS(SELECT 1 FROM FOLLOWINGS WHERE follower =" + common.getLoggedInUserId(req) + " AND followee=" + profileUserId + " ) AS checkfollow;").spread(function (resultInner, metaInner) {
+                var boolFollow = false;
+                if (resultInner[0]['checkfollow'] == 1)
+                    boolFollow = true;
+                console.log(result);
+                res.render('profile', {
+                    profile_name: firstLetterProfile,
+                    background_color: background_color,
+                    name: name,
+                    classes: result,
+                    loggedIn: common.userIsLoggedIn(req),
+                    current_id: profileUserId,
+                    followed: boolFollow,
+                    userIsOwner: profileUserId == common.getLoggedInUserId(req)
+                });
+                //            var returnJSON = {
+                //                "status": "success",
+                //                "data": {
+                //                    "name": results[0].name,
+                //                    "profile_picture_path": results[0].profile_picture_path,
+                //                    "courses": result
+                //                },
+                //                "message": "Success for getting profile",
+                //            }
+                //            sendBackJSON(returnJSON, res);
+            })
         })
 
     }).catch(function (err) {
@@ -177,11 +193,11 @@ exports.signinHandler = function (req, res) {
             if (err || result === false) {
                 console.log("Err in login");
                 req.session.destroy();
-                var returnJSON = {
-                    "status": "error",
-                    "message": "Err in login"
-                }
-                sendUnauthorizedResponse(returnJSON, res);
+                res.status(400);
+                return res.render('home', {
+                    errorContent: '<p><strong>Opps!</strong> Your username and password do not match!</p>',
+                    loggedIn: false
+                });
             } else {
                 common.currentUser.push(signinUsername);
                 req.session.user = signinUsername;
@@ -199,16 +215,30 @@ exports.signinHandler = function (req, res) {
             }
         })
     }).catch(function (err) {
-        console.log("Err in signin");
-        var returnJSON = {
-            "status": "error",
-            "message": "Err in login"
-        }
-        sendUnauthorizedResponse(returnJSON, res);
+        res.status(400);
+        return res.render('home', {
+            errorContent: '<p><strong>Opps!</strong> Your username and password do not match!</p>',
+            loggedIn: false
+        });
     });
 };
 
 exports.signupHandler = function (req, res) {
+    if (req.body.signupPassword.length < 8) {
+        res.status(400);
+        return res.render('home', {
+            errorContent: '<p><strong>Opps!</strong> Your password must be at least length of 8!</p>',
+            loggedIn: false
+        });
+    }
+    if (req.body.signupPassword != req.body.userPasswordConfirm) {
+        console.log("return");
+        res.status(400);
+        return res.render('home', {
+            errorContent: '<p><strong>Opps!</strong> Your password do not match!</p>',
+            loggedIn: false
+        });
+    }
     bcrypt.hash(req.body.signupPassword, 8, function (err, hashedPassword) {
         if (err) {
             req.session.destroy();
@@ -228,7 +258,7 @@ exports.signupHandler = function (req, res) {
 
                 var signupName = req.body.signupName;
                 var signupUsername = req.body.signupUsername;
-                var signupProfilePicture = req.body.signupProfilePicture;
+                var signupProfilePicture = color[Math.floor(Math.random() * 5)];
                 return db.query("INSERT INTO USERS (name, profile_picture_path) VALUES ('" + signupName + "','" + signupProfilePicture + "')", {
                     transaction: transaction
                 }).then(function (result) {
@@ -267,6 +297,12 @@ exports.loginInsert = function (transaction, id, signupUsername, signupPassword,
                 "message": "Signup Success"
             };
             sendBackJSON(returnJSON, res);
+        }).catch(function (err) {
+            res.status(400);
+            return res.render('home', {
+                errorContent: '<p><strong>Opps!</strong> The username has been taken! Please choose another username!</p>',
+                loggedIn: false
+            });
         });
 };
 

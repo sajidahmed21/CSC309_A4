@@ -16,7 +16,7 @@ var session = require('express-session')({
     resave: true,
     saveUninitialized: true,
     cookie: {
-        maxAge: 86400000
+        maxAge: 30000
     }
 });
 var sharedSession = require("express-socket.io-session");
@@ -146,7 +146,7 @@ app.post('/user/changepassword', checkAuthentication, user.changePasswordHandler
 
 app.post('/user/follow', checkAuthentication, followings.followHandler);
 
-app.delete('/user/unfollow', checkAuthentication, followings.unfollowHandler);
+app.post('/user/unfollow', checkAuthentication, followings.unfollowHandler);
 
 app.get('/user/profile', checkAuthentication, function (req, res) {
     user.getProfileHandler(req, res, getLoggedInUserId(req));
@@ -156,11 +156,11 @@ app.get('/user/profile/:id', checkAuthentication, function (req, res) {
     user.getProfileHandler(req, res, req.params.id);
 });
 
-app.post('/user/logout', user.logoutHandler);
+app.post('/user/logout', checkAuthentication, user.logoutHandler);
 
-app.post('/user/unenrollClasses', user.unenrollHandler);
+app.post('/user/unenrollClasses', checkAuthentication, user.unenrollHandler);
 
-app.post('/user/deleteuser', user.deleteUserHandler);
+app.post('/user/deleteuser', checkAuthentication, user.deleteUserHandler);
 
 
 /* Courses  ---------------------------------------------------------*/

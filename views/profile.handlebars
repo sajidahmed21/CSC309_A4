@@ -26,20 +26,35 @@
 
 <body class="global_font nomargin">
     {{> nav }}
+    
+    {{#if errorContent}}
+		<div id="error-message" class="alert alert-danger" role="alert">
+			{{{errorContent}}}
+		</div>
+	{{/if}}
 	
     <img class="profilepage_img" src="/img/profile_background.jpg">
-    <img class="img-circle profile_pic" src="/img/profile.png" height="150" width="150">
+    <div id="{{background_color}}" class="img-circle profile_pic" height="150" width="150">
+        <h2 id="profile_name" class="nomargin"> {{profile_name}} </h2>
+    </div>
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-4">
-            <h2 class="standard-font"> {{name}} </h2></div>
-		{{#if userIsOwner }}
+            <h2 class="standard-font"> {{name}} </h2>
+        </div>
         <div class="col-md-5">
+            {{#if userIsOwner }}
             <button id="changename_btn" type="button" class="btn standard-green-button">Change Name</button>
             <button id="changepassword_btn" type="button" class="btn standard-green-button">Change Password</button>
             <button id="deleteuser_btn" type="button" class="btn btn-danger standard-red-button">Delete Account</button>
+            {{else}}
+            {{#if followed}}
+            <button id="unfollow_btn" value="{{current_id}}"type="button" class="btn btn-danger standard-blue-button">Unfollow</button>
+            {{else}}
+            <button id="follow_btn" value="{{current_id}}"type="button" class="btn btn-danger standard-blue-button">Follow</button>
+            {{/if}}
+            {{/if}}
         </div>
-		{{/if}}
     </div>
     <div class="row">
         <div class="col-md-3"></div>

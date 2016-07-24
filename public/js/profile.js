@@ -22,9 +22,63 @@ $(document).ready(function () {
     $('#logout-anchor').click(function () {
         logout();
     });
+    $('#unfollow_btn').click(function () {
+        unfollow(this.value);
+    });
+    $('#follow_btn').click(function () {
+        follow(this.value);
+    });
 });
 
-var dropCourse = function(dropCourse_id){
+var unfollow = function (followee_id) {
+    var body = {
+        "followee": followee_id
+    }
+    console.log('send');
+    $.ajax({
+        type: "POST",
+        url: "/user/unfollow",
+        data: JSON.stringify(body),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+            hidePopup();
+            console.log(data);
+            window.location.href = "/user/profile/" + followee_id;
+        },
+        error: function (data) {
+            hidePopup();
+            window.location.href = "/";
+            $("body").html(data.responseText);
+        }
+    });
+}
+
+var follow = function (followee_id) {
+    var body = {
+        "followee": followee_id
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "/user/follow",
+        data: JSON.stringify(body),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+            hidePopup();
+            console.log(data);
+            window.location.href = "/user/profile/" + followee_id;
+        },
+        error: function (data) {
+            hidePopup();
+            window.location.href = "/";
+            $("body").html(data.responseText);
+        }
+    });
+}
+
+var dropCourse = function (dropCourse_id) {
     var $popup = $('#popup');
     $popup.empty();
 
@@ -63,7 +117,7 @@ var dropCourse = function(dropCourse_id){
         class: 'standard-body'
     });
     $input.text('Are you sure you want to unenroll?');
-    
+
     $input.appendTo($form);
 
     $input = $('<input/>', {
@@ -71,7 +125,7 @@ var dropCourse = function(dropCourse_id){
         value: 'Unenroll',
         class: 'btn btn-danger standard-red-button block_btn'
     });
-    
+
     $input.click(function () {
         var body = {
             "dropCourse_id": dropCourse_id
@@ -88,14 +142,14 @@ var dropCourse = function(dropCourse_id){
                 console.log(data);
                 window.location.href = "/user/profile";
             },
-            failure: function (errMsg) {
-                console.log(errMsg);
+            error: function (data) {
                 hidePopup();
-                alert('Please select another username');
+                window.location.href = "/";
+                $("body").html(data.responseText);
             }
         });
     });
-    
+
     $input.appendTo($form);
 
     $form.appendTo($container);
@@ -116,10 +170,10 @@ var logout = function () {
             console.log(data);
             window.location.href = "/";
         },
-        failure: function (errMsg) {
-            console.log(errMsg);
+        error: function (data) {
             hidePopup();
-            alert('Please select another username');
+            window.location.href = "/";
+            $("body").html(data.responseText);
         }
     });
 };
@@ -257,7 +311,7 @@ var deleteUser = function () {
         value: 'Delete',
         class: 'btn btn-danger standard-red-button block_btn'
     });
-    
+
     $input.click(function () {
         var body = {};
 
@@ -270,12 +324,12 @@ var deleteUser = function () {
             success: function (data) {
                 hidePopup();
                 console.log(data);
-                window.location.href = "/"; 
+                window.location.href = "/";
             },
-            failure: function (errMsg) {
-                console.log(errMsg);
+            error: function (data) {
                 hidePopup();
-                alert('Please select another username');
+                window.location.href = "/";
+                $("body").html(data.responseText);
             }
         });
     });
@@ -350,7 +404,7 @@ var changePassword = function () {
         value: 'Edit Now!',
         class: 'btn standard-green-button block_btn'
     });
-    
+
     $input.click(function () {
         var body = {
             "changePassword": $('#userPassword').val()
@@ -366,14 +420,14 @@ var changePassword = function () {
                 hidePopup();
                 console.log(data);
             },
-            failure: function (errMsg) {
-                console.log(errMsg);
+            error: function (data) {
                 hidePopup();
-                alert('Please select another username');
+                window.location.href = "/";
+                $("body").html(data.responseText);
             }
         });
     });
-    
+
     $input.appendTo($form);
 
     $form.appendTo($container);
@@ -415,7 +469,7 @@ var changeName = function () {
     $title = $('<h1/>', {
         class: 'standard-title'
     });
-    $title.text('Change Password').appendTo($form);
+    $title.text('Change Name').appendTo($form);
 
     $input = $('<input/>', {
         id: 'changeName',
@@ -433,7 +487,7 @@ var changeName = function () {
         value: 'Edit Now!',
         class: 'btn standard-green-button block_btn'
     });
-    
+
     $input.click(function () {
         var body = {
             "changeName": $('#changeName').val()
@@ -450,14 +504,14 @@ var changeName = function () {
                 console.log(data);
                 window.location.href = "/user/profile";
             },
-            failure: function (errMsg) {
-                console.log(errMsg);
+            error: function (data) {
                 hidePopup();
-                alert('Please select another username');
+                window.location.href = "/";
+                $("body").html(data.responseText);
             }
         });
     });
-    
+
     $input.appendTo($form);
 
     $form.appendTo($container);
