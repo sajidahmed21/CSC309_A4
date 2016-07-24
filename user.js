@@ -140,6 +140,7 @@ exports.getProfileHandler = function (req, res, profileUserId) {
         var name = results[0].name;
         db.query("SELECT CLASSES.id AS id, CLASSES.class_name AS class_name, USERS.name AS instructor FROM ENROLMENT, CLASSES, USERS WHERE USERS.id=CLASSES.instructor AND CLASSES.id=ENROLMENT.class_id AND ENROLMENT.user_id =" + id).spread(function (result, meta) {
             console.log(result);
+            console.log("IS my?" +id == common.getLoggedInUserId(req));
             res.render('profile',{
                 name: name,
                 classes: result,

@@ -25,7 +25,39 @@
 </head>
 
 <body class="global_font nomargin">
-    {{> nav }}
+    <nav class="navbar navbar-default standard-headbar">
+        <div class="container-fluid">
+
+            <div class="navbar-header">
+                <a class="navbar-brand" href="./index.html">LearnR</a>
+            </div>
+            <div>
+                <div class="navbar-collapse">
+                    <div class="row">
+                        <div class="col-md-3">
+                        </div>
+                        <div class="col-md-5">
+                            <div class="input-group headbar_search">
+                                <input type="text" class="form-control standard-search-bar headbar_search_input" placeholder="Search Class...">
+                                <span class="input-group-btn">
+                    <button type="submit" class="standard-blue-button">Search Now</button>
+                </span>
+                            </div>
+                        </div>
+                        <div>
+                            <ul class="nav navbar-nav navbar-right">
+                                <li><a href="./classes.html">Recommend Classes</a></li>
+                                <li>
+                                    <a class="nopadding" href="./profile.html"><img src="assets/img/profile.png" alt="Profile" height="40" width="40" class="profile_icon"></li>
+                                </a>
+                                <a id="logout-anchor" class="standard-clear-button" href="./index.html">Logout</a>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </nav>
 	
     <img class="profilepage_img" src="/img/profile_background.jpg">
     <img class="img-circle profile_pic" src="/img/profile.png" height="150" width="150">
