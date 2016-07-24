@@ -1,5 +1,7 @@
 var sequelize = require('sequelize');
 
+exports.currentUser = [];
+
 exports.db = new sequelize('learnrDB', null, null, {
     dialect: 'sqlite',
     storage: __dirname + '/learnrDB.sqlite'
@@ -45,7 +47,7 @@ exports.setLoggedInUserId = function(req, userId) {
 /* To be called as a part of a chain in the routing.
  *
  * Calls the next function if the user is logged in and otherwise redirects the
- * user with a 404 error.
+ * user to the home page with a message about needing to log in.
  */
 exports.checkAuthentication = function (req, res, next) {
     if (userIsLoggedIn(req)) {
