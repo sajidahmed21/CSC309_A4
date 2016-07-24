@@ -135,10 +135,9 @@ exports.unenrollHandler = function (req, res) {
 /* Renders the profile for the user with the userId equal to profileUserId. */
 exports.getProfileHandler = function (req, res, profileUserId) {
     console.log("GETPROFILE" + profileUserId);
-    var id = req.session.thisid;
-    db.query("SELECT name, profile_picture_path FROM USERS WHERE id = '" + id + "'").spread(function (results, metadata) {
+    db.query("SELECT name, profile_picture_path FROM USERS WHERE id = '" + profileUserId + "'").spread(function (results, metadata) {
         var name = results[0].name;
-        db.query("SELECT CLASSES.id AS id, CLASSES.class_name AS class_name, USERS.name AS instructor FROM ENROLMENT, CLASSES, USERS WHERE USERS.id=CLASSES.instructor AND CLASSES.id=ENROLMENT.class_id AND ENROLMENT.user_id =" + id).spread(function (result, meta) {
+        db.query("SELECT CLASSES.id AS id, CLASSES.class_name AS class_name, USERS.name AS instructor FROM ENROLMENT, CLASSES, USERS WHERE USERS.id=CLASSES.instructor AND CLASSES.id=ENROLMENT.class_id AND ENROLMENT.user_id =" + profileUserId).spread(function (result, meta) {
             console.log(result);
             res.render('profile',{
                 name: name,
