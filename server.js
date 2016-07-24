@@ -74,7 +74,7 @@ app.get('/', function (req, res) {
         loggedIn: userIsLoggedIn(req),
     });
 });
-    
+
 app.get('/demo', function (req, res) {
     db.query('SELECT COUNT(*) AS userCount FROM USERS').spread(function (results, metadata) {
         res.render('demo', {
@@ -86,10 +86,10 @@ app.get('/demo', function (req, res) {
     });
 });
 
-app.get('/1/:id', 
-    courses.get_class_info, 
-    courses.get_course_rating, 
-    courses.get_enrolled_students, 
+app.get('/1/:id',
+    courses.get_class_info,
+    courses.get_course_rating,
+    courses.get_enrolled_students,
     courses.get_reviews,
     courses.render_course_page);
 
@@ -108,7 +108,16 @@ app.get('/text', function (req, res) {
 });
 
 /* Users ------------------------------------------------------------*/
-/*app.get('/enroll', function (req, res) {
+
+app.get('/enrolls', function (req, res) {
+    db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (18, 1)").spread(function (results, metadata) {
+        console.log("JOIN 1");
+    })
+    db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (18, 2)").spread(function (results, metadata) {
+        console.log("JOIN 2");
+    })
+})
+app.get('/enroll', function (req, res) {
     db.query("INSERT INTO CLASSES (id, class_name, instructor) VALUES (1, 'TESTCOURSE', 3)").spread(function (results, metadata) {
         db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (18, 1)").spread(function (results, metadata) {
             console.log("JOIN 1");
@@ -119,7 +128,7 @@ app.get('/text', function (req, res) {
             console.log("JOIN 2");
         })
     });
-});*/
+});
 
 app.post('/user/signin', user.signinHandler);
 
@@ -145,7 +154,7 @@ app.get('/user/profile/:id', checkAuthentication, function (req, res) {
 
 app.post('/user/logout', user.logoutHandler);
 
-app.delete('/user/unenrollClasses', user.unenrollHandler);
+app.post('/user/unenrollClasses', user.unenrollHandler);
 
 
 /* Courses  ---------------------------------------------------------*/
@@ -177,6 +186,6 @@ socketIO.on('connection', messaging.onConnection);
 
 /* server start up --------------------------------------------------*/
 
-server.listen(port, hostname, function() {
+server.listen(port, hostname, function () {
     console.log(`Server running at http://${hostname}:${port}/`);
-  });
+});

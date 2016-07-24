@@ -1,8 +1,8 @@
 $(document).ready(function () {
     initialize();
     $('.drop_course_btn').click(function () {
-        var $unenroll_form = $('#unenroll_form');
-        $unenroll_form.css('display', 'block');
+        console.log(this.value);
+        dropCourse(this.value);
     });
     $('#changepassword_btn').click(function () {
         changePassword();
@@ -24,6 +24,86 @@ $(document).ready(function () {
     });
 });
 
+var dropCourse = function(dropCourse_id){
+    var $popup = $('#popup');
+    $popup.empty();
+
+    $outer = $('<div/>', {
+        id: 'unenroll_form'
+    });
+
+    $middle = $('<div/>', {
+        class: 'col-md-6'
+    });
+
+    $container = $('<div/>', {
+        class: 'standard-container'
+    });
+
+    $cancelwrapper = $('<div/>');
+
+    $cancelicon = $('<span/>', {
+        class: 'glyphicon glyphicon-remove cancel_icon'
+    });
+    $cancelicon.click(function () {
+        hidePopup();
+    });
+    $cancelwrapper.append($cancelicon);
+
+    $container.append($cancelwrapper);
+
+    $form = $('<form/>');
+
+    $title = $('<h1/>', {
+        class: 'standard-title'
+    });
+    $title.text('Unenroll').appendTo($form);
+
+    $input = $('<p/>', {
+        class: 'standard-body'
+    });
+    $input.text('Are you sure you want to unenroll?');
+    
+    $input.appendTo($form);
+
+    $input = $('<input/>', {
+        type: 'button',
+        value: 'Unenroll',
+        class: 'btn btn-danger standard-red-button block_btn'
+    });
+    
+    $input.click(function () {
+        var body = {
+            "dropCourse_id": dropCourse_id
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/user/unenrollClasses",
+            data: JSON.stringify(body),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                hidePopup();
+                console.log(data);
+                window.location.href = "/user/profile";
+            },
+            failure: function (errMsg) {
+                console.log(errMsg);
+                hidePopup();
+                alert('Please select another username');
+            }
+        });
+    });
+    
+    $input.appendTo($form);
+
+    $form.appendTo($container);
+    $container.appendTo($middle);
+    $middle.appendTo($outer);
+    $outer.appendTo($popup);
+};
+
 var logout = function () {
     $.ajax({
         type: "POST",
@@ -42,7 +122,7 @@ var logout = function () {
             alert('Please select another username');
         }
     });
-}
+};
 
 var initialize = function () {
     hidePopup();

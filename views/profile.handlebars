@@ -89,14 +89,13 @@
                         <div>
                             <h1 class="standard-title class_title">{{this.class_name}}</h1>
                         </div>
-                        <div id="course_id" style="display:none;">{{this.id}}</div>
                         <div>
                             <h1 class="standard-title professor_title">{{this.instructor}}</h1>
                         </div>
                     </div>
                     {{#if ../userIsOwner }}
                     <div class="col-md-2">
-                        <button type="button" class="btn btn-danger standard-red-button drop_course_btn">Drop Course</button>
+                        <a href="#"><button value="{{this.id}}" type="button" class="btn btn-danger standard-red-button drop_course_btn">Drop Course</button></a>
                     </div>
                     {{/if}}
                 </div>
