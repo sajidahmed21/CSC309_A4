@@ -330,10 +330,7 @@ exports.handleSearch = function(req, res) {
                     });
                     
                     // if logged in, search users as well
-                    
-                    //  !!!!!! remove true
-                    
-                    if (true || userId != 0) {
+                    if (userId != 0) {
                         searchUsers(searchString, null, userId, function(userResults) {
                             // add a field to the results so that the caller knows the type
                             userResults.forEach(function(result) {
