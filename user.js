@@ -313,20 +313,20 @@ exports.logoutHandler = function (req, res) {
         console.log("INLOGGINOUT");
         var index = common.currentUser.indexOf(username);
         common.currentUser.splice(index, 1);
+        setLoggedInUserId(req, 0);
         req.session.username = undefined;
         req.session.thisid = undefined;
         req.session.destroy();
-        setLoggedInUser(0);
         var returnJSON = {
             "status": "success",
             "message": "Logout Success"
         }
         sendBackJSON(returnJSON, res);
     } else {
+        setLoggedInUserId(req, 0);
         req.session.username = undefined;
         req.session.thisid = undefined;
         req.session.destroy();
-        setLoggedInUser(0);
         var returnJSON = {
             "status": "error",
             "message": "Logout Error"
@@ -339,12 +339,20 @@ exports.deleteUserHandler = function (req, res) {
     var user_id = req.session.thisid;
     db.query("DELETE FROM LOGIN_CREDENTIALS WHERE user_id=" + user_id).spread(function (results, metadata) {
         db.query("DELETE FROM USERS WHERE id=" + user_id).spread(function (results, metadata) {
+            setLoggedInUserId(req, 0);
+            req.session.username = undefined;
+            req.session.thisid = undefined;
+            req.session.destroy();
             var returnJSON = {
                 "status": "success",
                 "message": "Delete Success"
             }
             sendBackJSON(returnJSON, res);
         }).catch(function (err) {
+            setLoggedInUserId(req, 0);
+            req.session.username = undefined;
+            req.session.thisid = undefined;
+            req.session.destroy();
             console.log("Err in delete course");
             var returnJSON = {
                 "status": "error",
@@ -353,6 +361,10 @@ exports.deleteUserHandler = function (req, res) {
             sendBackJSON(returnJSON, res);
         })
     }).catch(function (err) {
+        setLoggedInUserId(req, 0);
+        req.session.username = undefined;
+        req.session.thisid = undefined;
+        req.session.destroy();
         console.log("Err in delete course");
         var returnJSON = {
             "status": "error",
