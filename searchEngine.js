@@ -104,9 +104,13 @@ function limitResults(limit, results) {
  *  1. Add a 'data' field.
  *  2. Add a 'value' field.
  *  3. Wrap the results in an objections under the key 'suggestions'.
+ *
+ * An array of additional bindings can be used, with its parameters starting
+ * at $2.
  */
-function search(query, searchString, limit, callback) {
-    db.query(query, {bind: ['%' + searchString + '%']}).spread(function(results, metadata) {
+function search(query, searchString, limit, additionalBindings, callback) {
+    db.query(query, {bind: ['%' + searchString + '%'].concat(additionalBindings)})
+    .spread(function(results, metadata) {
        scoreResults(searchString, 'matchingString', results);
        sortResults(results);
        limitResults(limit, results);
@@ -131,17 +135,17 @@ function mergeNameAndUsername(name, username) {
 
 
 /* Searches for users by name and calls the callback with the results. */
-function searchUsersByName(searchString, limit, callback) {
+function searchUsersByName(searchString, limit, userId, callback) {
     var query =
         'SELECT U.name, LC.username, U.id AS data, ' +
             'U.name AS matchingString ' +
         'FROM USERS U ' +
         'LEFT OUTER JOIN LOGIN_CREDENTIALS LC ' +
             'ON LC.user_id = U.id ' +
-        'WHERE U.name LIKE $1 '
+        'WHERE U.name LIKE $1 AND U.id != $2 '
     ;
     
-   search(query, searchString, limit, function(results) {
+   search(query, searchString, limit, [userId], function(results) {
        // add a value field and strip out unneeded fields
        results.forEach(function(result) {
            result.value = mergeNameAndUsername(result.name, result.username);
@@ -157,17 +161,17 @@ function searchUsersByName(searchString, limit, callback) {
 
 
 /* Searches for users by username and calls the callback with the results. */
-function searchUsersByUsername(searchString, limit, callback) {
+function searchUsersByUsername(searchString, userId, limit, callback) {
     var query =
         'SELECT U.name, LC.username, U.id AS data, ' +
             'LC.username AS matchingString ' +
         'FROM USERS U ' +
         'INNER JOIN LOGIN_CREDENTIALS LC ' +
             'ON LC.user_id = U.id ' +
-        'WHERE LC.username LIKE $1 '
+        'WHERE LC.username LIKE $1 AND U.id != $2 '
     ;
     
-    search(query, searchString, limit, function(results) {
+    search(query, searchString, limit, [userId], function(results) {
         // add a value field and strip out unneeded fields
         results.forEach(function(result) {
             result.value = mergeNameAndUsername(result.name, result.username);
@@ -177,7 +181,7 @@ function searchUsersByUsername(searchString, limit, callback) {
             result['username'] = undefined;
         });
 
-       callback(results);
+        callback(results);
    });
 }
 
@@ -193,10 +197,11 @@ function _mergeResults(results1, results2, keepEquals) {
             return result1.data == result2.data;
         });
         
-        var betterScore = (duplicateResult.score < result1.score) ||
-            (keepEquals && duplicateResult.score == result1.score);
-        
-        return (!duplicateResult || betterScore);
+        // return true if there was no dupplicate, the duplicate has a lower score
+        // or we are accepting equal scores and the score was equal
+        return (!duplicateResult || 
+            (duplicateResult.score < result1.score) ||
+            (keepEquals && duplicateResult.score == result1.score));
     });
 }
 
@@ -210,9 +215,9 @@ function mergeResults(results1, results2) {
 
 
 /* Searches for users by name username and calls the callback with the results. */
-function searchUsers(searchString, limit, callback) {
-    searchUsersByName(searchString, null, function(nameResults) {
-        searchUsersByUsername(searchString, null, function(usernameResults) {
+function searchUsers(searchString, limit, userId, callback) {
+    searchUsersByName(searchString, null, userId, function(nameResults) {
+        searchUsersByUsername(searchString, null, userId, function(usernameResults) {
             // merge the two result arrays, resolving duplicates by keeping
             // the one with the higher score
             var results = mergeResults(nameResults, usernameResults);
@@ -243,9 +248,10 @@ exports.handleSearch = function(req, res) {
     var searchString = req.query.query;
     var searchType = req.query.type;
     var limit = req.query.limit ? req.query.limit : null;
+    var userId = common.getLoggedInUserId(req);
     
-    console.log('search for [' + searchString + '] with type [' + 
-        searchType + ']; limit is [' + limit + ']');
+    console.log('search for [' + searchString + '] by [' + userId +
+        '] with type [' + searchType + ']; limit is [' + limit + ']');
     
     if (!searchString) {
         sendBadRequestResponse({'status': 'no search query provided'}, res);
@@ -253,25 +259,26 @@ exports.handleSearch = function(req, res) {
     else {
         switch(searchType) {
             case 'usersbyname':
-                searchUsersByName(searchString, limit, function(results) {
+                searchUsersByName(searchString, limit, userId, function(results) {
                     returnResults(results, res);
                 });
                 break;
             
             case 'usersbyusername':
-                searchUsersByUsername(searchString, limit, function(results) {
+                searchUsersByUsername(searchString, limit, userId, function(results) {
                     returnResults(results, res);
                 });
                 break;
             
             case 'users':
-                searchUsers(searchString, limit, function(results) {
+                searchUsers(searchString, limit, userId, function(results) {
                     returnResults(results, res);
                 });
                 break;
             
             case 'onlineusers':
-                searchUsers(searchString, limit, function(results) {
+                searchUsers(searchString, limit, userId, function(results) {
+                    console.log(results);
                     // next, filter out ones which are not online
                     results = results.filter(function(result) {
                         return messaging.userIsOnline(result.data);
