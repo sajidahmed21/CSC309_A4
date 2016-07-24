@@ -13,8 +13,14 @@
     padding: 0px !important;
 }
 
-.invis{
-    display:none;
+.invis {
+    display: none;
+}
+
+.profile_error {
+    position: absolute;
+    width: 100%;
+    display: none;
 }
 
 .standard-clear-button {

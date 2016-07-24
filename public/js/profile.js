@@ -406,26 +406,40 @@ var changePassword = function () {
     });
 
     $input.click(function () {
-        var body = {
-            "changePassword": $('#userPassword').val()
-        }
+        if ($('#userPassword').val() != $('#userPasswordConfirm').val()) {
+            $popup.empty();
+            $('#error-message').empty();
+            $('#error-message').css('display', 'block');
+            $('#error-message').text('Your password do not match');
+        } else if ($('#userPassword').val().length < 8) {
+            $popup.empty();
+            $('#error-message').empty();
 
-        $.ajax({
-            type: "POST",
-            url: "/user/changepassword",
-            data: JSON.stringify(body),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (data) {
-                hidePopup();
-                console.log(data);
-            },
-            error: function (data) {
-                hidePopup();
-                window.location.href = "/";
-                $("body").html(data.responseText);
+            $('#error-message').css('display', 'block');
+            $('#error-message').text('Your password must be at least length of 8!');
+        } else {
+            var body = {
+                "changePassword": $('#userPassword').val()
             }
-        });
+
+            $.ajax({
+                type: "POST",
+                url: "/user/changepassword",
+                data: JSON.stringify(body),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    hidePopup();
+                    console.log(data);
+                    window.location.href = "/user/profile";
+                },
+                error: function (data) {
+                    hidePopup();
+                    window.location.href = "/";
+                    $("body").html(data.responseText);
+                }
+            });
+        }
     });
 
     $input.appendTo($form);
@@ -489,27 +503,33 @@ var changeName = function () {
     });
 
     $input.click(function () {
-        var body = {
-            "changeName": $('#changeName').val()
-        }
-
-        $.ajax({
-            type: "POST",
-            url: "/user/changename",
-            data: JSON.stringify(body),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (data) {
-                hidePopup();
-                console.log(data);
-                window.location.href = "/user/profile";
-            },
-            error: function (data) {
-                hidePopup();
-                window.location.href = "/";
-                $("body").html(data.responseText);
+        if ($('#changeName').val().length < 1) {
+            $popup.empty();
+            $('#error-message').css('display', 'block');
+            $('#error-message').text('Your name cannot be Empty!');
+        } else {
+            var body = {
+                "changeName": $('#changeName').val()
             }
-        });
+
+            $.ajax({
+                type: "POST",
+                url: "/user/changename",
+                data: JSON.stringify(body),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    hidePopup();
+                    console.log(data);
+                    window.location.href = "/user/profile";
+                },
+                error: function (data) {
+                    hidePopup();
+                    window.location.href = "/";
+                    $("body").html(data.responseText);
+                }
+            });
+        }
     });
 
     $input.appendTo($form);
