@@ -16,7 +16,7 @@ var session = require('express-session')({
     resave: true,
     saveUninitialized: true,
     cookie: {
-        maxAge: 60000
+        maxAge: 86400000
     }
 });
 var sharedSession = require("express-socket.io-session");
