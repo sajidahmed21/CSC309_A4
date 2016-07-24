@@ -240,7 +240,7 @@ function returnResults(results, res) {
 
 /* Handles all requests directed to the search service. */
 exports.handleSearch = function(req, res) {
-    var searchString = req.query.q;
+    var searchString = req.query.query;
     var searchType = req.query.type;
     var limit = req.query.limit ? req.query.limit : null;
     
