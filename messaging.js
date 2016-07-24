@@ -2,63 +2,95 @@ var common = require('./common');
 var socketIO = global.socketIO;
 
 
-/* Closes any sockets found with a matching sessionId.
- * Should be called when a user logs out.
- */
-exports.invalidateSession = function(sessionId) {
-	for (socketId in socketIO.sockets.sockets) {
-		var socket = socketIO.sockets.connected[socketId];
-		if (socket.sessionId === sessionId) {
-			socket.close();
-		}
-	}
-};
-
-
-function sendData(receiverId, data) {
-	// send to all sockets where the receiving user is logged in
-	for (socketId in socketIO.sockets.sockets) {
-		var socket = socketIO.sockets.connected[socketId];
-		if (socket.userId === receiverId) {
-			console.log('sending to user [' + receiverId + ']: ');
-			console.log(data);
-			socket.emit('receive', data);
-		}
-	}
+/* Returns an array of all sockets that belong to a given user. */
+function getUserSockets(userId) {
+    var sockets = []
+    
+    for (socketId in socketIO.sockets.connected) {
+        var socket = socketIO.sockets.connected[socketId];
+        
+        if (getSessionUserId(socket) == userId) {
+            sockets.push(socket);
+        }
+    }
+    return sockets;
 }
 
 
-exports.onConnection = function(socket) {
-	// todo: using the provided sessionId, get the userId;
-	// if the userId is invalid (no one is logged in, reject the socket)
-	// once done, remove check for userid below
-	socket.userId = Math.floor(Math.random() * 10);
-	socket.sessionId = 0;
+/* Returns true if the given user is online (logged in and has an active socket
+ * for messaging.
+ */
+exports.userIsOnline = function(userId) {
+	return getUserSockets(userId).length > 0;
+};
+
+
+/* Sends some data to a given user. Returns true if the user was sent data
+ * and false otherwise.
+ */
+function sendData(partnerId, data) {
+    var sockets = getUserSockets(partnerId);
+    
+    // if the user isn't online, return false
+    if (sockets.length === 0) {
+        return false;
+    }
+    
+    console.log('sending to user [' + partnerId + ']: ');
+	console.log(data);
+    
+	// otherwise send the message to each of those sockets
+	sockets.forEach(function(socket) {
+		socket.emit('receive', data);
+	});
 	
-	console.log('user [' + socket.userId + '] connected');
+	return true;
+}
+
+
+/* Returns the userId from the express session or 0 if no user is logged in */
+function getSessionUserId(socket) {
+    return (socket.handshake && socket.handshake.session && socket.handshake.session.userId) ?
+    socket.handshake.session.userId : 0;
+}
+
+
+/* To be called when the client-side socket.io code attempts to connect. */
+exports.onConnection = function(socket) {
+	console.log('user [' + getSessionUserId(socket) + '] connected');
 	
 	socket.on('send', function(message) {
-		if (!socket.userId) {
-			sendData(socket.userId, {'error': 'not logged in'});
+	    var userId = getSessionUserId(socket);
+	    
+		if (userId == 0 ) {
+		    console.log('prevented attempt to send message without being logged in');
+			socket.emit('notLoggedIn');
 		}
-		else if (socket.userId == message.receiverId)
-		{
-			sendData(socket.userId, {'error': 'cannot send message to self'});
+		else if (userId == message.partnerId) {
+		    console.log('prevented attempt to send message to self');
+			socket.emit('failure', {message: 'cannot send message to self'});
 		}
 		else {
 			console.log('message [' + message.text + ']');
-			console.log('received for user [' + message.receiverId +']');
-		
-			sendData(message.receiverId, {text: message.text});
+			console.log('received for user [' + message.partnerId +']');
+		    
+		    // try to send the message and tell the sender of the status
+			var sentMessage = sendData(message.partnerId, {
+			    senderId: userId,
+			    text: message.text
+			});
+		    
+		    socket.emit(sentMessage ? 'sent' : 'sendError', {messageId: message.messageId});
 		}
     });
 	
-	socket.on('disconnect', function(){
-		console.log('user [' + socket.userId + '] disconnected');
+	socket.on('disconnect', function(socket){
+		console.log('user [' + getSessionUserId(socket) + '] disconnected');
 	});
 };
 
 
+/* Renders the messaging page. */
 exports.renderPage = function(req, res) {
     res.render('messaging', {
         loggedIn: common.userIsLoggedIn(req)

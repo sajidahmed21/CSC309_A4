@@ -2,15 +2,34 @@ var express = require('express');
 var app = express();
 var fs = require('fs');
 var bcrypt = require('bcryptjs');
-var session = require('express-session');
-app.use(session({
+
+
+// socket.io for messaging
+var server = require('http').Server(app);
+var socketIO = require('socket.io')(server);
+global.socketIO = socketIO;
+
+
+// shared session management between regular requests and socket.io ones
+var session = require('express-session')({
     secret: 'Any Secret - I dont know',
     resave: true,
     saveUninitialized: true,
     cookie: {
         maxAge: 60000
     }
+});
+var sharedSession = require("express-socket.io-session");
+
+app.use(session);
+
+
+socketIO.use(sharedSession(session, {
+    secret: 'Any Secret - I dont know',
+    resave: true,
+    saveUninitialized: true
 }));
+
 
 // set hostname and port here
 var hostname = 'localhost';
@@ -19,10 +38,8 @@ var expressValidator = require('express-validator')
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
-var server = require('http').Server(app);
-var socketIO = require('socket.io')(server);
-global.socketIO = socketIO;
 
+// custom modules
 var recommendations = require('./recommendations');
 var messaging = require('./messaging');
 var user = require('./user');
@@ -56,14 +73,6 @@ app.get('/', function (req, res) {
     res.render('home', {
         loggedIn: userIsLoggedIn(req),
     });
-});
-
-app.get('/profile', checkAuthentication, function (req, res) {
-    user.renderProfilePage(req, res, getLoggedInUserId(req));
-});
-
-app.get('/profile/:id', checkAuthentication, function (req, res) {
-    user.renderProfilePage(req, res, req.params.id);
 });
     
 app.get('/demo', function (req, res) {
@@ -139,7 +148,13 @@ app.post('/user/follow', checkAuthentication, followings.followHandler);
 
 app.delete('/user/unfollow', checkAuthentication, followings.unfollowHandler);
 
-app.get('/user/profile', checkAuthentication, user.getProfileHandler);
+app.get('/user/profile', checkAuthentication, function (req, res) {
+    user.getProfileHandler(req, res, getLoggedInUserId(req));
+});
+
+app.get('/user/profile/:id', checkAuthentication, function (req, res) {
+    user.getProfileHandler(req, res, req.params.id);
+});
 
 app.post('/user/logout', user.logoutHandler);
 
@@ -170,7 +185,7 @@ app.get('/search', searchEngine.handleSearch);
 
 /* socket io --------------------------------------------------------*/
 
-socketIO.on('connection', checkAuthentication, messaging.onConnection);
+socketIO.on('connection', messaging.onConnection);
 
 
 /* server start up --------------------------------------------------*/

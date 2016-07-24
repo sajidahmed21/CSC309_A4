@@ -6,12 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>LearnR</title>
 
-    <script src="js/jquery-2.0.0.min.js" defer></script>
-    <script src="js/messaging.js" defer></script>
-	<script src="js/socket.io.js" defer></script>
-    <script src="js/footer.js" defer></script>
-
-    <!-- Latest compiled and minified CSS -->
+	<!-- libraries -->
+    <script src="/js/jquery-2.0.0.min.js" defer></script>
+	<script src="/js/socket.io.js" defer></script>
+	
+	<!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
     <!-- Optional theme -->
@@ -19,9 +18,13 @@
 	
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous" defer></script>
+	
+	<!-- custom files -->
+	<script src="/js/messaging.js" defer></script>
+    <script src="/js/footer.js" defer></script>
 
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <link rel="stylesheet" type="text/css" href="css/messaging.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/messaging.css">
 </head>
 
 <!-- Body starts here, where content is. -->
@@ -33,12 +36,12 @@
         <!-- divide the screen into two columns: one for the user list and one for the chat area -->
         <div class="row">
             <section id="user-list" class="hidden-xs col-sm-5 col-md-4 col-lg-3">
-                <div class="user row" data-user-id="41">
-                    <p class="user-name col-sm-4 col-md-3 col-lg-2">Shafid</p>
+                <div class="user row" data-user-id="20">
+                    <p class="user-name col-sm-4 col-md-3 col-lg-2">Jack</p>
                     <p class="last-message text-muted col-sm-8 col-md-9 col-lg-10">Hey!</p>
                 </div>
-                <div class="user row" data-user-id="43">
-                    <p class="user-name col-sm-4 col-md-3 col-lg-2">James</p>
+                <div class="user row" data-user-id="19">
+                    <p class="user-name col-sm-4 col-md-3 col-lg-2">bob12</p>
                     <p class="last-message text-muted col-sm-8 col-md-9 col-lg-10">Do you think we can...</p>
                 </div>
                 <div class="user row" data-user-id="27">
