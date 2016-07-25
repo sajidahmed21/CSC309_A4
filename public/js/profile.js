@@ -43,6 +43,7 @@ var unfollow = function (followee_id) {
         dataType: "json",
         success: function (data) {
             hidePopup();
+            console.log('posting');
             console.log(data);
             window.location.href = "/user/profile/" + followee_id;
         },

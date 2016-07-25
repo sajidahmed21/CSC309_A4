@@ -7,7 +7,7 @@ var ddosModule = require('ddos')
 var ddos = new ddosModule({
     maxcount: 160,
     burst: 12,
-    maxexpiry: 60,
+    maxexpiry: 600000,
     errormessage: 'Oh no! You\'ve been making too many requests and have been blocked.',
 });
 app.use(ddos.express)
