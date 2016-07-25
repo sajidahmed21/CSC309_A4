@@ -75,29 +75,9 @@ section#user-list p.last-message {
     text-overflow: ellipsis;
 }
 
-/* user search autocomplete styling */
+/* add some margin between the user search and user rows */
 #user-search {
     margin-bottom: 8px;
-}
-
-#user-search .autocomplete-suggestions {
-    border: 1px solid #999;
-    background: #fff;
-    cursor: default; }
-    
-#user-search .autocomplete-suggestion {
-    padding: 10px 5px;
-    font-size: 1.2em;
-    white-space: nowrap;
-}
-
-#user-search .autocomplete-selected {
-    background: #f0f0f0;
-}
-
-#user-search .autocomplete-suggestions strong {
-    font-weight: normal;
-    color: #3399ff;
 }
 
 /* messages */

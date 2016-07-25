@@ -351,7 +351,7 @@ exports.handleSearch = function(req, res) {
                         });
                     }
                     else {
-                        limitResults(classResults, results);
+                        limitResults(classResults, limit);
                         returnResults(classResults, res);
                     }
                 });
