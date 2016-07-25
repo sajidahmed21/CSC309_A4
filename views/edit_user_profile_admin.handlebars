@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<!-- Head starts here. Define stylesheet and tottal width-->
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LearnR: Edit User Profile</title>
+
+    <script src="/js/jquery-2.0.0.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+
+    <link rel="stylesheet" type="text/css" href="/css/admin_home.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/edit_user_profile_admin.css">
+    
+    <script src="/js/profile.js"></script>
+
+</head>
+
+<body class="global_font nomargin">
+    <header>
+        <h1>LearnR</h1>
+		<h2>Admin</h2>
+			
+		<a id="logout-anchor" class="standard-clear-button" href="admin_login.html">Logout</a> <!-- TODO: Remove href -->
+		<img src="/img/profile.png" alt="Profile" height="40" width="45" class="profile_icon">
+		<h3 id="admin-username">admin.username</h3>
+    </header>
+    
+    <img class="profilepage_img" src="/img/profile_background.jpg">
+    <img class="img-circle profile_pic" src="/img/profile.png" height="150" width="150">
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-4">
+            <h2 class="standard-font">User Name</h2></div>
+        <div class="col-md-5">
+            <button id="changepassword_btn" type="button" class="btn standard-green-button">Change Password</button>
+            <button id="deleteuser_btn" type="button" class="btn btn-danger standard-red-button">Delete User</button>
+        </div>
+<!--                            <div class="col-md-2">
+                        <button type="button" class="btn btn-danger standard-red-button drop_course_btn">Drop Course</button>
+                    </div>-->
+    </div>
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-4">
+            <h2 class="standard-font">Enrolled Classes</h2></div>
+        <div class="col-md-5"></div>
+    </div>
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-9">
+            <div class="class_container">
+                <div class="row">
+                    <div class="col-md-10">
+                        <div>
+                            <h1 class="standard-title class_title">Class 1</h1>
+                        </div>
+                        <div>
+                            <h1 class="standard-title professor_title">Professor 1</h1>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-danger standard-red-button drop_course_btn">Drop Course</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-9">
+            <div class="class_container">
+                <div class="row">
+                    <div class="col-md-10">
+                        <div>
+                            <h1 class="standard-title class_title">Class 2</h1>
+                        </div>
+                        <div>
+                            <h1 class="standard-title professor_title">Professor 2</h1>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button id="unenroll_btn" type="button" class="btn btn-danger standard-red-button drop_course_btn">Drop Course</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="unenroll_form" style="display: none;"> <!-- TODO: Remove style attribute -->
+        <div class="col-md-6">
+            <div class="standard-container">
+                <div>
+                    <span class="glyphicon glyphicon-remove cancel_icon" ></span>
+                </div>
+                <form>
+                    <h1 class="standard-title">Unenroll</h1>
+                    <p class="standard-body"> Are you sure you want to unenroll?</p>
+                    <input type="submit" value="Unenroll" class="btn btn-danger standard-red-button block_btn" />
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="popup">
+    </div>
+    <footer>
+        <ul>
+            <li>
+                <a id="reference" class="no-underline" href="#"> Image References </a>
+            </li>
+        </ul>
+        <div class="footer-logo">
+        </div>
+        <hr class="footer-line">
+    </footer>
+</body>
+
+</html>

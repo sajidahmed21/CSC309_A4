@@ -206,6 +206,8 @@ app.get('/admin/logout', admin.handleLogoutRequest);
 
 app.get('/admin/analytics', admin.checkAuthentication, admin.handleAnalyticsDataRequest);
 
+app.get('/admin/edit-user-profile/:id', admin.checkAuthentication, admin.handleEditProfileRequest);
+
 
 /* Searches  --------------------------------------------------------*/
 

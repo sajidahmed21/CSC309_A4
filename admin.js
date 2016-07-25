@@ -88,6 +88,13 @@ exports.handleLogoutRequest = function (request, response) {
     common.redirectToPage('/admin', response);
 };
 
+
+/* Hanldes edit user profile requests by rendering the edit user profile page for admins */
+exports.handleEditProfileRequest = function (request, response) {
+    response.render('edit_user_profile_admin');
+};
+
+
 function sendMalformedRequestResponse(message, response) {
     var responseBody = {status: 'LOGIN_FAILED', 'message': message};
     sendBadRequestResponse(responseBody, response);

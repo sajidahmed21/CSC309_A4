@@ -126,15 +126,14 @@ function showUsersTab() {
     /* Autocomplete attributes for search box */
     $searchBox.autocomplete({
         serviceUrl: '/search',
-        params: {type: 'usersbyusername', limit: 8},
-        noCache: true, // don't use a cache as user statuses may change
+        params: {type: 'usersbyusername', limit: 8}, // TODO: Should it by username or users name ?
+        noCache: true, // don't use a cache
         minLength: 0,
         autoFocus: true,
-        //onSelect: onSelectUserSearch
         appendTo: $autocompleteDropDown,
         onSelect: function (suggestion) {
-            //console.log(suggestion);
-            //window.location.href = 'edit-profile-admin.html';
+            // Navigate the to the edit user profile page
+            window.location.href = '/admin/edit-user-profile/' + suggestion.data;
         }
     });
     
