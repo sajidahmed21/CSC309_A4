@@ -20,77 +20,99 @@ function missingLetters(i) {
     return i * missingLetter;
 }
 
+// shortcuts for functions
+var scorePart = searchEngine.scorePart;
+var compareResultScores = searchEngine.compareResultScores;
+var sortResults = searchEngine.sortResults;
+
+
 describe('scoring', function() {
     describe('scoreParts()', function() {
         describe('single words', function() {
             it('exact matching', function() {
-                assert.equal(searchEngine.scorePart('monkey', 'monkey'),
+                assert.equal(scorePart('monkey', 'monkey'),
                     exactMatch);
-                assert.equal(searchEngine.scorePart('gorilla', 'gorilla'),
+                assert.equal(scorePart('gorilla', 'gorilla'),
                     exactMatch);
-                assert.equal(searchEngine.scorePart('ape', 'large ape'),
+                assert.equal(scorePart('ape', 'large ape'),
                     exactMatch);
             });
         
             it('beginning match', function() {
-                assert.equal(searchEngine.scorePart('kangaro', 'kangaroo'),
+                assert.equal(scorePart('kangaro', 'kangaroo'),
                     beginningMatch + missingLetter);
-                assert.equal(searchEngine.scorePart('kangar', 'kangaroo'),
+                assert.equal(scorePart('kangar', 'kangaroo'),
                     beginningMatch + missingLetters(2));
             });
         
             it('non-beginning match', function() {
-                assert.equal(searchEngine.scorePart('key', 'monkey'),
+                assert.equal(scorePart('key', 'monkey'),
                     nonBeginningMatch + missingLetters(3));
-                assert.equal(searchEngine.scorePart('ke', 'monkey'),
+                assert.equal(scorePart('ke', 'monkey'),
                     nonBeginningMatch + missingLetters(4));
             });
         
             it('not matching', function() {
-                assert.equal(searchEngine.scorePart('kangaroo', 'monkey'),
+                assert.equal(scorePart('kangaroo', 'monkey'),
                     noMatch);
-                assert.equal(searchEngine.scorePart('monkey', 'gorilla'),
+                assert.equal(scorePart('monkey', 'gorilla'),
                     noMatch);
             });
             
             it('assorted', function() {
-                assert.equal(searchEngine.scorePart('ape', 'large ape aped'),
+                assert.equal(scorePart('ape', 'large ape aped'),
                     noMatch + exactMatch + beginningMatch + missingLetter);
-                assert.equal(searchEngine.scorePart('monkey', 'gorilla kangaroo'),
+                assert.equal(scorePart('monkey', 'gorilla kangaroo'),
                     noMatch + noMatch);
-                assert.equal(searchEngine.scorePart('mon', 'monkey keymon'),
+                assert.equal(scorePart('mon', 'monkey keymon'),
                     beginningMatch + missingLetters(3) + nonBeginningMatch + missingLetters(3));
             });
         });
         
         describe('multiple words', function() {
             it('exact matching', function() {
-                assert.equal(searchEngine.scorePart('apple', 'apple apple'),
+                assert.equal(scorePart('apple', 'apple apple'),
                     exactMatch + exactMatch)
-                assert.equal(searchEngine.scorePart('kiwi', 'kiwi kiwi kiii kiwi'),
+                assert.equal(scorePart('kiwi', 'kiwi kiwi kiii kiwi'),
                     exactMatch + exactMatch + noMatch + exactMatch);
             });
             
             it('beginning match', function() {
-                assert.equal(searchEngine.scorePart('kiwi', 'kiwitree kiwiapple'),
+                assert.equal(scorePart('kiwi', 'kiwitree kiwiapple'),
                     beginningMatch + missingLetters(4) + beginningMatch + missingLetters(5));
-                assert.equal(searchEngine.scorePart('kiwi', 'kiwitree kiwiapples'),
+                assert.equal(scorePart('kiwi', 'kiwitree kiwiapples'),
                     beginningMatch + missingLetters(4) + beginningMatch + missingLetters(6));
             });
             
             it('non-beginning match', function() {
-                assert.equal(searchEngine.scorePart('app', 'orapp testapp'),
+                assert.equal(scorePart('app', 'orapp testapp'),
                     nonBeginningMatch + missingLetters(2) + nonBeginningMatch + missingLetters(4));
-                assert.equal(searchEngine.scorePart('lee', 'canlee test qwerlee'),
+                assert.equal(scorePart('lee', 'canlee test qwerlee'),
                     nonBeginningMatch + missingLetters(3) + noMatch + nonBeginningMatch + missingLetters(4));
             });
             
             it('not matching', function() {
-                assert.equal(searchEngine.scorePart('app', 'test for the mising word'),
+                assert.equal(scorePart('app', 'test for the mising word'),
                     noMatch);
-                assert.equal(searchEngine.scorePart('lee', 'Can we le leave early?'),
+                assert.equal(scorePart('lee', 'Can we le leave early?'),
                     noMatch);
             });
         });
     });
+
+    describe('compareResultScores()', function() {
+        it('less than', function() {
+            assert.equal(compareResultScores({score: 10}, {score: 2}), -8);
+        });
+        
+        it('greater than', function() {
+            assert.equal(compareResultScores({score: 2}, {score: 8}), 6);
+        });
+        
+        it('equal', function() {
+            assert.equal(compareResultScores({score: 12}, {score: 12}), 0);
+        });
+    });
+    
+    
 });

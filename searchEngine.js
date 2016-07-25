@@ -6,9 +6,6 @@ var sendBackJSON = common.sendBackJSON;
 
 var messaging = require('./messaging');
 
-// used to store functions for testing purposes
-exports.test = {};
-
 
 /* helper functions --------------------------------------------------------*/
 
@@ -45,8 +42,6 @@ function scorePart(query, string) {
     
     return score;
 }
-
-exports.test.scorePart = scorePart;
 
 
 /* Takes in two strings, a query string and a matching string, and returns the
@@ -405,3 +400,11 @@ exports.handleSearch = function(req, res) {
     }
 }
 
+
+// used to store functions for testing purposes
+exports.test = {};
+
+/* functions exported for testing */
+exports.test.scorePart = scorePart;
+exports.test.compareResultScores = compareResultScores;
+exports.test.sortResults = sortResults;
