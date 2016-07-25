@@ -94,6 +94,11 @@ exports.handleEditProfileRequest = function (request, response) {
     response.render('edit_user_profile_admin');
 };
 
+/* Handles edit course requests by rendering the edit course page for admins */
+exports.handleEditCourseRequest = function (request, response) {
+    response.render('edit_course_admin');
+};
+
 
 function sendMalformedRequestResponse(message, response) {
     var responseBody = {status: 'LOGIN_FAILED', 'message': message};
