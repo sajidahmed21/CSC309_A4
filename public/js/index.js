@@ -113,7 +113,7 @@ var loginPage = function () {
 
     $container.append($cancelwrapper);
 
-    $form = $('<form/>');
+    $form = $('<form method="post" action="/user/signin"/>');
 
     $title = $('<h1/>', {
         class: 'standard-title'
@@ -121,8 +121,8 @@ var loginPage = function () {
     $title.text('Login').appendTo($form);
 
     $input = $('<input/>', {
-        id: 'userName',
-        name: 'userName',
+        id: 'signinUsername',
+        name: 'signinUsername',
         type: 'text',
         placeholder: 'Username',
         required: 'required',
@@ -132,8 +132,8 @@ var loginPage = function () {
     $input.appendTo($form);
 
     $input = $('<input/>', {
-        id: 'userPassword',
-        name: 'userPassword',
+        id: 'signinPassword',
+        name: 'signinPassword',
         type: 'password',
         placeholder: 'Password',
         required: 'required',
@@ -142,38 +142,38 @@ var loginPage = function () {
 
     $input.appendTo($form);
 
-    $input = $('<input/>', {
-        type: 'button',
-        value: 'Login',
+    $input = $('<button/>', {
+        type: 'submit',
+        text: 'Login',
         class: 'btn btn-danger standard-red-button block_btn',
     });
+    
+//    $input.click(function () {
+//        var body = {
+//            "signinUsername": $('#userName').val(),
+//            "signinPassword": $('#userPassword').val(),
+//        }
+//
+//        $.ajax({
+//            type: "POST",
+//            url: "/user/signin",
+//            data: JSON.stringify(body),
+//            contentType: "application/json; charset=utf-8",
+//            dataType: "json",
+//            success: function (data) {
+//                hidePopup();
+//                console.log(data);
+//                window.location.href = "/user/profile";
+//            },
+//            error: function (data) {
+//                hidePopup();
+//                $("body").html(data.responseText);
+//            }
+//        });
+//    });
 
     $input.appendTo($form);
     
-    $input.click(function () {
-        var body = {
-            "signinUsername": $('#userName').val(),
-            "signinPassword": $('#userPassword').val(),
-        }
-
-        $.ajax({
-            type: "POST",
-            url: "/user/signin",
-            data: JSON.stringify(body),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (data) {
-                hidePopup();
-                console.log(data);
-                window.location.href = "/user/profile";
-            },
-            error: function (data) {
-                hidePopup();
-                $("body").html(data.responseText);
-            }
-        });
-    });
-
     $input = $('<input/>', {
         type: 'button',
         value: 'Facebook Login',
@@ -223,7 +223,7 @@ var signupPage = function () {
 
     $container.append($cancelwrapper);
 
-    $form = $('<form/>');
+    $form = $('<form method="post" action="/user/signup"/>');
 
     $title = $('<h1/>', {
         class: 'standard-title'
@@ -231,8 +231,8 @@ var signupPage = function () {
     $title.text('Sign Up').appendTo($form);
 
     $input = $('<input/>', {
-        id: 'name',
-        name: 'userName',
+        id: 'signupName',
+        name: 'signupName',
         type: 'text',
         placeholder: 'Your Name',
         required: 'required',
@@ -242,8 +242,8 @@ var signupPage = function () {
     $input.appendTo($form);
 
     $input = $('<input/>', {
-        id: 'userName',
-        name: 'userName',
+        id: 'signupUsername',
+        name: 'signupUsername',
         type: 'text',
         placeholder: 'Username',
         required: 'required',
@@ -253,8 +253,8 @@ var signupPage = function () {
     $input.appendTo($form);
 
     $input = $('<input/>', {
-        id: 'userPassword',
-        name: 'userPassword',
+        id: 'signupPassword',
+        name: 'signupPassword',
         type: 'password',
         placeholder: 'Password',
         required: 'required',
@@ -285,42 +285,42 @@ var signupPage = function () {
 
     $input.appendTo($form);*/
     
-    $input = $('<input/>', {
-        type: 'button',
-        value: 'Join Now!',
+    $input = $('<button/>', {
+        type: 'submit',
+        text: 'Join Now!',
         class: 'standard-blue-button block_btn',
     });
 
     $input.appendTo($form);
 
-    $input.click(function () {
-        console.log($('#name').val());
-        console.log($('#userPassword').val());
-        var body = {
-            "signupName": $('#name').val(),
-            "signupUsername": $('#userName').val(),
-            "signupPassword": $('#userPassword').val(),
-            "userPasswordConfirm": $('#userPasswordConfirm').val(),
-            "signupProfilePicture": "sfkjsdn"
-        }
-
-        $.ajax({
-            type: "POST",
-            url: "/user/signup",
-            data: JSON.stringify(body),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (data) {
-                hidePopup();
-                console.log(data);
-                window.location.href = "/user/profile";
-            },
-            error: function (data) {
-                hidePopup();
-                $("body").html(data.responseText);
-            }
-        });
-    });
+//    $input.click(function () {
+//        console.log($('#name').val());
+//        console.log($('#userPassword').val());
+//        var body = {
+//            "signupName": $('#name').val(),
+//            "signupUsername": $('#userName').val(),
+//            "signupPassword": $('#userPassword').val(),
+//            "userPasswordConfirm": $('#userPasswordConfirm').val(),
+//            "signupProfilePicture": "sfkjsdn"
+//        }
+//
+//        $.ajax({
+//            type: "POST",
+//            url: "/user/signup",
+//            data: JSON.stringify(body),
+//            contentType: "application/json; charset=utf-8",
+//            dataType: "json",
+//            success: function (data) {
+//                hidePopup();
+//                console.log(data);
+//                window.location.href = "/user/profile";
+//            },
+//            error: function (data) {
+//                hidePopup();
+//                $("body").html(data.responseText);
+//            }
+//        });
+//    });
 
     $input = $('<input/>', {
         type: 'button',

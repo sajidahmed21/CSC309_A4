@@ -1,8 +1,21 @@
 var express = require('express');
 var app = express();
-var fs = require('fs');
+
+// security
+var ddosModule = require('ddos')
+// allow 260 requests per minute, with no more than 12 at a given time
+var ddos = new ddosModule({
+    maxcount: 160,
+    burst: 12,
+    maxexpiry: 60,
+    errormessage: 'Oh no! You\'ve been making too many requests and have been blocked.',
+});
+app.use(ddos.express)
+
 var bcrypt = require('bcryptjs');
 
+// other modules
+var fs = require('fs');
 
 // socket.io for messaging
 var server = require('http').Server(app);

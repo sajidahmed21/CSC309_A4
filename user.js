@@ -145,6 +145,7 @@ exports.getProfileHandler = function (req, res, profileUserId) {
         var firstLetterProfile = name.charAt(0);
         if (firstLetterProfile >= 'a' && firstLetterProfile <= 'z')
             firstLetterProfile = firstLetterProfile.toUpperCase();
+        console.log('HERREEEEEE');
         db.query("SELECT CLASSES.id AS id, CLASSES.class_name AS class_name, USERS.name AS instructor FROM ENROLMENT, CLASSES, USERS WHERE USERS.id=CLASSES.instructor AND CLASSES.id=ENROLMENT.class_id AND ENROLMENT.user_id =" + profileUserId).spread(function (result, meta) {
             db.query("SELECT EXISTS(SELECT 1 FROM FOLLOWINGS WHERE follower =" + getLoggedInUserId(req) + " AND followee=" + profileUserId + " ) AS checkfollow;").spread(function (resultInner, metaInner) {
                 var boolFollow = false;
@@ -193,24 +194,25 @@ exports.signinHandler = function (req, res) {
         bcrypt.compare(signinPassword, results[0].password, function (err, result) {
             if (err || result === false) {
                 console.log("Err in login");
-                res.status(400);
+                res.status(401);
                 return res.render('home', {
                     errorContent: '<p><strong>Opps!</strong> Your username and password do not match!</p>',
                     loggedIn: false
                 });
-            }
-            else {
+            } else {
                 console.log("signinHandler " + results[0].user_id);
                 setLoggedInUserId(req, results[0].user_id);
-                var returnJSON = {
-                    "status": "success",
-                    "message": "Login Success"
-                }
-                sendBackJSON(returnJSON, res);
+                exports.getProfileHandler(req, res, results[0].user_id);
+
+                //                var returnJSON = {
+                //                    "status": "success",
+                //                    "message": "Login Success"
+                //                }
+                //                sendBackJSON(returnJSON, res);
             }
         })
     }).catch(function (err) {
-        res.status(400);
+        res.status(401);
         return res.render('home', {
             errorContent: '<p><strong>Opps!</strong> Your username and password do not match!</p>',
             loggedIn: false
@@ -220,7 +222,7 @@ exports.signinHandler = function (req, res) {
 
 exports.signupHandler = function (req, res) {
     if (req.body.signupPassword.length < 8) {
-        res.status(400);
+        res.status(401);
         return res.render('home', {
             errorContent: '<p><strong>Opps!</strong> Your password must be at least length of 8!</p>',
             loggedIn: false
@@ -228,7 +230,7 @@ exports.signupHandler = function (req, res) {
     }
     if (req.body.signupPassword != req.body.userPasswordConfirm) {
         console.log("return");
-        res.status(400);
+        res.status(401);
         return res.render('home', {
             errorContent: '<p><strong>Opps!</strong> Your password do not match!</p>',
             loggedIn: false
@@ -239,7 +241,9 @@ exports.signupHandler = function (req, res) {
             console.log('failed to hash password:');
             console.log(err);
 
-            sendUnauthorizedResponse({"error": "server error"}, res);
+            sendUnauthorizedResponse({
+                "error": "server error"
+            }, res);
             return;
         }
 
@@ -258,13 +262,11 @@ exports.signupHandler = function (req, res) {
                 });
             })
             .catch(function (err) {
-                console.log("failed to create user:");
-                console.log(err);
-                var returnJSON = {
-                    "status": "error",
-                    "message": "failed to create user"
-                }
-                sendUnauthorizedResponse(returnJSON, res);
+                res.status(401);
+                return res.render('home', {
+                    errorContent: '<p><strong>Opps!</strong> The username has been taken! Please choose another username!</p>',
+                    loggedIn: false
+                });
             });
     });
 };
@@ -277,14 +279,14 @@ exports.loginInsert = function (transaction, id, signupUsername, signupPassword,
             console.log("LOGININSERT" + id);
             // automatically log the user in
             setLoggedInUserId(req, id);
-
-            var returnJSON = {
-                "status": "success",
-                "message": "Signup Success"
-            };
-            sendBackJSON(returnJSON, res);
+            exports.getProfileHandler(req, res, id);
+//            var returnJSON = {
+//                "status": "success",
+//                "message": "Signup Success"
+//            };
+//            sendBackJSON(returnJSON, res);
         }).catch(function (err) {
-            res.status(400);
+            res.status(401);
             return res.render('home', {
                 errorContent: '<p><strong>Opps!</strong> The username has been taken! Please choose another username!</p>',
                 loggedIn: false
@@ -317,7 +319,7 @@ exports.deleteUserHandler = function (req, res) {
     var user_id = getLoggedInUserId(req);
     // always set the user_id to logged out
     setLoggedInUserId(req, 0);
-    
+
     db.query("DELETE FROM LOGIN_CREDENTIALS WHERE user_id=" + user_id).spread(function (results, metadata) {
         db.query("DELETE FROM USERS WHERE id=" + user_id).spread(function (results, metadata) {
             var returnJSON = {
