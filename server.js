@@ -16,7 +16,7 @@ var session = require('express-session')({
     resave: true,
     saveUninitialized: true,
     cookie: {
-        maxAge: 30000
+        maxAge: 1000
     }
 });
 var sharedSession = require("express-socket.io-session");
@@ -79,6 +79,7 @@ app.use(express.static('public'));
 app.get('/', function (req, res) {
     res.render('home', {
         loggedIn: userIsLoggedIn(req),
+        errorContent: req.param('errorMessage')
     });
 });
 
@@ -165,6 +166,8 @@ app.get('/enroll', function (req, res) {
         })
     });
 });
+
+
 
 app.post('/user/signin', user.signinHandler);
 

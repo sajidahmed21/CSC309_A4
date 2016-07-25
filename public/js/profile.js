@@ -48,8 +48,7 @@ var unfollow = function (followee_id) {
         },
         error: function (data) {
             hidePopup();
-            window.location.href = "/";
-            $("body").html(data.responseText);
+            window.location.href = "/?errorMessage=Your%20session%20has%20expired";
         }
     });
 }
@@ -72,8 +71,7 @@ var follow = function (followee_id) {
         },
         error: function (data) {
             hidePopup();
-            window.location.href = "/";
-            $("body").html(data.responseText);
+            window.location.href = "/?errorMessage=Your%20session%20has%20expired";
         }
     });
 }
@@ -144,8 +142,7 @@ var dropCourse = function (dropCourse_id) {
             },
             error: function (data) {
                 hidePopup();
-                window.location.href = "/";
-                $("body").html(data.responseText);
+                window.location.href = "/?errorMessage=Your%20session%20has%20expired";
             }
         });
     });
@@ -172,8 +169,7 @@ var logout = function () {
         },
         error: function (data) {
             hidePopup();
-            window.location.href = "/";
-            $("body").html(data.responseText);
+            window.location.href = "/?errorMessage=Your%20session%20has%20expired";
         }
     });
 };
@@ -328,8 +324,7 @@ var deleteUser = function () {
             },
             error: function (data) {
                 hidePopup();
-                window.location.href = "/";
-                $("body").html(data.responseText);
+                window.location.href = "/?errorMessage=Your%20session%20has%20expired";
             }
         });
     });
@@ -435,8 +430,7 @@ var changePassword = function () {
                 },
                 error: function (data) {
                     hidePopup();
-                    window.location.href = "/";
-                    $("body").html(data.responseText);
+                    window.location.href = "/?errorMessage=Your%20session%20has%20expired";
                 }
             });
         }
@@ -524,9 +518,11 @@ var changeName = function () {
                     window.location.href = "/user/profile";
                 },
                 error: function (data) {
-                    hidePopup();
-                    window.location.href = "/";
-                    $("body").html(data.responseText);
+                    var errormsg = {
+                        errorMessage: "Your session has expired"
+                    }
+                    console.log('ERRORFAIL');
+                    window.location.href = "/?errorMessage=Your%20session%20has%20expired";
                 }
             });
         }
