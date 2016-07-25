@@ -125,13 +125,16 @@ function showUsersTab() {
     
     /* Autocomplete attributes for search box */
     $searchBox.autocomplete({
-        lookup: ['Jeff', 'Jeffrey', 'Terry', 'Johnson', 'Rob'],
+        serviceUrl: '/search',
+        params: {type: 'usersbyusername', limit: 8},
+        noCache: true, // don't use a cache as user statuses may change
         minLength: 0,
         autoFocus: true,
+        //onSelect: onSelectUserSearch
         appendTo: $autocompleteDropDown,
         onSelect: function (suggestion) {
-            console.log(suggestion);
-            window.location.href = 'edit-profile-admin.html';
+            //console.log(suggestion);
+            //window.location.href = 'edit-profile-admin.html';
         }
     });
     
