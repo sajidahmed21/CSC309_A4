@@ -182,16 +182,6 @@ exports.getProfileHandler = function (req, res, profileUserId) {
                     followed: boolFollow,
                     userIsOwner: profileUserId == getLoggedInUserId(req)
                 });
-                //            var returnJSON = {
-                //                "status": "success",
-                //                "data": {
-                //                    "name": results[0].name,
-                //                    "profile_picture_path": results[0].profile_picture_path,
-                //                    "courses": result
-                //                },
-                //                "message": "Success for getting profile",
-                //            }
-                //            sendBackJSON(returnJSON, res);
             })
         })
 
