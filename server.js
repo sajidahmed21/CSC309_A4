@@ -28,9 +28,6 @@ var session = require('express-session')({
     secret: 'Any Secret - I dont know',
     resave: true,
     saveUninitialized: true,
-    cookie: {
-        maxAge: 10 * 60 * 1000
-    },
     rolling: true
 });
 var sharedSession = require("express-socket.io-session");
