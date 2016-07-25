@@ -103,13 +103,6 @@ app.get('/content', checkAuthentication, function (req, res) {
     res.send("You can only see this after you've logged in.");
 });
 
-app.get('/text', function (req, res) {
-    var index = common.currentUser.indexOf('broke');
-    if (index != -1) {
-        common.currentUser.splice(index, 1);
-        console.log("broke");
-    }
-});
 
 /* Users ------------------------------------------------------------*/
 
