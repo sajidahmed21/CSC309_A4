@@ -21,6 +21,11 @@ exports.sendUnauthorizedResponse = function (data, response) {
     sendJSONResponse(401, data, response);
 };
 
+exports.sendInternalServerErrorResponse = function (response) {
+    response.writeHead(500);
+    response.end();
+};
+
 function sendJSONResponse(statusCode, data, response) {
     response.writeHead(statusCode, {'Content-Type': 'application/json'});
     response.end(JSON.stringify(data));

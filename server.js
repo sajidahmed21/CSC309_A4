@@ -224,6 +224,8 @@ app.post('/admin/login', admin.handleLoginRequest);
 
 app.get('/admin/logout', admin.handleLogoutRequest);
 
+app.get('/admin/analytics', admin.checkAuthentication, admin.handleAnalyticsDataRequest);
+
 
 /* Searches  --------------------------------------------------------*/
 

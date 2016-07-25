@@ -77,6 +77,9 @@ exports.handleLoginRequest = function(request, response) {
     });
 };
 
+/*  Handles logout requests by resetting Admin Id for the particular session
+ *  and redirecting to the admin login page
+ */
 exports.handleLogoutRequest = function (request, response) {
     // Reset Admin Id to indicate this session is no longer associated with any admin
     request.session.adminId = undefined;
@@ -106,7 +109,9 @@ function onSuccessfulLogin(adminId, request, response) {
 
 /* --- Analytics --- */
 
-function getAnalyticsData() {
+/* Handles analytics data requests by providing analytics data about users and classes */
+exports.handleAnalyticsDataRequest = function (request, response) {
+    
     /* --- SQL Queries --- */
     
     /* Total number of users */
@@ -116,14 +121,15 @@ function getAnalyticsData() {
     var usersEnrolledInClass = '(SELECT COUNT(DISTINCT user_id) AS numUsersEnrolledInClass FROM ENROLMENT)';
     
     /* Avg num of unique users per day */
-    var avgLogins = '(SELECT AVG(numLogins) AS avgNumLoginsPerDay ' +
+    var avgLogins = '(SELECT COALESCE(AVG(numLogins), \'-\') AS avgUniqueLoginsPerDay ' +
                      'FROM (SELECT COUNT(DISTINCT user_id) AS numLogins FROM LOGIN_HISTORY GROUP BY date(login_timestamp)))';
     
     /* Total number of classes */
     var numClasses = '(SELECT COUNT(*) AS numClasses FROM CLASSES)';
     
     /* Avg num of users per class */
-    var avgUsersPerClass = '(SELECT (SELECT COUNT(*) FROM USERS) / (SELECT COUNT(*) FROM CLASSES) AS avgUsersPerClass)';
+    var avgUsersPerClass = '(SELECT COALESCE((SELECT COUNT(*) FROM ENROLMENT) / (SELECT COUNT(*) FROM CLASSES), \'-\') ' +
+                            'AS avgUsersPerClass)';
     
     /* Avg rating over all classes */
     var avgClassRating = '(SELECT (COALESCE(AVG(rating), \'-\')) AS avgClassRating FROM REVIEWS)';
@@ -133,6 +139,13 @@ function getAnalyticsData() {
                       numClasses + ', ' + avgUsersPerClass + ', ' + avgClassRating;
     
     db.query(finalQuery).spread(function (results) {
-        console.log(results);
+        if (results === undefined || results.length !== 1) {
+            // We shouldn't get here
+            common.sendInternalServerErrorResponse(response);
+            return;
+        }
+        
+        // Send the JSON response back to the client
+        common.sendBackJSON(results[0], response);
     });
-}
+};
