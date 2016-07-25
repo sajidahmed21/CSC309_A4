@@ -260,7 +260,7 @@ function searchForUser(searchString, callback) {
     search(query, searchString, false, null, [], function(results) {
         // add a value field and strip out unneeded fields
         results.forEach(function(result) {
-            result.value = mergeNameAndUsername(result.name, result.username);
+            result.value = mergeStrings(result.name, result.username);
 
             result['matchingString'] = undefined;
             result['name'] = undefined;
