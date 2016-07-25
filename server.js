@@ -3,9 +3,9 @@ var app = express();
 
 // security
 var ddosModule = require('ddos')
-// allow 260 requests per minute, with no more than 12 at a given time
+// allow 160 requests per minute, with no more than 12 at a given time
 var ddos = new ddosModule({
-    maxcount: 160,
+    limit: 160,
     burst: 12,
     maxexpiry: 60,
     errormessage: 'Oh no! You\'ve been making too many requests and have been blocked.',
@@ -68,6 +68,7 @@ var searchEngine = require('./searchEngine');
 var courses = require('./courses');
 var admin = require('./admin');
 var createcourse = require('./createcourse');
+var renderHome = require('./home').render;
 
 var common = require('./common');
 var sendBackJSON = common.sendBackJSON;
@@ -90,24 +91,10 @@ app.use(express.static('public'));
 
 
 /* page routing -----------------------------------------------------*/
-app.get('/', function (req, res) {
-    res.render('home', {
-        loggedIn: userIsLoggedIn(req),
-        errorContent: req.param('errorMessage')
-    });
-});
+app.get('/', renderHome);
 
-/* TODO: Remove */
-app.get('/demo', function (req, res) {
-    db.query('SELECT COUNT(*) AS userCount FROM USERS').spread(function (results, metadata) {
-        res.render('demo', {
-            userCount: results[0].userCount,
-            leggedIn: userIsLoggedIn(req),
-            demo: true
-        });
 
-    });
-});
+/* Courses ----------------------------------------------------------*/
 
 app.get('/course/:id',
     courses.get_class_info,
@@ -210,13 +197,6 @@ app.post('/user/logout', user.logoutHandler);
 app.post('/user/unenrollClasses', checkAuthentication, user.unenrollHandler);
 
 app.post('/user/deleteuser', checkAuthentication, user.deleteUserHandler);
-
-
-/* Courses  ---------------------------------------------------------*/
-
-app.get('/courses/recommended', recommendations.userCourses);
-
-app.get('/courses/popular', recommendations.popularCourses);
 
 
 /* Admins  ----------------------------------------------------------*/

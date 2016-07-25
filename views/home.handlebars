@@ -26,7 +26,7 @@
 
 <!-- Body Start here, where content is. -->
 
-<body class="global_font nomargin">
+<body class="global_font nomargin container-fluid">
     {{> nav }}
 
 	{{#if errorContent}}
@@ -35,92 +35,56 @@
 		</div>
 	{{/if}}
 	
-    <img class="homepage_img" src="/img/study.jpg" height="600px">
-    <section id="recommended-classes" class="row">
-        <h1 class="standard-title-top-course">Top Recommend Classes</h1>
-        <article class="class col-xs-12 col-md-6 col-lg-4">
-            <div class="well">
-                <p class="class-name text-primary">
-                    Software Design
-                </p>
-                <p class="class-instructor">
-                    Dino D'amore
-                </p>
-                <div class="class-description">
-                    <p>
-                        Introduction to large-scale software design and development concepts.
-                    </p>
-                </div>
-                <a href="/class" class="standard-blue-button fullblock_btn" role="button">Class Page</a>
-            </div>
-        </article>
-
-        <article class="class col-xs-12 col-md-6 col-lg-4">
-            <div class="well">
-                <p class="class-name text-primary">
-                    Software Tools and Systems Programming
-                </p>
-                <p class="class-instructor">
-                    Jamshed Petri
-                </p>
-                <div class="class-description">
-                    <p>
-                        Software techniques in a Unix-style environment, using scripting languages and a machine-oriented programming language (typically C).
-                    </p>
-                    <p>
-                        What goes on in the operating system when programs are executed.
-                        <p>
-                            <p>
-                                Core topics:
-                            </p>
-                            <ul>
-                                <li>creating and using software tools</li>
-                                <li>pipes and filters</li>
-                                <li>file processing</li>
-                                <li>shell programming</li>
-                                <li>processes</li>
-                                <li>system calls</li>
-                                <li>signals</li>
-                                <li>basic network programming</li>
-                            </ul>
-                </div>
-                <a href="/class" class="standard-blue-button fullblock_btn" role="button">Class Page</a>
-            </div>
-        </article>
-
-        <article class="class col-xs-12 col-md-6 col-lg-4">
-            <div class="well">
-                <p class="class-name text-primary">
-                    Introduction to the Theory of Computation
-                </p>
-                <p class="class-instructor">
-                    Shahzad Corti
-                </p>
-                <div class="class-description">
-                    <p>
-                        The application of logic and proof techniques to Computer Science.
-                    </p>
-                    <p>
-                        Mathematical induction; correctness proofs for iterative and recursive algorithms; recurrence equations and their solutions; introduction to automata and formal languages.
-                        <p>
-                            <p>
-                                This course assumes university-level experience with proof techniques and algorithmic complexity as provided by CSC165H1. Very strong students who already have this experience (e.g. successful completion of MAT157Y1) may consult the undergraduate office about proceeding directly into CSC236H1.
-                            </p>
-                </div>
-                <a href="/class" class="standard-blue-button fullblock_btn" role="button">Class Page</a>
-            </div>
-        </article>
-    </section>
-    <div class="abs_center_search">
-        <div>
-            <div class="input-group">
-                <input type="text" class="form-control standard-search-bar" placeholder="Search Class...">
-                <span class="input-group-btn">
-                    <button type="submit" class="standard-blue-button">Search Now</button>
-                </span>
-            </div>
-        </div>
-    </div>
+	{{#if loggedIn}}
+		<section id="recommended-courses" class="row">
+		{{#if recommendedClasses.length }}
+			<h1 class="standard-title-top-course">Your Recommended Classes</h1>
+			{{#each recommendedClasses}}
+				<article class="class col-xs-12 col-md-{{../recommendedWellColumnSize}} col-lg-{{../recommendedWellColumnSize}}">
+		            <div class="well">
+		                <p class="class-name text-primary">
+		                    {{class_name}}
+		                </p>
+		                <p class="class-instructor">
+		                    {{instructor}}
+		                </p>
+		                <div class="class-description">
+		                    <p>
+		                        TODO
+		                    </p>
+		                </div>
+		                <a href="/course/{{class_id}}" class="standard-blue-button fullblock_btn" role="button">Class Page</a>
+		            </div>
+		        </article>
+			{{/each}}
+		{{else}}
+			<p id="no-recommended-courses">Follow other users to be shown recommended classes!<p>
+		{{/if}}
+		</section>
+	{{/if}}
+	
+	<section id="popular-courses" class="row">
+		<h1 class="standard-title-top-course">Popular Classes</h1>
+		{{#each popularCourses}}
+			<article class="class col-xs-12 col-md-{{../popularWellColumnSize}} col-lg-{{../popularWellColumnSize}}">
+	            <div class="well">
+	                <p class="class-name text-primary">
+	                    {{class_name}}
+	                </p>
+	                <p class="class-instructor">
+	                    {{instructor}}
+	                </p>
+	                <div class="class-description">
+	                    <p>
+	                        TODO
+	                    </p>
+	                </div>
+	                <a href="/course/{{class_id}}" class="standard-blue-button fullblock_btn" role="button">Class Page</a>
+	            </div>
+	        </article>
+		{{/each}}
+	</section>
+	<!-- end of popular courses -->
 
     <div id="popup">
     </div>
