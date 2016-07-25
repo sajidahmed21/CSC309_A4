@@ -1,0 +1,37 @@
+<header>
+	<nav class="navbar navbar-default standard-headbar">
+		<div class="container-fluid">
+
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#collapsing-nav" aria-expanded="false" aria-controls="navbar">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/">LearnR</a>
+			</div>
+			
+			<div id="collapsing-nav" class="collapse navbar-collapse" aria-expanded="false">
+				<form class="navbar-form navbar-left" role="search">
+					<div class="form-group">
+						<input type="text" class="form-control standard-search-bar headbar_search_input" placeholder="Search..."></input>
+					</div>
+				</form>
+				
+				{{#if loggedIn}}
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="/messaging">Messaging</a></li>
+					<li><a href="">Create a Course</a></li>
+					<a id="logout-anchor" class="btn btn-link" href="/">Logout</a></li>
+				</ul>
+					
+				{{else}}
+					<ul class="nav navbar-nav navbar-right">
+						<li><a id="userlogin_btn" class="btn btn-link" href="#">Login</a></li>
+						<a id="signup_btn" class="btn standard-blue-button" href="#">Sign Up</a></li>
+					</ul>
+				{{/if}}   
+			</div>
+		</div>
+	</nav>
+</header>

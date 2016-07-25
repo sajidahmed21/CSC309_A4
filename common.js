@@ -21,6 +21,11 @@ exports.sendUnauthorizedResponse = function (data, response) {
     sendJSONResponse(401, data, response);
 };
 
+exports.sendInternalServerErrorResponse = function (response) {
+    response.writeHead(500);
+    response.end();
+};
+
 function sendJSONResponse(statusCode, data, response) {
     response.writeHead(statusCode, {'Content-Type': 'application/json'});
     response.end(JSON.stringify(data));
@@ -64,6 +69,12 @@ exports.checkAuthentication = function (req, res, next) {
             loggedIn: false
         });
     }
+};
+
+/* Redirects a HTTP request to the page specified `relativePath` */
+exports.redirectToPage = function(redirectPath, response) {
+    response.writeHead(302, {'Location': redirectPath});
+    response.end();
 };
 
 /* Standard function for generation unique session id */

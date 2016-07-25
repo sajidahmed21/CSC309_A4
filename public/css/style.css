@@ -327,8 +327,7 @@ p.class-name {
     right: 0;
     top: 24%;
     bottom: 0;
-    margin: auto;
-    max-height: 100%;
+    margin: auto;    max-height: 100%;
     max-width: 100%;
 }
 
@@ -388,6 +387,15 @@ p.class-name {
 .standard-title-top-course {
     text-align: center;
     font-size: 225%;
+    color: #757575;
+    font-weight: 200;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+p#no-recommended-courses {
+    text-align: center;
+    font-size: 1.5em;
     color: #757575;
     font-weight: 200;
     margin-top: 20px;
