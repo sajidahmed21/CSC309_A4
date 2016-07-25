@@ -16,7 +16,7 @@ var session = require('express-session')({
     resave: true,
     saveUninitialized: true,
     cookie: {
-        maxAge: 1000
+        maxAge: 10 * 60 * 1000
     },
     rolling: true
 });
