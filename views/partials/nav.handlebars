@@ -8,7 +8,13 @@
 				<div class="navbar-collapse">
 					<div class="row">
 						<div class="col-sm-offset-3 col-sm-4">
-							<input id="search-text" type="text" class="form-control" placeholder="Search...">
+							<!-- update the placeholder depending on whether the user is logged in,
+								 as only logged in users can run a full search -->
+							{{#if loggedIn}}
+								<input id="search-text" type="text" class="form-control" placeholder="Search...">
+							{{else}}
+								<input id="search-text" type="text" class="form-control" placeholder="Search Classes...">
+							{{/if}}
 							<div id="search-dropdown"><!-- to be filled in through javascript with the search suggestions --></div>
 						</div>
 
@@ -18,8 +24,8 @@
 								<li><a href="/messaging">Messaging</a></li>
 								<li><a href="">Create a Course</a></li>
 								<li><a class="nopadding" href="/user/profile"><img src="/img/profile.png" alt="Profile" height="40" width="40" class="profile_icon"></a></li>
+								<a id="logout-anchor" class="standard-clear-button" href="/">Logout</a>
 							</ul>
-							<a id="logout-anchor" class="standard-clear-button" href="/">Logout</a>
 						</div>
 						
 						{{else}}
