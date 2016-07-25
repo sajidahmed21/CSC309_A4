@@ -24,6 +24,7 @@ function missingLetters(i) {
 var scorePart = searchEngine.scorePart;
 var compareResultScores = searchEngine.compareResultScores;
 var sortResults = searchEngine.sortResults;
+var limitResults = searchEngine.limitResults;
 
 
 describe('scoring', function() {
@@ -147,6 +148,59 @@ describe('scoring', function() {
             
             sortResults(unsorted);
             assert.deepEqual(unsorted, sorted);
+        });
+    });
+    
+    describe('limitResults()', function() {
+        it('no limit', function() {
+            var original = [
+                {score: 213},
+                {score: 124},
+                {score: 51},
+                {score: 31}
+            ];
+            
+            var limited = [
+                {score: 213},
+                {score: 124},
+                {score: 51},
+                {score: 31}
+            ];
+            
+            limitResults(null, original);
+            assert.deepEqual(original, limited);
+        });
+        
+        it('remove two', function() {
+            var original = [
+                {score: 213},
+                {score: 124},
+                {score: 51},
+                {score: 31}
+            ];
+            
+            var limited = [
+                {score: 213},
+                {score: 124}
+            ];
+            
+            limitResults(2, original);
+            assert.deepEqual(original, limited);
+        });
+        
+        it('remove all', function() {
+            var original = [
+                {score: 213},
+                {score: 124},
+                {score: 51},
+                {score: 31},
+                {score: 2}
+            ];
+            
+            var limited = [];
+            
+            limitResults(-1, original);
+            assert.deepEqual(original, limited);
         });
     });
 });
