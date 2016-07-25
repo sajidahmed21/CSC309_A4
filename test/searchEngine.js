@@ -25,6 +25,7 @@ var scorePart = searchEngine.scorePart;
 var compareResultScores = searchEngine.compareResultScores;
 var sortResults = searchEngine.sortResults;
 var limitResults = searchEngine.limitResults;
+var mergeStrings = searchEngine.mergeStrings;
 
 
 describe('scoring', function() {
@@ -201,6 +202,23 @@ describe('scoring', function() {
             
             limitResults(-1, original);
             assert.deepEqual(original, limited);
+        });
+    });
+    
+    describe('mergeStrings()', function() {
+        it('both provided', function() {
+            assert.equal(mergeStrings('bob', 'test'), 'bob (test)');
+            assert.equal(mergeStrings('james', 'jk123'), 'james (jk123)');
+        });
+        
+        it('primary only', function() {
+            assert.equal(mergeStrings('bob', ''), 'bob');
+            assert.equal(mergeStrings('james', ''), 'james');
+        });
+        
+        it('secondary only', function() {
+            assert.equal(mergeStrings('', 'test'), 'test');
+            assert.equal(mergeStrings('', 'jk123'), 'jk123');
         });
     });
 });

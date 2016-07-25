@@ -415,3 +415,4 @@ exports.test.scorePart = scorePart;
 exports.test.compareResultScores = compareResultScores;
 exports.test.sortResults = sortResults;
 exports.test.limitResults = limitResults;
+exports.test.mergeStrings = mergeStrings;
