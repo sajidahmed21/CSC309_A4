@@ -114,5 +114,39 @@ describe('scoring', function() {
         });
     });
     
-    
+    describe('sortResults()', function() {
+        it('two items', function() {
+            var unsorted = [
+                {score: 1},
+                {score: 12}
+            ];
+            
+            var sorted = [
+                {score: 12},
+                {score: 1}
+            ];
+            
+            sortResults(unsorted);
+            assert.deepEqual(unsorted, sorted);
+        });
+        
+        it('four items', function() {
+            var unsorted = [
+                {score: 213},
+                {score: 31},
+                {score: 51},
+                {score: 124}
+            ];
+            
+            var sorted = [
+                {score: 213},
+                {score: 124},
+                {score: 51},
+                {score: 31}
+            ];
+            
+            sortResults(unsorted);
+            assert.deepEqual(unsorted, sorted);
+        });
+    });
 });
