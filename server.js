@@ -36,6 +36,9 @@ var hostname = 'localhost';
 var port = 9090;
 var expressValidator = require('express-validator')
 var bodyParser = require('body-parser');
+var multer  = require('multer');
+var upload = multer({ dest: 'uploads/' });// for parsing multipart/form-data
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
@@ -50,6 +53,7 @@ var followings = require('./followings');
 var searchEngine = require('./searchEngine');
 var courses = require('./courses');
 var admin = require('./admin');
+var createcourse = require('./createcourse');
 
 var common = require('./common');
 var sendBackJSON = common.sendBackJSON;
@@ -90,26 +94,48 @@ app.get('/demo', function (req, res) {
     });
 });
 
-app.get('/1/:id',
+app.get('/course/:id',
     courses.get_class_info,
     courses.get_course_rating,
     courses.get_enrolled_students,
     courses.get_reviews,
     courses.render_course_page);
 
-app.post('/creatcourse', function(req, res) {
-    //check img size, dimensions etc, revalidate, and then enter into database
-    console.log(req.files, req.body)
-
-});
-app.get('/course-signup', function(req, res) {
+app.get('/createcourse', function(req, res) {
     userIsLoggedIn(req);
     // if logged in render page 
     // otherwise display page that says the user must be signed in to create a course. 
         res.render('createcourse', {
-            loggedIn:  true
+            loggedIn:  true,
+            courseBannerErr: '', 
+            courseReqs: '',
+            courseDesc: '', 
+            courseTitle: '',
         });
 });
+
+var upload = multer({dest: 'public/img/'}).single('courseBanner');
+app.post('/createcourse', function(req, res, next) {
+    upload(req, res, function (err) { 
+            res.courseBannerErr = '';
+            res.courseTitleErr = '';
+            if (err) {
+                console.log("something went wrong with file upload");
+                return;
+            } else {
+                console.log(req.file);
+                if (!req.file) // undefined, use default path 
+                    res.bannerpath = "/img/study.jpg";
+                else {
+                    res.bannerpath = req.file.path;
+                }
+                        // replace 1 with id of logged in user
+                        console.log("res.bannerpath in server: "+res.bannerpath);
+                        next();
+                        
+            }
+})
+}, createcourse.validate, createcourse.addClassInfoAndRedirect);
 
 //for testing authentication puropse
 app.get('/content', checkAuthentication, function (req, res) {
