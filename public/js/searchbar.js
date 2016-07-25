@@ -9,9 +9,8 @@ function onSelectSearchSuggestion(suggestion) {
     window.location.href = href;
 }
 
-
+/* Initialise the search once the document is ready. */
 $(function() {
-    // initialise the search
     $('input#search-text').autocomplete({
         serviceUrl: '/search',
         params: {limit: 8},
