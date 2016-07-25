@@ -222,6 +222,8 @@ app.get('/admin', admin.checkAuthentication, admin.handleAdminHomeRequest);
 
 app.post('/admin/login', admin.handleLoginRequest);
 
+app.get('/admin/logout', admin.handleLogoutRequest);
+
 
 /* Searches  --------------------------------------------------------*/
 

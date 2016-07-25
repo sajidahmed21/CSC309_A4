@@ -66,6 +66,12 @@ exports.checkAuthentication = function (req, res, next) {
     }
 };
 
+/* Redirects a HTTP request to the page specified `relativePath` */
+exports.redirectToPage = function(redirectPath, response) {
+    response.writeHead(302, {'Location': redirectPath});
+    response.end();
+};
+
 /* Standard function for generation unique session id */
 exports.generateUniqueId = function () {
     return bcrypt.hashSync(Math.random().toString(), 8);

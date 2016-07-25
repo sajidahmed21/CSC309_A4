@@ -1,15 +1,22 @@
 $(document).ready(function() {
-    showAnalyticsTab();
+    showAnalyticsTab(false);
     attachClickListeners();
 });
 
 function attachClickListeners() {
-    $('#analytics-tab').click(showAnalyticsTab);
+    $('#analytics-tab').click(function() {
+        showAnalyticsTab(true);
+    });
     $('#users-tab').click(showUsersTab);
     $('#class-tab').click(showClassTab);
 }
 
-function showAnalyticsTab() {
+function showAnalyticsTab(refreshPage) {
+    if (refreshPage) {
+        // Reload page to refresh data
+        window.location.href = "/admin";
+        return;
+    }
     // Set selected tab
     selectTab('#analytics-tab');
     
