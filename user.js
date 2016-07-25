@@ -150,6 +150,7 @@ exports.unenrollHandler = function (req, res) {
 /* Renders the profile for the user with the userId equal to profileUserId. */
 exports.getProfileHandler = function (req, res, profileUserId) {
     console.log("GETPROFILE" + profileUserId);
+    console.log(common.getLoggedInUserId(req));
     db.query("SELECT name, profile_picture_path FROM USERS WHERE id = $1",{
         bind: [profileUserId]
     }).spread(function (results, metadata) {
@@ -305,7 +306,7 @@ exports.loginInsert = function (transaction, id, signupUsername, signupPassword,
             console.log("LOGININSERT" + id);
             // automatically log the user in
             setLoggedInUserId(req, id);
-            exports.getProfileHandler(req, res, parseInt(id));
+            exports.getProfileHandler(req, res, getLoggedInUserId(req));
 //            var returnJSON = {
 //                "status": "success",
 //                "message": "Signup Success"
@@ -334,6 +335,7 @@ exports.logoutHandler = function (req, res) {
     }
     // otherwise return an error
     else {
+        setLoggedInUserId(req, 0);
         var returnJSON = {
             "status": "error",
             "message": "Logout Error"

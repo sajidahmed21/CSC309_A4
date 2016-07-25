@@ -43,7 +43,6 @@ var unfollow = function (followee_id) {
         dataType: "json",
         success: function (data) {
             hidePopup();
-            console.log('posting');
             console.log(data);
             window.location.href = "/user/profile/" + followee_id;
         },
@@ -396,12 +395,50 @@ var changePassword = function () {
     $input.appendTo($form);
 
     $input = $('<input/>', {
-        type: 'button',
+        type: 'submit',
         value: 'Edit Now!',
         class: 'btn standard-green-button block_btn'
     });
 
-    $input.click(function () {
+//    $input.click(function () {
+//        if ($('#userPassword').val() != $('#userPasswordConfirm').val()) {
+//            $popup.empty();
+//            $('#error-message').empty();
+//            $('#error-message').css('display', 'block');
+//            $('#error-message').text('Your password do not match');
+//        } else if ($('#userPassword').val().length < 8) {
+//            $popup.empty();
+//            $('#error-message').empty();
+//
+//            $('#error-message').css('display', 'block');
+//            $('#error-message').text('Your password must be at least length of 8!');
+//        } else {
+//            var body = {
+//                "changePassword": $('#userPassword').val()
+//            }
+//
+//            $.ajax({
+//                type: "POST",
+//                url: "/user/changepassword",
+//                data: JSON.stringify(body),
+//                contentType: "application/json; charset=utf-8",
+//                dataType: "json",
+//                success: function (data) {
+//                    hidePopup();
+//                    console.log(data);
+//                    window.location.href = "/user/profile";
+//                },
+//                error: function (data) {
+//                    hidePopup();
+//                    window.location.href = "/?errorMessage=Your%20session%20has%20expired";
+//                }
+//            });
+//        }
+//    });
+
+    $input.appendTo($form);
+    $form.submit(function(e){
+        e.preventDefault(); 
         if ($('#userPassword').val() != $('#userPasswordConfirm').val()) {
             $popup.empty();
             $('#error-message').empty();
@@ -435,10 +472,7 @@ var changePassword = function () {
                 }
             });
         }
-    });
-
-    $input.appendTo($form);
-
+    })
     $form.appendTo($container);
     $container.appendTo($middle);
     $middle.appendTo($outer);
@@ -492,12 +526,47 @@ var changeName = function () {
     $input.appendTo($form);
 
     $input = $('<input/>', {
-        type: 'button',
+        type: 'submit',
         value: 'Edit Now!',
         class: 'btn standard-green-button block_btn'
     });
 
-    $input.click(function () {
+//    $input.click(function () {
+//        if ($('#changeName').val().length < 1) {
+//            $popup.empty();
+//            $('#error-message').css('display', 'block');
+//            $('#error-message').text('Your name cannot be Empty!');
+//        } else {
+//            var body = {
+//                "changeName": $('#changeName').val()
+//            }
+//
+//            $.ajax({
+//                type: "POST",
+//                url: "/user/changename",
+//                data: JSON.stringify(body),
+//                contentType: "application/json; charset=utf-8",
+//                dataType: "json",
+//                success: function (data) {
+//                    hidePopup();
+//                    console.log(data);
+//                    window.location.href = "/user/profile";
+//                },
+//                error: function (data) {
+//                    var errormsg = {
+//                        errorMessage: "Your session has expired"
+//                    }
+//                    console.log('ERRORFAIL');
+//                    window.location.href = "/?errorMessage=Your%20session%20has%20expired";
+//                }
+//            });
+//        }
+//    });
+
+    $input.appendTo($form);
+    
+    $form.submit(function(e){
+        e.preventDefault();
         if ($('#changeName').val().length < 1) {
             $popup.empty();
             $('#error-message').css('display', 'block');
@@ -527,9 +596,7 @@ var changeName = function () {
                 }
             });
         }
-    });
-
-    $input.appendTo($form);
+    })
 
     $form.appendTo($container);
     $container.appendTo($middle);
