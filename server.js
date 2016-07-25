@@ -29,7 +29,7 @@ var session = require('express-session')({
     resave: true,
     saveUninitialized: true,
     cookie: {
-        maxAge: 300000
+        maxAge: 1000
     },
     rolling: true
 });
@@ -93,6 +93,7 @@ app.use(express.static('public'));
 app.get('/', function (req, res) {
     res.render('home', {
         loggedIn: userIsLoggedIn(req),
+        errorContent: req.param('errorMessage')
     });
 });
 
@@ -156,13 +157,6 @@ app.get('/content', checkAuthentication, function (req, res) {
     res.send("You can only see this after you've logged in.");
 });
 
-app.get('/text', function (req, res) {
-    var index = common.currentUser.indexOf('broke');
-    if (index != -1) {
-        common.currentUser.splice(index, 1);
-        console.log("broke");
-    }
-});
 
 /* Users ------------------------------------------------------------*/
 
@@ -186,6 +180,8 @@ app.get('/enroll', function (req, res) {
         })
     });
 });
+
+
 
 app.post('/user/signin', user.signinHandler);
 

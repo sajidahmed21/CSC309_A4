@@ -57,7 +57,6 @@ exports.checkAuthentication = function (req, res, next) {
     } else {
         if(req.method.toLowerCase() == 'post') {
             res.status(400);
-            return;
         }
         console.log('access denied to request');
         return res.render('home', {

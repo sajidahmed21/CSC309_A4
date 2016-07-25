@@ -312,7 +312,7 @@ exports.logoutHandler = function (req, res) {
         sendBackJSON(returnJSON, res);
     }
 };
-
+//CASCADE ALL USERS and CLASSES
 exports.deleteUserHandler = function (req, res) {
     var user_id = getLoggedInUserId(req);
     // always set the user_id to logged out
