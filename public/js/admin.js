@@ -1,16 +1,35 @@
 $(document).ready(function() {
-    showAnalyticsTab();
+    refreshAnaltyicsData();
     attachClickListeners();
 });
 
 function attachClickListeners() {
-    $('#analytics-tab').click(showAnalyticsTab);
+    $('#analytics-tab').click(refreshAnaltyicsData);
     $('#users-tab').click(showUsersTab);
     $('#class-tab').click(showClassTab);
 }
 
-function showAnalyticsTab() {
-    // Set selected tab
+/* Refreshes / retrieves analytics data from the server */
+function refreshAnaltyicsData() {
+    $.ajax({
+        url: 'admin/analytics',
+        method: 'GET',
+        dataType: 'json'
+    }).fail(function(jqXHR, status) {
+        console.log('Analytics request failed: ' + status);
+        // Show error message to user if there is an error
+        alert('Network Error: Could not refresh Analytics data');
+        
+    }).done(showAnalyticsTab);
+}
+
+/* Show the analytics tab */
+function showAnalyticsTab(data) {
+    if (data === undefined) {
+        alert('Error: Could not retrieve data');
+        return;
+    }
+    
     selectTab('#analytics-tab');
     
     $mainContent = $('#main-content').empty();
@@ -24,14 +43,9 @@ function showAnalyticsTab() {
     
     $userDataList = $('<ul/>');
     
-    // Mock Date
-    var numUsers = 27;
-    var numUniqueUsersEnrolledInClass = 13;
-    var avgUniqueUsersPerDay = 21;
-    
-    $userDataList.append(createDataListItem('Total Users', numUsers));
-    $userDataList.append(createDataListItem('Users Enrolled in Class', numUniqueUsersEnrolledInClass));
-    $userDataList.append(createDataListItem('Unique Users Per Day', avgUniqueUsersPerDay));
+    $userDataList.append(createDataListItem('Total Users', data.totalUsers));
+    $userDataList.append(createDataListItem('Users Who Enrolled in Class', data.numUsersEnrolledInClass));
+    $userDataList.append(createDataListItem('Unique Users Per Day', data.avgUniqueLoginsPerDay));
     
     $usersSection.append($userDataList);
     $analyticsTab.append($usersSection);
@@ -43,14 +57,9 @@ function showAnalyticsTab() {
     
     $classesDataList = $('<ul/>');
     
-    // Mock data
-    var totalActiveClasses = 10;
-    var avgNumberOfUsersPerClass = 11.2;
-    var avgRatingForClass = 4.2;
-    
-    $classesDataList.append(createDataListItem('Active Classes', totalActiveClasses));
-    $classesDataList.append(createDataListItem('Avg Users Per Class', avgNumberOfUsersPerClass));
-    $classesDataList.append(createDataListItem('Avg Rating For Class', avgRatingForClass));
+    $classesDataList.append(createDataListItem('Active Classes', data.numClasses));
+    $classesDataList.append(createDataListItem('Avg Users Per Class', data.avgUsersPerClass));
+    $classesDataList.append(createDataListItem('Avg Rating For Class', data.avgClassRating));
     
     $classesSection.append($classesDataList);
     $analyticsTab.append($classesSection);
@@ -58,6 +67,7 @@ function showAnalyticsTab() {
     $mainContent.append($analyticsTab);
 }
 
+/* Creates a data list item with `dataTitle` as the heading and `dataValue` as the text */
 function createDataListItem(dataTitle, dataValue) {
     $listItem = $('<li/>');
     $('<h4/>').text(dataTitle).appendTo($listItem);
@@ -67,6 +77,7 @@ function createDataListItem(dataTitle, dataValue) {
     return $listItem;   
 }
 
+/* Shows the Users Tab */
 function showUsersTab() {
     // Set selected tab
     selectTab('#users-tab');
@@ -112,6 +123,7 @@ function showUsersTab() {
        console.log($(this).val()); 
     });
     
+    /* Autocomplete attributes for search box */
     $searchBox.autocomplete({
         lookup: ['Jeff', 'Jeffrey', 'Terry', 'Johnson', 'Rob'],
         minLength: 0,
@@ -132,6 +144,7 @@ function showUsersTab() {
     $mainContent.append($usersTab);    
 }
 
+/* Shows class tab */
 function showClassTab() {
     // Set selected tab
     selectTab('#class-tab');
@@ -160,6 +173,7 @@ function showClassTab() {
     var classNames = ['Introduction to Programming', 'Introduction to Data Structures',
                    'Introduction to Religion', 'Introduction to Arthictecture'];
     
+    /* Autocomplete attributes for search box */
     $searchBox.autocomplete({
         lookup: classNames,
         minLength: 0,
@@ -179,6 +193,7 @@ function showClassTab() {
     $mainContent.append($editClassSection);
 }
 
+/* Shows Create User form */
 function showCreateUserForm() {
    var $popup = $('<article/>', {id: 'popup'});
     //$popup.empty();
@@ -280,6 +295,7 @@ function hidePopup() {
 
 function selectTab(id) {
     unSelectAllTabs();
+    
     // Set selected tab
     $(id).addClass('selected-tab');
 }

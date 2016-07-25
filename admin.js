@@ -3,9 +3,6 @@
 
 var common = require('./common');
 
-/* Function for sending JSON response with `OK` status code */
-//var sendJSONResponse = common.sendBackJSON;
-
 /* Function for sending JSON response with 400 `Bad Request` status code */
 var sendBadRequestResponse = common.sendBadRequestResponse;
 
@@ -15,40 +12,34 @@ var sendUnauthorizedResponse = common.sendUnauthorizedResponse;
 /* Common instance of `sequelize` */
 var db = common.db;
 
-var loggedInAdmins = [];
-
 
 /* To be called as a part of a chain in the routing.
  *
- * Calls the next function if the admin is logged in and otherwise redirects the
- * admin to the home page with a message about needing to log in.
+ * Calls the `next` function if the admin is logged in and otherwise renders
+ * the Admin Login page
  */
 exports.checkAuthentication = function(request, response, next) {
-    getAnalyticsData();
-    
-    for (var i = 0; i < loggedInAdmins.length; i++) {
-        var admin = loggedInAdmins[i];
-        if (admin.sessionId === request.session.id && admin.uniqueId === request.session.unique_id) {
-            console.log(admin.sessionId);
-            console.log(request.session.id);
-            return next();
-        }
+
+    // Check if the adminId is set, meaning that the user is logged in and is active
+    if (request.session.adminId !== undefined && request.session.adminId !== 0) {
+        next();
     }
-    
-    // Render admin login page if admin is not logged in
-    response.render('admin_login');
+    else {
+        // Render admin login page if admin is not logged in
+        response.render('admin_login');
+    }
 };
 
+/* Renders the admin home page */
 exports.handleAdminHomeRequest = function (request, response) {
     response.render('admin_home');
 };
 
 
+/* Handles login requests by validating input and verifying username and password */
 exports.handleLoginRequest = function(request, response) {
     var username = request.body.admin_id;
     var password = request.body.password;
-    
-    console.log(request.session);
     
     if (username === undefined || password === undefined) {
         /* Return login failed response if username or password
@@ -78,12 +69,23 @@ exports.handleLoginRequest = function(request, response) {
         // Check if password is correct
         if (common.comparePassword(password, admin.password)) { // Correct password
             // --- Successful login ---
-            onSuccessfulLogin(request, response);
+            onSuccessfulLogin(username, request, response);
         }
         else { // Incorrect password
             sendInvalidCredentialsResponse(response);
         }
     });
+};
+
+/*  Handles logout requests by resetting Admin Id for the particular session
+ *  and redirecting to the admin login page
+ */
+exports.handleLogoutRequest = function (request, response) {
+    // Reset Admin Id to indicate this session is no longer associated with any admin
+    request.session.adminId = undefined;
+    
+    // Redirect to Admin Login Page
+    common.redirectToPage('/admin', response);
 };
 
 function sendMalformedRequestResponse(message, response) {
@@ -96,29 +98,20 @@ function sendInvalidCredentialsResponse(response) {
     sendUnauthorizedResponse(responseBody, response);
 }
 
-function onSuccessfulLogin(request, response) {
-    // Generate and attach session id
-    request.session.unique_id = common.generateUniqueId();
-    console.log(request.session.unique_id);
+function onSuccessfulLogin(adminId, request, response) {
+    // Set the associated adminId for this session
+    request.session.adminId = adminId;
     
-    var loggedInSession = {
-        sessionId: request.session.id,
-        uniqueId: request.session.unique_id
-    };
-    loggedInAdmins.push(loggedInSession);
-    
-    // Render Admin Home Page
-    response.render('admin_home');
-    
-    //var responseBody = {status: 'LOGIN_SUCCESSFUL'};
-    //sendJSONResponse(responseBody, response);
+    // Redirect to Admin Home Page
+    common.redirectToPage('/admin', response);
 }
 
 
+/* --- Analytics --- */
 
-/* Analytics */
-
-function getAnalyticsData() {
+/* Handles analytics data requests by providing analytics data about users and classes */
+exports.handleAnalyticsDataRequest = function (request, response) {
+    
     /* --- SQL Queries --- */
     
     /* Total number of users */
@@ -128,14 +121,15 @@ function getAnalyticsData() {
     var usersEnrolledInClass = '(SELECT COUNT(DISTINCT user_id) AS numUsersEnrolledInClass FROM ENROLMENT)';
     
     /* Avg num of unique users per day */
-    var avgLogins = '(SELECT AVG(numLogins) AS avgNumLoginsPerDay ' +
+    var avgLogins = '(SELECT COALESCE(AVG(numLogins), \'-\') AS avgUniqueLoginsPerDay ' +
                      'FROM (SELECT COUNT(DISTINCT user_id) AS numLogins FROM LOGIN_HISTORY GROUP BY date(login_timestamp)))';
     
     /* Total number of classes */
     var numClasses = '(SELECT COUNT(*) AS numClasses FROM CLASSES)';
     
     /* Avg num of users per class */
-    var avgUsersPerClass = '(SELECT (SELECT COUNT(*) FROM USERS) / (SELECT COUNT(*) FROM CLASSES) AS avgUsersPerClass)';
+    var avgUsersPerClass = '(SELECT COALESCE((SELECT COUNT(*) FROM ENROLMENT) / (SELECT COUNT(*) FROM CLASSES), \'-\') ' +
+                            'AS avgUsersPerClass)';
     
     /* Avg rating over all classes */
     var avgClassRating = '(SELECT (COALESCE(AVG(rating), \'-\')) AS avgClassRating FROM REVIEWS)';
@@ -145,6 +139,13 @@ function getAnalyticsData() {
                       numClasses + ', ' + avgUsersPerClass + ', ' + avgClassRating;
     
     db.query(finalQuery).spread(function (results) {
-        console.log(results);
+        if (results === undefined || results.length !== 1) {
+            // We shouldn't get here
+            common.sendInternalServerErrorResponse(response);
+            return;
+        }
+        
+        // Send the JSON response back to the client
+        common.sendBackJSON(results[0], response);
     });
-}
+};
