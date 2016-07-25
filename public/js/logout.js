@@ -19,7 +19,7 @@ var logout = function () {
         failure: function (errMsg) {
             console.log(errMsg);
             hidePopup();
-            alert('Please select another username');
+            window.location.href = "/";
         }
     });
 };
