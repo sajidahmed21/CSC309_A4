@@ -336,7 +336,37 @@ var signupPage = function () {
     });
 
     $input.appendTo($form);
+    
+    $form.submit(function(e){
+        e.preventDefault();
+        console.log($('#name').val());
+        console.log($('#userPassword').val());
+        var body = {
+            "signupName": $('#signupName').val(),
+            "signupUsername": $('#signupUsername').val(),
+            "signupPassword": $('#signupPassword').val(),
+            "userPasswordConfirm": $('#userPasswordConfirm').val(),
+            "signupProfilePicture": "sfkjsdn"
+        }
 
+        $.ajax({
+            type: "POST",
+            url: "/user/signup",
+            data: JSON.stringify(body),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                hidePopup();
+                console.log(data);
+                window.location.href = "/user/profile";
+            },
+            error: function (data) {
+                hidePopup();
+                $("body").html(data.responseText);
+            }
+        });
+    })
+    
     $form.appendTo($container);
     $container.appendTo($middle);
     $middle.appendTo($outer);
