@@ -50,8 +50,9 @@ var getLoggedInUserId = common.getLoggedInUserId;
 var db = common.db;
 var color = ['green_background', 'light_green_background', 'blue_background', 'yellow_background', 'orange_background', 'red_background'];
 
+exports.test = {};
 //function for change user name
-exports.changeNameHandler = function (req, res) {
+var changeNameHandler = function (req, res) {
     var changeName = req.body.changeName;
     var user_id = getLoggedInUserId(req);
     db.query("UPDATE USERS SET name = $1 WHERE id= $2", {
@@ -72,8 +73,10 @@ exports.changeNameHandler = function (req, res) {
     });
 };
 
+exports.changeNameHandler = changeNameHandler;
+exports.test.changeNameHandler = changeNameHandler;
 //function for change profile picture
-exports.changeProfilePicHandler = function (req, res) {
+var changeProfilePicHandler = function (req, res) {
     var changeProfilepic = req.body.changeProfilepic;
     var user_id = getLoggedInUserId(req);
     db.query("UPDATE USERS SET profile_picture_path = '" + changeProfilepic + "' WHERE id=" + user_id).spread(function (results, metadata) {
@@ -92,8 +95,11 @@ exports.changeProfilePicHandler = function (req, res) {
     });
 };
 
+exports.changeProfilePicHandler = changeProfilePicHandler;
+exports.test.changeProfilePicHandler = changeProfilePicHandler;
+
 //function for change password
-exports.changePasswordHandler = function (req, res) {
+var changePasswordHandler = function (req, res) {
     bcrypt.hash(req.body.changePassword, 8, function (err, hashedPassword) {
         if (err) {
             console.log('failed to hash password:');
@@ -125,8 +131,11 @@ exports.changePasswordHandler = function (req, res) {
     });
 };
 
+exports.changePasswordHandler = changePasswordHandler;
+exports.test.changePasswordHandler = changePasswordHandler;
+
 //function for unenroll class
-exports.unenrollHandler = function (req, res) {
+var unenrollHandler = function (req, res) {
     var user_id = getLoggedInUserId(req);
     var class_id = req.body.dropCourse_id;
     db.query("DELETE FROM ENROLMENT WHERE user_id= $1 AND class_id = $2",{
@@ -147,8 +156,11 @@ exports.unenrollHandler = function (req, res) {
     });
 };
 
+exports.unenrollHandler = unenrollHandler;
+exports.test.unenrollHandler = unenrollHandler;
+
 /* Renders the profile for the user with the userId equal to profileUserId. */
-exports.getProfileHandler = function (req, res, profileUserId) {
+var getProfileHandler = function (req, res, profileUserId) {
     console.log("GETPROFILE" + profileUserId);
     console.log(common.getLoggedInUserId(req));
     db.query("SELECT name, profile_picture_path FROM USERS WHERE id = $1",{
@@ -195,8 +207,11 @@ exports.getProfileHandler = function (req, res, profileUserId) {
     });
 };
 
+exports.getProfileHandler = getProfileHandler;
+exports.test.getProfileHandler = getProfileHandler;
+
 //function for login 
-exports.signinHandler = function (req, res) {
+var signinHandler = function (req, res, testing) {
     var signinUsername = req.body.signinUsername;
     var signinPassword = req.body.signinPassword;
     db.query("SELECT user_id, password FROM LOGIN_CREDENTIALS WHERE username = $1",{
@@ -213,15 +228,11 @@ exports.signinHandler = function (req, res) {
                     loggedIn: false
                 });
             } else {
+                if(testing != undefined)
+                    return testing(true);
                 console.log("signinHandler " + results[0].user_id);
                 setLoggedInUserId(req, results[0].user_id);
                 exports.getProfileHandler(req, res, results[0].user_id);
-
-                //                var returnJSON = {
-                //                    "status": "success",
-                //                    "message": "Login Success"
-                //                }
-                //                sendBackJSON(returnJSON, res);
             }
         })
     }).catch(function (err) {
@@ -233,8 +244,11 @@ exports.signinHandler = function (req, res) {
     });
 };
 
+exports.signinHandler = signinHandler;
+exports.test.signinHandler = signinHandler;
+
 //function for sign up
-exports.signupHandler = function (req, res) {
+var signupHandler = function (req, res) {
     if (req.body.signupPassword.length < 8) {
         res.status(401);
         return res.render('home', {
@@ -286,8 +300,11 @@ exports.signupHandler = function (req, res) {
     });
 };
 
+exports.signupHandler = signupHandler;
+exports.test.signupHandler = signupHandler;
+
 //function for sign up insert into login_credentials table
-exports.loginInsert = function (transaction, id, signupUsername, signupPassword, res, req) {
+var loginInsert = function (transaction, id, signupUsername, signupPassword, res, req) {
     return db.query("INSERT INTO LOGIN_CREDENTIALS (user_id, username, password) VALUES ( $1 , $2 , $3 )", {
             transaction: transaction,
             bind: [id, signupUsername, signupPassword]
@@ -311,8 +328,11 @@ exports.loginInsert = function (transaction, id, signupUsername, signupPassword,
         });
 };
 
+exports.loginInsert = loginInsert;
+exports.test.loginInsert = loginInsert;
+
 //function for logout 
-exports.logoutHandler = function (req, res) {
+var logoutHandler = function (req, res) {
     // if a user is logged in, logout and return
     if (getLoggedInUserId(req) != 0) {
         setLoggedInUserId(req, 0);
@@ -334,8 +354,11 @@ exports.logoutHandler = function (req, res) {
     }
 };
 
+exports.logoutHandler = logoutHandler;
+exports.test.logoutHandler = logoutHandler;
+
 //CASCADE ALL USERS and CLASSES
-exports.deleteUserHandler = function (req, res) {
+var deleteUserHandler = function (req, res) {
     var user_id = getLoggedInUserId(req);
     // always set the user_id to logged out
     setLoggedInUserId(req, 0);
@@ -364,3 +387,6 @@ exports.deleteUserHandler = function (req, res) {
         sendBackJSON(returnJSON, res);
     });
 };
+
+exports.deleteUserHandler = deleteUserHandler;
+exports.test.deleteUserHandler = deleteUserHandler;
