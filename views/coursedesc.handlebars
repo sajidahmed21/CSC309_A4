@@ -105,14 +105,15 @@
                     <div class="col-sm-12">
                         <h3 class="standard-font">Reviews and Ratings</h3>
                     </div>
+                  
                     <!-- /col-sm-12 -->
                     {{#each reviews}}
                     <div class="col-sm-1">
-                        <div class="thumbnail">
-                            <div class="img-circle profile_circle" style="background-color: {{backgroundColor}}">
-                                    <h2 id="profile_letter" class="nomargin"> {firstLetter}</h2> </div>
-                         </div>
-                        </div>
+                        
+                            <div class="img-circle profile_circle" style="background-color:  {{dp}} ;">
+                                    <h2 id="profile_letter" class="nomargin"> {{firstLetter}}</h2> </div>
+                        
+                        
                         <!-- /thumbnail -->
                     </div>
                     <!-- /col-sm-1 -->
@@ -138,10 +139,10 @@
                     
                     <div class="add-comment">
                         <div class="col-sm-1">
-                            
-                               <div class="img-circle profile_circle" style="background-color: {{LIbackgroundColor}}">
-                                    <h2 id="profile_letter" class="nomargin"> {LIfirstLetter} </h2> </div>
-                         
+                           
+                               <div class="img-circle profile_circle" style="background-color: {{LIbackgroundColor}};">
+                                    <h2 id="profile_letter" class="nomargin"> {{LIfirstLetter}} </h2> </div>
+                 
                             <!-- /thumbnail -->
                         </div>
                         <!-- /col-sm-1 -->

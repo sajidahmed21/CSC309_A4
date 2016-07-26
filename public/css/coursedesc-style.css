@@ -175,7 +175,8 @@ glyphicon glyphicon-star:hover {
 }
 
 #profile_letter {
-    font-size: 30px;
+    font-family: Verdana;
+    font-size: 29px;
     color: "black";
     text-align: center;
     padding-top: 2px;

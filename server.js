@@ -103,11 +103,10 @@ app.get('/course/:id',
     courses.render_course_page);
 
 app.get('/createcourse', checkAuthentication, function (req, res) {
-    userIsLoggedIn(req);
     // if logged in render page 
     // otherwise display page that says the user must be signed in to create a course. 
     res.render('createcourse', {
-        loggedIn: true,
+        loggedIn: userIsLoggedIn(req),
         courseBannerErr: '',
         courseReqs: '',
         courseDesc: '',
