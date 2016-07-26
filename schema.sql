@@ -4,7 +4,8 @@ PRAGMA foreign_keys = ON;
 CREATE TABLE IF NOT EXISTS USERS (
   id INTEGER PRIMARY KEY,
   name TEXT NOT NULL,
-  profile_picture_path TEXT
+  profile_picture_path TEXT,
+  banner_path TEXT
 );
 
 CREATE TABLE IF NOT EXISTS LOGIN_CREDENTIALS (
@@ -51,6 +52,8 @@ CREATE TABLE IF NOT EXISTS CLASSES (
   id INTEGER PRIMARY KEY,
   class_name varchar(64) NOT NULL,
   instructor INTEGER NOT NULL,
+  coursedesc TEXT,
+  coursereqs TEXT,
   banner_picture_path TEXT,
   created_timestamp INTEGER DEFAULT (datetime('now')),
 

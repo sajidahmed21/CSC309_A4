@@ -467,6 +467,7 @@ function onSelectUserSearch(suggestion) {
 }
 
 
+/* set up the page once the document is ready */
 $(function() {
     // set the resizing of the messaging area and trigger it immediately
     $(window).resize(resizeMessagingArea);

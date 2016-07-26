@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>LearnR</title>
 
-    <script src="/js/jquery-2.0.0.min.js"></script>
-    <script src="/js/footer.js"></script>
+    <script src="/js/jquery-2.0.0.min.js" defer></script>
+    <script src="/js/footer.js" defer></script>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
@@ -14,15 +14,19 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 
     <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous" defer></script>
 
 
     <link rel="stylesheet" type="text/css" href="/css/style.css">
     <link rel="stylesheet" type="text/css" href="/css/coursedesc-style.css">
     <script src="/js/logout.js" defer></script>
+    <script src="/js/rating.js" defer></script>
+
+	<!-- include files necessary for the searchbar -->
+	{{> searchbar_head }}
 
 </head>
-<body class="global_font nomargin">
+<body class="global_font container-fluid">
 	{{> nav }}
 	
 	<div id="course-profile">
@@ -46,7 +50,7 @@
                     <h3 class="standard-font">Rating </h3>
                     <p class="standard-font"> {{rating}}</p>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-4 qi-right-box">
                     <h3 class="standard-font">Enrollment </h3>
                     <p class="standard-font">{{enrollment}}</p>
                 </div>
@@ -101,12 +105,15 @@
                     <div class="col-sm-12">
                         <h3 class="standard-font">Reviews and Ratings</h3>
                     </div>
+                  
                     <!-- /col-sm-12 -->
                     {{#each reviews}}
                     <div class="col-sm-1">
-                        <div class="thumbnail">
-                            <img class="img-responsive user-photo" src={{dp}}>
-                        </div>
+                        
+                            <div class="img-circle profile_circle" style="background-color:  {{dp}} ;">
+                                    <h2 id="profile_letter" class="nomargin"> {{firstLetter}}</h2> </div>
+                        
+                        
                         <!-- /thumbnail -->
                     </div>
                     <!-- /col-sm-1 -->
@@ -132,9 +139,10 @@
                     
                     <div class="add-comment">
                         <div class="col-sm-1">
-                            <div class="thumbnail">
-                                <img class="img-responsive user-photo" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
-                            </div>
+                           
+                               <div class="img-circle profile_circle" style="background-color: {{LIbackgroundColor}};">
+                                    <h2 id="profile_letter" class="nomargin"> {{LIfirstLetter}} </h2> </div>
+                 
                             <!-- /thumbnail -->
                         </div>
                         <!-- /col-sm-1 -->
@@ -143,19 +151,21 @@
                                 <div class="panel-heading">
                                     <strong>Guest</strong>
                                 </div>
-                                <textarea class="form-control" rows="3" placeholder="Add a comment here !"></textarea>
+                                <textarea id="reviewinput" class="form-control" rows="3" placeholder="Add your review here! (optional)"></textarea>
                             </div>
                         </div>
                         <div class="col-sm-offset-1 col-sm-1">
-                            <button class="standard-blue-button" type="submit">Submit</button>
+                            <button id="reviewsubmit" class="standard-blue-button" type="submit">Submit</button>
                         </div>
                         <div class="col-sm-offset-1 col-sm-5">
                             <div class="stars">
-                                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                <span id="star1" class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                <span id="star2" class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                <span id="star3" class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                <span id="star4" class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                <span id="star5" class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                <span id="rating"> </span>
+                                <div id="message"> </div>
                             </div>
                         </div>
                     </div>

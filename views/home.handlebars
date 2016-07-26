@@ -7,8 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>LearnR</title>
 
-    <script src="/js/jquery-2.0.0.min.js"></script>
-    <script src="/js/index.js"></script>
+    <script src="/js/jquery-2.0.0.min.js" defer></script>
+    <script src="/js/index.js" defer></script>
+
+	<!-- include files necessary for the searchbar -->
+	{{> searchbar_head }}
+	
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
@@ -26,7 +30,7 @@
 
 <!-- Body Start here, where content is. -->
 
-<body class="global_font nomargin container-fluid">
+<body class="global_font container-fluid">
     {{> nav }}
 
 	{{#if errorContent}}

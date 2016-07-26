@@ -6,9 +6,6 @@ var sendBackJSON = common.sendBackJSON;
 
 var messaging = require('./messaging');
 
-// used to store functions for testing purposes
-exports.test = {};
-
 
 /* helper functions --------------------------------------------------------*/
 
@@ -45,8 +42,6 @@ function scorePart(query, string) {
     
     return score;
 }
-
-exports.test.scorePart = scorePart;
 
 
 /* Takes in two strings, a query string and a matching string, and returns the
@@ -89,11 +84,12 @@ function sortResults(results) {
 
 
 /* Removes elements from the end of the results until the specified limit
- * has been reached. If the limit is null, no results will be removed.
+ * has been reached. If the limit is null, no results will be removed, and if
+ * it is negative, all results will be removed.
  */
 function limitResults(limit, results) {
     if (limit !== null) {
-        while (results.length > limit) {
+        while (results.length > limit && results.length > 0) {
             results.pop();
         }
     }
@@ -314,6 +310,11 @@ exports.handleSearch = function(req, res) {
     var limit = req.query.limit ? req.query.limit : null;
     var userId = common.getLoggedInUserId(req);
     
+    // if the limit is negative, make it null
+    if (limit < 0) {
+        limit = null;
+    }
+    
     console.log('search for [' + searchString + '] by [' + userId +
         '] with type [' + searchType + ']; limit is [' + limit + ']');
     
@@ -351,7 +352,7 @@ exports.handleSearch = function(req, res) {
                         });
                     }
                     else {
-                        limitResults(classResults, results);
+                        limitResults(classResults, limit);
                         returnResults(classResults, res);
                     }
                 });
@@ -405,3 +406,13 @@ exports.handleSearch = function(req, res) {
     }
 }
 
+
+// used to store functions for testing purposes
+exports.test = {};
+
+/* functions exported for testing */
+exports.test.scorePart = scorePart;
+exports.test.compareResultScores = compareResultScores;
+exports.test.sortResults = sortResults;
+exports.test.limitResults = limitResults;
+exports.test.mergeStrings = mergeStrings;
