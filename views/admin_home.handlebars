@@ -47,6 +47,11 @@
 			</nav>
 		</header>
 		
+		{{#if errorContent}}
+		    <div id="error-message" class="alert alert-danger nomargin" role="alert">
+			    {{{errorContent}}}
+		    </div>
+		{{/if}}
 		<main id="main-content" class="global_font">
 			
 		</main>

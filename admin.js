@@ -2,6 +2,7 @@
    (including analytics) */
 
 var common = require('./common');
+var user = require('./user');
 
 /* Function for sending JSON response with 400 `Bad Request` status code */
 var sendBadRequestResponse = common.sendBadRequestResponse;
@@ -32,7 +33,12 @@ exports.checkAuthentication = function(request, response, next) {
 
 /* Renders the admin home page */
 exports.handleAdminHomeRequest = function (request, response) {
-    response.render('admin_home');
+    response.render('admin_home', {
+        errorContent: request.session.errorContent
+    });
+    
+    // Reset the error content once it has been displayed to the admin
+    request.session.errorContent = undefined;
 };
 
 
@@ -88,6 +94,87 @@ exports.handleLogoutRequest = function (request, response) {
     common.redirectToPage('/admin', response);
 };
 
+exports.handleCreateUserRequest = function (request, response) {
+    var name = request.body.name;
+    var username = request.body.username;
+    var password = request.body.password;
+    var passwordConfirmation = request.body.passwordConfirmation;
+    
+    console.log(name);
+    console.log(username);
+    console.log(password);
+    console.log(passwordConfirmation);
+    
+    //response.render('home');
+    user.createUser(name, username, password, passwordConfirmation, function(errorType) {
+        
+        if (errorType === undefined) { // Account Successfully created
+            response.end('User successfully created');
+            return;
+        }
+        
+        //response.end(JSON.stringify(errorType));
+        
+        // Check error type and render web page with the appropriate message for the end user
+        switch (errorType) {
+        //    case 'Incorrect Password Length':
+        //        response.status(401);
+        //        return response.render('home', {
+        //            errorContent: '<p><strong>Opps!</strong> Your password must be at least 8 characters long!</p>',
+        //            loggedIn: false
+        //        });
+        //    case 'Passwords Don\'t Match':
+        //        response.status(401);
+        //        return response.render('home', {
+        //            errorContent: '<p><strong>Opps!</strong> Your password do not match!</p>',
+        //            loggedIn: false
+        //        });
+            case 'Username Already Taken':
+                request.session.errorContent = '<p><strong>Opps!</strong> This username has been taken! Please try a different username!</p>';
+                common.redirectToPage('/admin', response);
+                return;
+                //return response.render('admin_home', {
+                //    errorContent: '<p><strong>Opps!</strong> This username has been taken! Please try a different username!</p>',
+                //});
+        //        response.status(401);
+        //        return response.render('home', {
+        //            errorContent: '<p><strong>Opps!</strong> The username has been taken! Please choose another username!</p>',
+        //            loggedIn: false
+        //        });
+        }
+    });
+    
+    //if (name === undefined || username === undefined || password === undefined) {
+    //    /* Return error response if name, username, or password
+    //       fields are missing */
+    //    sendMalformedRequestResponse('Missing field', response);
+    //    return;
+    //}
+    //
+    //if (username.length === 0  || password.length < 8) {
+    //    /* Return login failed response if username or password
+    //       fields are of incorrect length */
+    //    sendMalformedRequestResponse('Incorrect field length', response);
+    //    return;
+    //}
+    //
+    //var passwordHash = common.generatePasswordHash(password);
+    //var profilePictureColor = user.color[Math.floor(Math.random() * 5)];
+    //
+    //var queryString = 'INSERT INTO USERS (name, profile_picture_path) VALUES ( $1 , $2 )';
+    //db.transaction(function (transaction) {
+    //    db.query(queryString, {
+    //        bind: [name, profilePictureColor], transaction: transaction
+    //    }).then(function (result) {
+    //        var metadata = result[1];
+    //        var insertCredentials = 'INSERT INTO LOGIN_CREDENTIALS (user_id, username, password) VALUES ( $1 , $2 , $3 )';
+    //        return db.query(insertCredentials, {bind: [metadata.id, username, passwordHash]});
+    //        // TODO: Put duplicate user name check using .catch()
+    //    });
+    //});
+    
+};
+
 
 /* Hanldes edit user profile requests by rendering the edit user profile page for admins */
 exports.handleEditProfileRequest = function (request, response) {
@@ -101,12 +188,12 @@ exports.handleEditCourseRequest = function (request, response) {
 
 
 function sendMalformedRequestResponse(message, response) {
-    var responseBody = {status: 'LOGIN_FAILED', 'message': message};
+    var responseBody = {status: 'ERROR', 'message': message};
     sendBadRequestResponse(responseBody, response);
 }
 
 function sendInvalidCredentialsResponse(response) {
-    var responseBody = {status: 'LOGIN_FAILED', message: 'Invalid credentials'};
+    var responseBody = {status: 'ERROR', message: 'Invalid credentials'};
     sendUnauthorizedResponse(responseBody, response);
 }
 

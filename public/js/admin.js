@@ -1,18 +1,27 @@
 $(document).ready(function() {
-    refreshAnaltyicsData();
+    
+    if ($('#error-message').length > 0) {
+        // Show users tab if there are error messages
+        showUsersTab(false);
+    }
+    else {
+        refreshAnaltyicsData();
+    }
     attachClickListeners();
 });
 
 function attachClickListeners() {
     $('#analytics-tab').click(refreshAnaltyicsData);
-    $('#users-tab').click(showUsersTab);
+    $('#users-tab').click(function()  {
+        showUsersTab(true);
+    });
     $('#class-tab').click(showClassTab);
 }
 
 /* Refreshes / retrieves analytics data from the server */
 function refreshAnaltyicsData() {
     $.ajax({
-        url: 'admin/analytics',
+        url: '/admin/analytics',
         method: 'GET',
         dataType: 'json'
     }).fail(function(jqXHR, status) {
@@ -30,7 +39,7 @@ function showAnalyticsTab(data) {
         return;
     }
     
-    selectTab('#analytics-tab');
+    selectTab('#analytics-tab', true);
     
     $mainContent = $('#main-content').empty();
     
@@ -78,9 +87,9 @@ function createDataListItem(dataTitle, dataValue) {
 }
 
 /* Shows the Users Tab */
-function showUsersTab() {
+function showUsersTab(deleteErrorMessage) {
     // Set selected tab
-    selectTab('#users-tab');
+    selectTab('#users-tab', deleteErrorMessage);
     
     $mainContent = $('#main-content').empty();
     
@@ -149,7 +158,7 @@ function showUsersTab() {
 /* Shows class tab */
 function showClassTab() {
     // Set selected tab
-    selectTab('#class-tab');
+    selectTab('#class-tab', true);
     
     $mainContent = $('#main-content').empty();
     
@@ -196,6 +205,9 @@ function showClassTab() {
 
 /* Shows Create User form */
 function showCreateUserForm() {
+    /* Remove any existng error message while trying to create a user */
+   removeErrorMessage();
+    
    var $popup = $('<article/>', {id: 'popup'});
     
     $outer = $('<div/>', {
@@ -229,7 +241,7 @@ function showCreateUserForm() {
     $title.text('Create User').appendTo($form);
     
     $input = $('<input/>',{
-        //id : 'name',
+        id : 'name_field',
         name : 'name',
         type : 'text',
         placeholder : 'Name',
@@ -240,7 +252,7 @@ function showCreateUserForm() {
     $input.appendTo($form);
     
     $input = $('<input/>',{
-        //id : 'userEmail',
+        id : 'username_field',
         name : 'username',
         type : 'text',
         placeholder : 'Username',
@@ -302,7 +314,29 @@ function showCreateUserForm() {
 
 function validateCreateUserInput() {
     $confirmPasswordField = $('#confirm_password_field');
+    
+    var fieldsEmpty = false;
+    if ($('#name_field').val().length === 0) {
+        fieldsEmpty = true;
+    }
 
+    else if ($('#username_field').val().length === 0) {
+        fieldsEmpty = true;
+    }
+
+    else if ($('#user_password_field').val().length === 0) {
+        fieldsEmpty = true;
+    }
+    
+    else if ($confirmPasswordField.val().length === 0) {
+        fieldsEmpty = true;
+    }
+    
+    // Let the browser handle empty fields
+    if (fieldsEmpty) {
+        return true;
+    }
+    
     // Check if passwords match
     if ($('#user_password_field').val() !== $confirmPasswordField.val()) {
         
@@ -326,21 +360,24 @@ function hidePopup() {
     $('#popup').remove();
 }
 
-function selectTab(id) {
-    unSelectAllTabs();
+function selectTab(id, deleteErrorMessage) {
+    unSelectAllTabs(deleteErrorMessage);
     
     // Set selected tab
     $(id).addClass('selected-tab');
 }
 
-function unSelectAllTabs() {
+function unSelectAllTabs(deleteErrorMessage) {
     $('#analytics-tab').removeClass('selected-tab');
     $('#users-tab').removeClass('selected-tab');
     $('#class-tab').removeClass('selected-tab');
+    
+    if (deleteErrorMessage) {
+        removeErrorMessage();
+    }
 }
 
-/* Utility function for escaping special characters in regular expression */
-function escapeRegExp(string) {
-    return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+/* Removes any error message displayed at the top of the page */
+function removeErrorMessage() {
+    $('#error-message').remove();
 }
-
