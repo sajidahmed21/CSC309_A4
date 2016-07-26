@@ -43,36 +43,174 @@ app.get('/enroll', function (req, res) {
 });*/
 var common = require('./common');
 var bcrypt = require('bcryptjs');
+
 var sendBackJSON = common.sendBackJSON;
-var sendUnauthorizedResponse = common.sendUnauthorizedResponse;
 var setLoggedInUserId = common.setLoggedInUserId;
 var getLoggedInUserId = common.getLoggedInUserId;
 var db = common.db;
 var color = ['green_background', 'light_green_background', 'blue_background', 'yellow_background', 'orange_background', 'red_background'];
 
-exports.color = color;
 
-//function for change user name
-exports.changeNameHandler = function (req, res) {
-    var changeName = req.body.changeName;
-    var user_id = getLoggedInUserId(req);
-    db.query("UPDATE USERS SET name = $1 WHERE id= $2", {
-        bind: [changeName, user_id]
-    }).spread(function (results, metadata) {
-        var returnJSON = {
-            "status": "success",
-            "message": "Change Name Success"
-        }
-        sendBackJSON(returnJSON, res);
-    }).catch(function (err) {
-        console.log("Err in change name");
-        var returnJSON = {
-            "status": "error",
-            "message": "Err in change name"
-        }
-        sendBackJSON(returnJSON, res);
+/* Updates the name of a user with `userId` to `newName`.
+ * Notifies about success / failure using the callback.
+ */
+exports.changeName = function (userId, newName, callback) {
+    // Error checking
+    if (userId === undefined || userId === 0) {
+        callback('Invalid user id');
+        return;
+    }
+    if (newName === undefined || newName.length === 0) {
+        callback('Invalid name');
+        return;
+    }
+    
+    var updateQuery = 'UPDATE USERS SET name = $1 WHERE id = $2';
+    db.query(updateQuery, {bind: [newName, userId]}).spread(function () {
+        console.log('Here Success');
+        callback('Success');
+    
+    }).catch(function() {
+        callback('Database error');
     });
 };
+
+
+/* Handles name change requests from users by updating their name in the database
+ * and responding with success / failure response.
+ */
+exports.changeNameHandler = function (request, response) {
+    var userId = request.session.userId;
+    var newName = request.body.changeName;
+    
+    exports.changeName(userId, newName, function (result) {
+        var responseBody = {};
+        
+        console.log(result);
+        if (result == 'Success') {
+            responseBody = {
+                "status": "success",
+                "message": "Change Name Success"
+            };
+        }
+        else {
+            responseBody = {
+                "status": "error",
+                "message": "Err in change name"
+            };
+        }
+        sendBackJSON(responseBody, response);
+    });
+};
+
+
+/* Changes the password for the user specified by `userId`. If `isAdminChanging` is true,
+ * it doesn't verify the `currentPassword`. Otherwise, it only updates the password only after
+ * verifying `currentPassword`.
+ **/
+exports.changePassword = function (userId, currentPassword, newPassword, isAdminChanging, callback) {
+    // Error checking
+    if (userId === undefined || userId === 0) {
+        callback('Invalid user id');
+        return;
+    }
+    if ((currentPassword === undefined || currentPassword.length === 0) && !isAdminChanging) {
+        callback('Incorrect password');
+        return;
+    }
+    if (newPassword === undefined || newPassword.length === 0) {
+        callback('Invalid new password');
+        return;
+    }
+    
+    if (isAdminChanging) {
+        // No need to verify current password if admin is changing the users password
+        updatePassword(userId, newPassword, callback);
+    }
+    else {
+        // Otherwise first verify current password if user is themeselves changing their password
+        verifyUserPassword(userId, currentPassword, function (result) {
+            
+            if (result == 'Valid') {
+                updatePassword(userId, newPassword, callback);
+             }
+             else {
+                callback('Incorrect password');
+             }
+        });
+    }
+};
+
+
+/* Handles change password requests from users by verifying and then updating their password. */
+exports.changePasswordHandler = function (request, response) {
+    var userId = request.session.userId;
+    var currentPassword = request.body.currentPassword;
+    var newPassword = request.body.changePassword;
+    
+    exports.changePassword(userId, currentPassword, newPassword, false, function (result) {
+        var responseBody = {};
+        
+        console.log(result);
+        if (result == 'Success') {
+            responseBody = {
+                "status": "success",
+                "message": "Change Password Success"
+            };
+        }
+        else if (result == 'Incorrect password') {
+            responseBody = {
+                "status": "error",
+                "message": "Incorrect Password"
+            };
+        }
+        else {
+            responseBody = {
+                "status": "error",
+                "message": result
+            };
+        }
+        sendBackJSON(responseBody, response);
+    });
+};
+
+
+/* Updates the password in the database for the user specified by `userId` */
+function updatePassword(userId, newPassword, callback) {
+    var hashedPassword = common.generatePasswordHash(newPassword);
+    
+    db.query("UPDATE LOGIN_CREDENTIALS SET password = $1 WHERE user_id= $2", {
+        bind: [hashedPassword, userId]
+    
+    }).spread(function () {
+        callback('Success'); // Password successfully changed
+    
+    }).catch(function () {
+        callback('Error');
+    });
+}
+
+/* Verifies passwrod for the user specified by `userId`.
+ * Notifies the result through the given callback function.
+*/
+function verifyUserPassword(userId, password, callback) {
+    //db.query('SELECT * FROM USERS U, LOGIN_CREDENTIALS L WHERE U.id = L.userId AND U.id = $1', {
+    db.query('SELECT * FROM LOGIN_CREDENTIALS WHERE user_id = $1', {
+        bind: [userId]
+    }).spread(function (results) {
+        if (results === undefined || results.length != 1) {
+            callback('Error');
+            return;
+        }
+        var currentPasswordHash = results[0].password;
+        if (common.comparePassword(password, currentPasswordHash)) {
+            callback('Valid');
+        }
+        else {
+            callback('Invalid');
+        }
+    });
+}
 
 //function for change profile picture
 exports.changeProfilePicHandler = function (req, res) {
@@ -91,39 +229,6 @@ exports.changeProfilePicHandler = function (req, res) {
             "message": "Err in change profile pic"
         }
         sendBackJSON(returnJSON, res);
-    });
-};
-
-//function for change password
-exports.changePasswordHandler = function (req, res) {
-    bcrypt.hash(req.body.changePassword, 8, function (err, hashedPassword) {
-        if (err) {
-            console.log('failed to hash password:');
-            console.log(err);
-
-            sendBackJSON({
-                "error": "server error"
-            }, res);
-            return;
-        }
-
-        var user_id = getLoggedInUserId(req);
-        db.query("UPDATE LOGIN_CREDENTIALS SET password = $1 WHERE user_id= $2", {
-            bind: [hashedPassword, user_id]
-        }).spread(function (results, metadata) {
-            var returnJSON = {
-                "status": "success",
-                "message": "Change Password Success"
-            }
-            sendBackJSON(returnJSON, res);
-        }).catch(function (err) {
-            console.log("Err in change password");
-            var returnJSON = {
-                "status": "error",
-                "message": "Err in change password"
-            }
-            sendBackJSON(returnJSON, res);
-        });
     });
 };
 
