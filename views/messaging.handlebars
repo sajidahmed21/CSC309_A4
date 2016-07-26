@@ -8,8 +8,10 @@
 
 	<!-- libraries -->
     <script src="/js/jquery-3.0.0.min.js" defer></script>
-	<script src="/js/jquery.autocomplete.js" defer></script>
 	<script src="/js/socket.io.js" defer></script>
+	
+	<!-- include files necessary for the searchbar -->
+	{{> searchbar_head }}
 	
 	<!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -31,7 +33,7 @@
 
 <!-- Body starts here, where content is. -->
 
-<body class="global_font nomargin">
+<body class="global_font container-fluid">
     {{> nav }}
 
     <main id="messaging" class="container">
@@ -40,7 +42,7 @@
             <section id="user-list" class="hidden-xs col-sm-5 col-md-4 col-lg-3">
 				<div id="user-search">
 					<input id="user-search-text" class="form-control" type="text" placeholder="Search online users..."></input>
-					<div id="user-search-dropdown"></div>
+					<div id="user-search-dropdown"><!-- to be filled in through javascript with the search suggestions --></div>
 				</div>
 				<!-- user rows will be added in here through javascript -->
             </section>

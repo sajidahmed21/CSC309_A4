@@ -125,13 +125,15 @@ function showUsersTab() {
     
     /* Autocomplete attributes for search box */
     $searchBox.autocomplete({
-        lookup: ['Jeff', 'Jeffrey', 'Terry', 'Johnson', 'Rob'],
+        serviceUrl: '/search',
+        params: {type: 'usersbyusername', limit: 8}, // TODO: Should it by username or users name ?
+        noCache: true, // don't use a cache
         minLength: 0,
         autoFocus: true,
         appendTo: $autocompleteDropDown,
         onSelect: function (suggestion) {
-            console.log(suggestion);
-            window.location.href = 'edit-profile-admin.html';
+            // Navigate the to the edit user profile page
+            window.location.href = '/admin/edit_user_profile/' + suggestion.data;
         }
     });
     
@@ -163,25 +165,24 @@ function showClassTab() {
     
     $searchBox = $('<input/>', {
         type: 'text',
-        placeholder: 'Search by class name    (e.g. type "Intro")'
+        placeholder: 'Search by class name (e.g. "Intro")'
     });
     // Bind input changed listener to text box
     $searchBox.bind('input', function() {
        console.log($(this).val()); 
     });
     
-    var classNames = ['Introduction to Programming', 'Introduction to Data Structures',
-                   'Introduction to Religion', 'Introduction to Arthictecture'];
-    
     /* Autocomplete attributes for search box */
     $searchBox.autocomplete({
-        lookup: classNames,
+        serviceUrl: '/search',
+        params: {type: 'classes', limit: 8}, // TODO: Should it by username or users name ?
+        noCache: true, // don't use a cache
         minLength: 0,
         autoFocus: true,
         appendTo: $autocompleteDropDown,
         onSelect: function (suggestion) {
-            console.log(suggestion);
-            window.location.href = 'edit-coursedesc-admin.html';
+            // Navigate to the edit course page
+            window.location.href = '/admin/edit_course/' + suggestion.data;
         }
     });
     
