@@ -3,9 +3,11 @@ var sendBackJSON = common.sendBackJSON;
 var db = common.db;
 
 exports.followHandler = function (req, res){
-    var follower = req.session.thisid;
+    var follower = common.getLoggedInUserId(req);
     var followee = req.body.followee;
-    db.query("INSERT INTO FOLLOWINGS (follower,followee ) VALUES (" + follower +"," + followee + ")" ).spread(function(results, metadata){
+    db.query("INSERT INTO FOLLOWINGS (follower,followee ) VALUES ( $1 , $2)",{
+        bind: [follower, followee]
+    } ).spread(function(results, metadata){
         var returnJSON = {
             "status": "success",
             "message": "Success in following"
@@ -22,11 +24,13 @@ exports.followHandler = function (req, res){
 };
 
 exports.unfollowHandler = function (req, res){
-    var follower = req.session.thisid;
+    var follower = common.getLoggedInUserId(req);
     var followee = req.body.followee;
     console.log(follower);
     console.log(followee);
-    db.query("DELETE FROM FOLLOWINGS WHERE follower =" + follower +" AND followee = " + followee ).spread(function(results, metadata){
+    db.query("DELETE FROM FOLLOWINGS WHERE follower = $1 AND followee = $2",{
+        bind: [follower, followee]
+    } ).spread(function(results, metadata){
         var returnJSON = {
             "status": "success",
             "message": "Success in unfollowing"

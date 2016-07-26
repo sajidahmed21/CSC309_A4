@@ -235,17 +235,6 @@ p.class-name {
     font-weight: 200;
 }
 
-.headbar_search {
-    width: 500px;
-    display: inline-block;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.headbar_search_input {
-    max-width: 350px;
-}
-
 .standard-input {
     display: block;
     border: none;
@@ -376,12 +365,6 @@ p.class-name {
 
 .homepage_img {
     width: 100%;
-}
-
-.standard-search-bar {
-    padding: 24px;
-    border-radius: 0;
-    border: none;
 }
 
 .standard-title-top-course {

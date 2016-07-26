@@ -3,11 +3,11 @@ var app = express();
 
 // security
 var ddosModule = require('ddos')
-// allow 160 requests per minute, with no more than 12 at a given time
+    // allow 160 requests per minute, with no more than 12 at a given time
 var ddos = new ddosModule({
     limit: 160,
     burst: 12,
-    maxexpiry: 60,
+    maxexpiry: 600000,
     errormessage: 'Oh no! You\'ve been making too many requests and have been blocked.',
 });
 app.use(ddos.express)
@@ -47,8 +47,10 @@ var hostname = 'localhost';
 var port = 9090;
 var expressValidator = require('express-validator')
 var bodyParser = require('body-parser');
-var multer  = require('multer');
-var upload = multer({ dest: 'uploads/' });// for parsing multipart/form-data
+var multer = require('multer');
+var upload = multer({
+    dest: 'uploads/'
+}); // for parsing multipart/form-data
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -100,40 +102,42 @@ app.get('/course/:id',
     courses.get_reviews,
     courses.render_course_page);
 
-app.get('/createcourse', function(req, res) {
+app.get('/createcourse', function (req, res) {
     userIsLoggedIn(req);
     // if logged in render page 
     // otherwise display page that says the user must be signed in to create a course. 
-        res.render('createcourse', {
-            loggedIn:  true,
-            courseBannerErr: '', 
-            courseReqs: '',
-            courseDesc: '', 
-            courseTitle: '',
-        });
+    res.render('createcourse', {
+        loggedIn: true,
+        courseBannerErr: '',
+        courseReqs: '',
+        courseDesc: '',
+        courseTitle: '',
+    });
 });
 
-var upload = multer({dest: 'public/img/'}).single('courseBanner');
-app.post('/createcourse', function(req, res, next) {
-    upload(req, res, function (err) { 
-            res.courseBannerErr = '';
-            res.courseTitleErr = '';
-            if (err) {
-                console.log("something went wrong with file upload");
-                return;
-            } else {
-                console.log(req.file);
-                if (!req.file) // undefined, use default path 
-                    res.bannerpath = "/img/study.jpg";
-                else {
-                    res.bannerpath = req.file.path;
-                }
-                        // replace 1 with id of logged in user
-                        console.log("res.bannerpath in server: "+res.bannerpath);
-                        next();
-                        
+var upload = multer({
+    dest: 'public/img/'
+}).single('courseBanner');
+app.post('/createcourse', function (req, res, next) {
+    upload(req, res, function (err) {
+        res.courseBannerErr = '';
+        res.courseTitleErr = '';
+        if (err) {
+            console.log("something went wrong with file upload");
+            return;
+        } else {
+            console.log(req.file);
+            if (!req.file) // undefined, use default path 
+                res.bannerpath = "/img/study.jpg";
+            else {
+                res.bannerpath = req.file.path;
             }
-})
+            // replace 1 with id of logged in user
+            console.log("res.bannerpath in server: " + res.bannerpath);
+            next();
+
+        }
+    })
 }, createcourse.validate, createcourse.addClassInfoAndRedirect);
 
 app.post('/submitreview', function(req, res, next) {
@@ -192,7 +196,9 @@ app.get('/enroll', function (req, res) {
 
 
 
-app.post('/user/signin', user.signinHandler);
+app.post('/user/signin', function (req, res) {
+    user.signinHandler(req, res, undefined);
+});
 
 app.post('/user/signup', user.signupHandler);
 
@@ -230,6 +236,10 @@ app.post('/admin/login', admin.handleLoginRequest);
 app.get('/admin/logout', admin.handleLogoutRequest);
 
 app.get('/admin/analytics', admin.checkAuthentication, admin.handleAnalyticsDataRequest);
+
+app.get('/admin/edit_user_profile/:id', admin.checkAuthentication, admin.handleEditProfileRequest);
+
+app.get('/admin/edit_course/:id', admin.checkAuthentication, admin.handleEditCourseRequest);
 
 
 /* Searches  --------------------------------------------------------*/
