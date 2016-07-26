@@ -33,7 +33,10 @@
     border-right: 2px solid pink;
     padding-top: 3px;
     padding-bottom: 3px;
-    
+}
+.qi-right-box {
+    padding-top: 3px;
+    padding-bottom: 3px;
 }
 .course-container {
     width: 800px;

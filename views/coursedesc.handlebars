@@ -20,7 +20,7 @@
     <link rel="stylesheet" type="text/css" href="/css/style.css">
     <link rel="stylesheet" type="text/css" href="/css/coursedesc-style.css">
     <script src="/js/logout.js" defer></script>
-
+    <script src="/js/rating.js"></script>
 </head>
 <body class="global_font nomargin">
 	{{> nav }}
@@ -143,19 +143,21 @@
                                 <div class="panel-heading">
                                     <strong>Guest</strong>
                                 </div>
-                                <textarea class="form-control" rows="3" placeholder="Add a comment here !"></textarea>
+                                <textarea id="reviewinput" class="form-control" rows="3" placeholder="Add your review here! (optional)"></textarea>
                             </div>
                         </div>
                         <div class="col-sm-offset-1 col-sm-1">
-                            <button class="standard-blue-button" type="submit">Submit</button>
+                            <button id="reviewsubmit" class="standard-blue-button" type="submit">Submit</button>
                         </div>
                         <div class="col-sm-offset-1 col-sm-5">
                             <div class="stars">
-                                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                <span id="star1" class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                <span id="star2" class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                <span id="star3" class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                <span id="star4" class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                <span id="star5" class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                <span id="rating"> </span>
+                                <div id="message"> </div>
                             </div>
                         </div>
                     </div>
