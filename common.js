@@ -82,6 +82,11 @@ exports.generateUniqueId = function () {
     return bcrypt.hashSync(Math.random().toString(), 8);
 };
 
+/* Common function for hashing passwords */
+exports.generatePasswordHash = function (password) {
+    return bcrypt.hashSync(password, 8);
+};
+
 /* Standard function for checking passwords */
 exports.comparePassword = function (password, passwordHash) {
     return bcrypt.compareSync(password, passwordHash);

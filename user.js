@@ -50,6 +50,8 @@ var getLoggedInUserId = common.getLoggedInUserId;
 var db = common.db;
 var color = ['green_background', 'light_green_background', 'blue_background', 'yellow_background', 'orange_background', 'red_background'];
 
+exports.color = color;
+
 //function for change user name
 exports.changeNameHandler = function (req, res) {
     var changeName = req.body.changeName;
@@ -233,83 +235,99 @@ exports.signinHandler = function (req, res) {
     });
 };
 
-//function for sign up
-exports.signupHandler = function (req, res) {
-    if (req.body.signupPassword.length < 8) {
-        res.status(401);
-        return res.render('home', {
-            errorContent: '<p><strong>Opps!</strong> Your password must be at least length of 8!</p>',
-            loggedIn: false
-        });
-    }
-    if (req.body.signupPassword != req.body.userPasswordConfirm) {
-        console.log("return");
-        res.status(401);
-        return res.render('home', {
-            errorContent: '<p><strong>Opps!</strong> Your password do not match!</p>',
-            loggedIn: false
-        });
-    }
-    bcrypt.hash(req.body.signupPassword, 8, function (err, hashedPassword) {
-        if (err) {
-            console.log('failed to hash password:');
-            console.log(err);
-
-            sendUnauthorizedResponse({
-                "error": "server error"
-            }, res);
+/* Handles sign up requests for new users by creating a new user account and then
+ * rendering the profile page for the newly created user.
+ */
+exports.signupHandler = function (request, response) {
+    var name = request.body.signupName;
+    var username = request.body.signupUsername;
+    var password = request.body.signupPassword;
+    var passwordConfirmation = request.body.userPasswordConfirm;
+    
+    exports.createUser(name, username, password, passwordConfirmation, function (errorType, userId) {
+        
+        console.log(errorType);
+        if (errorType === undefined) { // Success
+            // Automatically log the user in
+            setLoggedInUserId(request, userId);
+            exports.getProfileHandler(request, response, userId);
             return;
         }
-
-        console.log("ab")
-        console.log(req.body);
-
-        db.transaction(function (transaction) {
-                var signupName = req.body.signupName;
-                var signupUsername = req.body.signupUsername;
-                var signupProfilePicture = color[Math.floor(Math.random() * 5)];
-                return db.query("INSERT INTO USERS (name, profile_picture_path) VALUES ( $1 , $2 )", {
-                    transaction: transaction,
-                    bind: [signupName, signupProfilePicture]
-                }).then(function (result) {
-                    var metadata = result[1];
-                    return exports.loginInsert(transaction, metadata.lastID, signupUsername, hashedPassword, res, req);
+        
+        // Check error type and render web page with the appropriate message for the end user
+        switch (errorType) {
+            case 'Incorrect Password Length':
+                response.status(401);
+                return response.render('home', {
+                    errorContent: '<p><strong>Opps!</strong> Your password must be at least 8 characters long!</p>',
+                    loggedIn: false
                 });
-            })
-            .catch(function (err) {
-                res.status(401);
-                return res.render('home', {
+            case 'Passwords Don\'t Match':
+                response.status(401);
+                return response.render('home', {
+                    errorContent: '<p><strong>Opps!</strong> Your password do not match!</p>',
+                    loggedIn: false
+                });
+            case 'Username Already Taken':
+                response.status(401);
+                return response.render('home', {
                     errorContent: '<p><strong>Opps!</strong> The username has been taken! Please choose another username!</p>',
                     loggedIn: false
                 });
-            });
+        }
     });
 };
 
-//function for sign up insert into login_credentials table
-exports.loginInsert = function (transaction, id, signupUsername, signupPassword, res, req) {
-    return db.query("INSERT INTO LOGIN_CREDENTIALS (user_id, username, password) VALUES ( $1 , $2 , $3 )", {
-            transaction: transaction,
-            bind: [id, signupUsername, signupPassword]
+/* Validates the name, username, password, passworedConfirmation and then creates
+ * a new user account. Success / failure of the account creation is notified via
+ * the provided callback.
+ */
+exports.createUser = function (name, username, password, passwordConfirmation, callback) {
+    
+    if (password != passwordConfirmation) {
+        callback('Passwords Don\'t Match');
+        return;
+    }
+    
+    if (password.length < 8) {
+        callback('Incorrect Password Length');
+        return;
+    }
+    
+    var hashedPassword = common.generatePasswordHash(password);
+    
+    // Randomly select a profile picture color for newly joined user
+    var signupProfilePicture = color[Math.floor(Math.random() * 5)];
+
+    db.transaction(function (transactionObject) {
+        // Insert into USERS table
+        return db.query("INSERT INTO USERS (name, profile_picture_path) VALUES ( $1 , $2 )", {
+            transaction: transactionObject,
+            bind: [name, signupProfilePicture]
         })
-        .then(function (result, metadata) {
-            console.log("LOGININSERT" + id);
-            // automatically log the user in
-            setLoggedInUserId(req, id);
-            exports.getProfileHandler(req, res, getLoggedInUserId(req));
-//            var returnJSON = {
-//                "status": "success",
-//                "message": "Signup Success"
-//            };
-//            sendBackJSON(returnJSON, res);
-        }).catch(function (err) {
-            res.status(401);
-            return res.render('home', {
-                errorContent: '<p><strong>Opps!</strong> The username has been taken! Please choose another username!</p>',
-                loggedIn: false
+        .then(function (result) {
+            var metadata = result[1];
+            
+            // Insert into LOGIN_CREDENTIALS table
+            return db.query("INSERT INTO LOGIN_CREDENTIALS (user_id, username, password) VALUES ( $1 , $2 , $3 )", {
+                transaction: transactionObject,
+                bind: [metadata.lastID, username, hashedPassword]
             });
         });
+    }).then(function (results) {
+        // Transaction has been successfully committed
+        var metadata = results[1];
+        
+        // Notify about succesful user creation to the caller
+        callback(undefined, metadata.lastID);
+        
+    }).catch(function () {
+        // Transaction has been rolled back
+        // Notify caller about duplicate user name
+        callback('Username Already Taken');
+    });
 };
+
 
 //function for logout 
 exports.logoutHandler = function (req, res) {
