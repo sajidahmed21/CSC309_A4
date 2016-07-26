@@ -12,6 +12,24 @@
     width: auto;
     height: auto;
 }
+.enroll-btn {
+    margin-left: 8px;
+    padding: 15px;
+    color: #ffffff !important;
+    background-color: #1abc9c;
+    border: none;
+    display: inline;
+    position: absolute;
+}
+.enroll-btn:active {
+    color: #ffffff !important;
+    background-color: #16a085;
+}
+
+.enroll-btn:hover {
+    color: #ffffff;
+    background-color: #16a085;
+}
 .edit-btn {
     position: absolute;
     padding-top: 2px;
@@ -109,6 +127,7 @@ glyphicon glyphicon-star:hover {
 .course-title {
     font-size: 5vw;
     text-align: center;
+    vertical-align: middle;
 }
 .banner-container {
     position: absolute;
@@ -116,24 +135,30 @@ glyphicon glyphicon-star:hover {
     margin-right: auto;
     left: 0;
     right: 0;
-    top: 15px;
+    top: 55px;
     opacity: 0.9;
     font-weight: bold;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 0px;
+    padding-bottom: 0px;
 }
 .title-font-size {
     font-size: 100px;
 }
 #course-title-box {
     width: 600px;
-    max-height: 150px;
-    min-height: 150px;
+   height: 150px;
+   margin-top: 0;
 }
 #comments {
   
 }
-
+@mixin vertical-align($position: relative) {
+  position: $position;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
 #course-profile .container-fluid {
     margin-left: auto;
     margin-right: auto;
