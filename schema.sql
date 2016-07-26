@@ -52,6 +52,8 @@ CREATE TABLE IF NOT EXISTS CLASSES (
   id INTEGER PRIMARY KEY,
   class_name varchar(64) NOT NULL,
   instructor INTEGER NOT NULL,
+  coursedesc TEXT,
+  coursereqs TEXT,
   banner_picture_path TEXT,
   created_timestamp INTEGER DEFAULT (datetime('now')),
 

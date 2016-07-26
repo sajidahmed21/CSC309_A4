@@ -1,18 +1,27 @@
 $(document).ready(function() {
-    refreshAnaltyicsData();
+    
+    if ($('#error-message').length > 0) {
+        // Show users tab if there are error messages
+        showUsersTab(false);
+    }
+    else {
+        refreshAnaltyicsData();
+    }
     attachClickListeners();
 });
 
 function attachClickListeners() {
     $('#analytics-tab').click(refreshAnaltyicsData);
-    $('#users-tab').click(showUsersTab);
+    $('#users-tab').click(function()  {
+        showUsersTab(true);
+    });
     $('#class-tab').click(showClassTab);
 }
 
 /* Refreshes / retrieves analytics data from the server */
 function refreshAnaltyicsData() {
     $.ajax({
-        url: 'admin/analytics',
+        url: '/admin/analytics',
         method: 'GET',
         dataType: 'json'
     }).fail(function(jqXHR, status) {
@@ -30,7 +39,7 @@ function showAnalyticsTab(data) {
         return;
     }
     
-    selectTab('#analytics-tab');
+    selectTab('#analytics-tab', true);
     
     $mainContent = $('#main-content').empty();
     
@@ -78,9 +87,9 @@ function createDataListItem(dataTitle, dataValue) {
 }
 
 /* Shows the Users Tab */
-function showUsersTab() {
+function showUsersTab(deleteErrorMessage) {
     // Set selected tab
-    selectTab('#users-tab');
+    selectTab('#users-tab', deleteErrorMessage);
     
     $mainContent = $('#main-content').empty();
     
@@ -149,7 +158,7 @@ function showUsersTab() {
 /* Shows class tab */
 function showClassTab() {
     // Set selected tab
-    selectTab('#class-tab');
+    selectTab('#class-tab', true);
     
     $mainContent = $('#main-content').empty();
     
@@ -196,8 +205,10 @@ function showClassTab() {
 
 /* Shows Create User form */
 function showCreateUserForm() {
+    /* Remove any existng error message while trying to create a user */
+   removeErrorMessage();
+    
    var $popup = $('<article/>', {id: 'popup'});
-    //$popup.empty();
     
     $outer = $('<div/>', {
        id:  'signup_form'
@@ -216,14 +227,13 @@ function showCreateUserForm() {
     $cancelicon = $('<span/>', {
        class:  'glyphicon glyphicon-remove cancel_icon'
     });
-    $cancelicon.click(function(){
-        hidePopup();
-    });
+    
+    $cancelicon.click(hidePopup);
     $cancelwrapper.append($cancelicon);
     
     $container.append($cancelwrapper);
     
-    $form = $('<form/>', {action: 'edit-profile-admin.html', method: 'GET'});
+    $form = $('<form/>', {id: 'create_user_form', action: '/admin/create_user', method: 'POST'});
     
     $title = $('<h1/>',{
         class : 'standard-title'
@@ -231,8 +241,19 @@ function showCreateUserForm() {
     $title.text('Create User').appendTo($form);
     
     $input = $('<input/>',{
-        id : 'userName',
-        name : 'userName',
+        id : 'name_field',
+        name : 'name',
+        type : 'text',
+        placeholder : 'Name',
+        required : 'required',
+        class : 'standard-input'
+    });
+    
+    $input.appendTo($form);
+    
+    $input = $('<input/>',{
+        id : 'username_field',
+        name : 'username',
         type : 'text',
         placeholder : 'Username',
         required : 'required',
@@ -242,43 +263,44 @@ function showCreateUserForm() {
     $input.appendTo($form);
     
     $input = $('<input/>',{
-        id : 'userPassword',
-        name : 'userPassword',
+        id : 'user_password_field',
+        name : 'password',
         type : 'password',
-        placeholder : 'Password',
+        placeholder: 'Password',
         required : 'required',
+        pattern: '^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&\\-])[A-Za-z\\d$@$!%*#?&\\-]{6,20}$',
+        title: 'Password must contain at least 1 letter, 1 number, 1 special character, ' +
+               ' and must be between 6 and 20 characters long. Special characters include $@!%*#?&-',
         class : 'standard-input'
     });
     
+    $input.on('input', hidePasswordMismatchMessage);
     $input.appendTo($form);
     
-    $input = $('<input/>',{
-        id : 'userPasswordConfirm',
-        name : 'userPasswordConfirm',
+    $confirmPasswordInput = $('<input/>',{
+        id : 'confirm_password_field',
+        name : 'passwordConfirmation',
         type : 'password',
         placeholder : 'Password Comfirmation',
         required : 'required',
         class : 'standard-input'
     });
     
-    $input.appendTo($form);
+    $confirmPasswordInput.on('input', hidePasswordMismatchMessage);
+    $confirmPasswordInput.appendTo($form);
     
-    $input = $('<input/>',{
-        id : 'userEmail',
-        name : 'userEmail',
-        type : 'email',
-        placeholder : 'Email',
-        required : 'required',
-        class : 'standard-input'
-    });
-    
-    $input.appendTo($form);
+    $errorMessage = $('<p>', {class: 'password-mismatch-message'});
+    $errorMessage.text('Passwords don\'t match');
+    $errorMessage.css('display', 'none');
+    $errorMessage.appendTo($form);
     
     $submitButton = $('<input/>',{
         type : 'submit',
         value : 'Create',
         class : 'standard-blue-button block_btn'
     });
+    
+    $submitButton.click(validateCreateUserInput);
     
     $submitButton.appendTo($form);
     
@@ -290,20 +312,72 @@ function showCreateUserForm() {
     $('#main-content').append($popup);
 }
 
-function hidePopup() {
-    $('#popup').empty();
+function validateCreateUserInput() {
+    $confirmPasswordField = $('#confirm_password_field');
+    
+    var fieldsEmpty = false;
+    if ($('#name_field').val().length === 0) {
+        fieldsEmpty = true;
+    }
+
+    else if ($('#username_field').val().length === 0) {
+        fieldsEmpty = true;
+    }
+
+    else if ($('#user_password_field').val().length === 0) {
+        fieldsEmpty = true;
+    }
+    
+    else if ($confirmPasswordField.val().length === 0) {
+        fieldsEmpty = true;
+    }
+    
+    // Let the browser handle empty fields
+    if (fieldsEmpty) {
+        return true;
+    }
+    
+    // Check if passwords match
+    if ($('#user_password_field').val() !== $confirmPasswordField.val()) {
+        
+        // Show password mismatch messsage
+        $errorMessage = $('p.password-mismatch-message');
+        $errorMessage.css('display', 'block');
+        return false;
+    }
+    /* The other fields are validated by the browser based on the
+     * `pattern` / `required` attributes
+     */
+    return true;
 }
 
-function selectTab(id) {
-    unSelectAllTabs();
+function hidePasswordMismatchMessage() {
+    $errorMessage = $('p.password-mismatch-message');
+    $errorMessage.css('display', 'none');
+}
+
+function hidePopup() {
+    $('#popup').remove();
+}
+
+function selectTab(id, deleteErrorMessage) {
+    unSelectAllTabs(deleteErrorMessage);
     
     // Set selected tab
     $(id).addClass('selected-tab');
 }
 
-function unSelectAllTabs() {
+function unSelectAllTabs(deleteErrorMessage) {
     $('#analytics-tab').removeClass('selected-tab');
     $('#users-tab').removeClass('selected-tab');
     $('#class-tab').removeClass('selected-tab');
+    
+    if (deleteErrorMessage) {
+        removeErrorMessage();
+    }
 }
 
+/* Removes any error message displayed at the top of the page */
+function removeErrorMessage() {
+    $('#error-message').remove();
+}

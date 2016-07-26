@@ -9,6 +9,7 @@ var db = common.db;
 // NEED TO SUPPORT BASIC INFO ABOUT COURSE LIKE COURSE DESCRIPTION AND REQUIREMENTS
 // NEED TO SUPPORT RATING FUNCTIONALITY (STARS LIGHTING UP ETC)
 // USERNAMES MUST BE UNIQUE, NOT CURRENTLY THE CASE IN DATABASE
+var colors = ['#b6cde3',  '#b6e2e3', '#b6e3d2', '#b6e3c6',  '#bbe3b6',  '#c9e3b6' ,  '#dae3b6',  '#e3d7b6',  '#e3c5b6',  '#e3b6d6',  '#dab6e3',  '#c0b6e3'];
 exports.get_class_info = function(req, res, next) {
 		db.query('SELECT C.id, U.name as instructor, C.class_name, C.banner_picture_path, C.created_timestamp'
 		+' FROM CLASSES C, USERS U  WHERE C.id= $1 AND U.id = C.instructor',
@@ -69,6 +70,13 @@ exports.get_reviews = function(req, res, next) {
 			+ ' FROM REVIEWS R, USERS U WHERE R.class_id = $1 AND U.id = R.user_id ORDER BY R.created_timestamp ASC;', 
 			{ bind: [res.class_info[0].id]}
 			).spread(function(results, metadata) {
+
+				for (i = 0; i < results.length; i++) {
+
+					var username = results[i].username;
+					results[i].firstLetter = username.charAt(0).toUpperCase();
+					results[i].dp = colors[username.charCodeAt(0) % colors.length];
+				}
 				res.reviews = results;
 				next();
 			})
