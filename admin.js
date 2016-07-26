@@ -94,91 +94,53 @@ exports.handleLogoutRequest = function (request, response) {
     common.redirectToPage('/admin', response);
 };
 
+/* Handles all create user account request for admins by creating an user account
+ * and redirecting to the appropriate page based on the result
+*/
 exports.handleCreateUserRequest = function (request, response) {
     var name = request.body.name;
     var username = request.body.username;
     var password = request.body.password;
     var passwordConfirmation = request.body.passwordConfirmation;
     
-    console.log(name);
-    console.log(username);
-    console.log(password);
-    console.log(passwordConfirmation);
-    
-    //response.render('home');
-    user.createUser(name, username, password, passwordConfirmation, function(errorType) {
+    user.createUser(name, username, password, passwordConfirmation, function(errorType, userId) {
         
         if (errorType === undefined) { // Account Successfully created
-            response.end('User successfully created');
+            request.session.message = '<p>Account successfully created</p>';
+            common.redirectToPage('/admin/edit_user_profile/' + userId, response);
             return;
         }
         
-        //response.end(JSON.stringify(errorType));
-        
         // Check error type and render web page with the appropriate message for the end user
         switch (errorType) {
-        //    case 'Incorrect Password Length':
-        //        response.status(401);
-        //        return response.render('home', {
-        //            errorContent: '<p><strong>Opps!</strong> Your password must be at least 8 characters long!</p>',
-        //            loggedIn: false
-        //        });
-        //    case 'Passwords Don\'t Match':
-        //        response.status(401);
-        //        return response.render('home', {
-        //            errorContent: '<p><strong>Opps!</strong> Your password do not match!</p>',
-        //            loggedIn: false
-        //        });
+            case 'Incorrect Password Length':
+                request.session.errorContent = '<p><strong>Opps!</strong> Password must be between 6 and 20 characters</p>';
+                common.redirectToPage('/admin', response);
+                return;
+            case 'Passwords Don\'t Match':
+                request.session.errorContent = '<p><strong>Opps!</strong> The provided passwords do not match!</p>';
+                common.redirectToPage('/admin', response);
+                return;
             case 'Username Already Taken':
                 request.session.errorContent = '<p><strong>Opps!</strong> This username has been taken! Please try a different username!</p>';
                 common.redirectToPage('/admin', response);
                 return;
-                //return response.render('admin_home', {
-                //    errorContent: '<p><strong>Opps!</strong> This username has been taken! Please try a different username!</p>',
-                //});
-        //        response.status(401);
-        //        return response.render('home', {
-        //            errorContent: '<p><strong>Opps!</strong> The username has been taken! Please choose another username!</p>',
-        //            loggedIn: false
-        //        });
         }
+        
+        // We shouldn't get here
+        request.session.errorContent = '<p><strong>Opps!</strong> Something went wrong. Please try later!</p>';
+        common.redirectToPage('/admin', response);
     });
-    
-    //if (name === undefined || username === undefined || password === undefined) {
-    //    /* Return error response if name, username, or password
-    //       fields are missing */
-    //    sendMalformedRequestResponse('Missing field', response);
-    //    return;
-    //}
-    //
-    //if (username.length === 0  || password.length < 8) {
-    //    /* Return login failed response if username or password
-    //       fields are of incorrect length */
-    //    sendMalformedRequestResponse('Incorrect field length', response);
-    //    return;
-    //}
-    //
-    //var passwordHash = common.generatePasswordHash(password);
-    //var profilePictureColor = user.color[Math.floor(Math.random() * 5)];
-    //
-    //var queryString = 'INSERT INTO USERS (name, profile_picture_path) VALUES ( $1 , $2 )';
-    //db.transaction(function (transaction) {
-    //    db.query(queryString, {
-    //        bind: [name, profilePictureColor], transaction: transaction
-    //    }).then(function (result) {
-    //        var metadata = result[1];
-    //        var insertCredentials = 'INSERT INTO LOGIN_CREDENTIALS (user_id, username, password) VALUES ( $1 , $2 , $3 )';
-    //        return db.query(insertCredentials, {bind: [metadata.id, username, passwordHash]});
-    //        // TODO: Put duplicate user name check using .catch()
-    //    });
-    //});
-    
 };
 
 
 /* Hanldes edit user profile requests by rendering the edit user profile page for admins */
 exports.handleEditProfileRequest = function (request, response) {
-    response.render('edit_user_profile_admin');
+    response.render('edit_user_profile_admin', {
+        message: request.session.message
+    });
+    // Reset message after it has been rendered
+    request.session.message = undefined;
 };
 
 /* Handles edit course requests by rendering the edit course page for admins */
