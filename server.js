@@ -102,7 +102,7 @@ app.get('/course/:id',
     courses.get_reviews,
     courses.render_course_page);
 
-app.get('/createcourse', function (req, res) {
+app.get('/createcourse', checkAuthentication, function (req, res) {
     userIsLoggedIn(req);
     // if logged in render page 
     // otherwise display page that says the user must be signed in to create a course. 
@@ -140,7 +140,7 @@ app.post('/createcourse', function (req, res, next) {
     })
 }, createcourse.validate, createcourse.addClassInfoAndRedirect);
 
-app.post('/submitreview', function(req, res, next) {
+app.post('/submitreview', checkAuthentication, function(req, res, next) {
         console.log(req.params.id);
         // do some validation
         // how to get user_id and instructor id? 
