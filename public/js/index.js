@@ -126,7 +126,8 @@ var loginPage = function () {
         type: 'text',
         placeholder: 'Username',
         required: 'required',
-        pattern: '^[a-zA-Z0-9]{8,20}',
+        pattern: '^[a-zA-Z0-9]{8,20}$',
+        title: 'Username must be between 8 and 20 characters, and must only consist of letters and numbers.',
         class: 'standard-red-input'
     });
 
@@ -138,7 +139,9 @@ var loginPage = function () {
         type: 'password',
         placeholder: 'Password',
         required: 'required',
-        pattern: '^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&\-])[A-Za-z\d$@$!%*#?&\-]{8,20}$',
+        pattern: '^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&\\-])[A-Za-z\\d$@$!%*#?&\\-]{6,20}$',
+        title: 'Password must contain at least 1 letter, 1 number, 1 special character, ' +
+               ' and must be between 6 and 20 characters long. Special characters include $@!%*#?&-',
         class: 'standard-red-input'
     });
 
@@ -253,6 +256,7 @@ var signupPage = function () {
         placeholder: 'Username',
         required: 'required',
         pattern: '^[a-zA-Z0-9]{8,20}$',
+        title: 'Username must be between 8 and 20 characters, and must only consist of letters and numbers.',
         class: 'standard-input'
     });
 
@@ -264,7 +268,9 @@ var signupPage = function () {
         type: 'password',
         placeholder: 'Password',
         required: 'required',
-        pattern: '^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&\-])[A-Za-z\d$@$!%*#?&\-]{8,20}$',
+        pattern: '^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&\\-])[A-Za-z\\d$@$!%*#?&\\-]{6,20}$',
+        title: 'Password must contain at least 1 letter, 1 number, 1 special character, ' +
+               ' and must be between 6 and 20 characters long. Special characters include $@!%*#?&-',
         class: 'standard-input'
     });
 
@@ -276,7 +282,7 @@ var signupPage = function () {
         type: 'password',
         placeholder: 'Password Comfirmation',
         required: 'required',
-        pattern: '^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&\-])[A-Za-z\d$@$!%*#?&\-]{8,20}$',
+        pattern: '^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&\\-])[A-Za-z\\d$@$!%*#?&\\-]{6,20}$',
         class: 'standard-input'
     });
 
