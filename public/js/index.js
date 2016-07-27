@@ -346,6 +346,10 @@ var signupPage = function () {
     $input.appendTo($form);
     
     $form.submit(function(e){
+        console.log($('#signupName').val());
+        console.log($('#signupUsername').val());
+        console.log($('#signupPassword').val());
+        console.log($('#userPasswordConfirm').val());
         e.preventDefault();
         var body = {
             "signupName": $('#signupName').val(),
