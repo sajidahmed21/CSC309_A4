@@ -268,6 +268,8 @@ app.get('/admin/logout', admin.handleLogoutRequest);
 
 app.get('/admin/analytics', admin.checkAuthentication, admin.handleAnalyticsDataRequest);
 
+app.post('/admin/create_user', admin.checkAuthentication, admin.handleCreateUserRequest);
+
 app.get('/admin/edit_user_profile/:id', admin.checkAuthentication, admin.handleEditProfileRequest);
 
 app.get('/admin/edit_course/:id', admin.checkAuthentication, admin.handleEditCourseRequest);

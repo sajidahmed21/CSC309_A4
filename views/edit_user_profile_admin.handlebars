@@ -38,6 +38,12 @@
 		<img src="/img/profile.png" alt="Profile" height="40" width="45" class="profile_icon">
 		<h3 id="admin-username">admin.username</h3>
     </header>
+	
+	{{#if message}}
+		<div id="error-message" class="alert alert-danger nomargin" role="alert">
+			{{{message}}}
+		</div>
+	{{/if}}
     
     <img class="profilepage_img" src="/img/profile_background.jpg">
     <img class="img-circle profile_pic" src="/img/profile.png" height="150" width="150">
