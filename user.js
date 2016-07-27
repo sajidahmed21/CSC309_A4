@@ -1,46 +1,3 @@
-/*app.get('/check', function (req, res) {
-    db.query('SELECT * FROM USERS').spread(function (results, metadata) {
-        console.log(results);
-        res.render('demo', {
-            userCount: results[0].userCount,
-            leggedIn: false,
-            demo: true
-        });
-
-    });
-});
-app.get('/checkk', function (req, res) {
-    db.query('SELECT * FROM FOLLOWINGS').spread(function (results, metadata) {
-        console.log(results);
-        res.render('demo', {
-            //userCount: results[0].userCount,
-            leggedIn: false,
-            demo: true
-        });
-
-    });
-});
-
-app.get('/enrolls', function (req, res) {
-    db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (5, 1)").spread(function (results, metadata) {
-        console.log("JOIN 1");
-    });
-    db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (5, 2)").spread(function (results, metadata) {
-        console.log("JOIN 2");
-    });
-});
-app.get('/enroll', function (req, res) {
-    db.query("INSERT INTO CLASSES (id, class_name, instructor) VALUES (1, 'TESTCOURSE', 3)").spread(function (results, metadata) {
-        db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (18, 1)").spread(function (results, metadata) {
-            console.log("JOIN 1");
-        })
-    });
-    db.query("INSERT INTO CLASSES (id, class_name, instructor) VALUES (2, 'TESTCOURSE2', 3)").spread(function (results, metadata) {
-        db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (18, 2)").spread(function (results, metadata) {
-            console.log("JOIN 2");
-        })
-    });
-});*/
 var common = require('./common');
 var bcrypt = require('bcryptjs');
 
@@ -241,31 +198,40 @@ var changeProfilePicHandler = function (req, res) {
 exports.changeProfilePicHandler = changeProfilePicHandler;
 exports.test.changeProfilePicHandler = changeProfilePicHandler;
 
-
-//function for unenroll class
-var unenrollHandler = function (req, res) {
-    var user_id = getLoggedInUserId(req);
-    var class_id = req.body.dropCourse_id;
+exports.unenrollHelper = function (user_id, class_id, callback) {
     db.query("DELETE FROM ENROLMENT WHERE user_id= $1 AND class_id = $2", {
         bind: [user_id, class_id]
     }).spread(function (results, metadata) {
-        var returnJSON = {
-            "status": "success",
-            "message": "Delete Success"
-        }
-        sendBackJSON(returnJSON, res);
+        callback('success');
     }).catch(function (err) {
-        console.log("Err in delete course");
-        var returnJSON = {
-            "status": "error",
-            "message": "Err in delete course"
+        callback('error');
+    });
+}
+
+
+//function for unenroll class
+exports.unenrollHandler = function (req, res) {
+    var user_id = getLoggedInUserId(req);
+    var class_id = req.body.dropCourse_id;
+    exports.unenrollHelper(user_id, class_id, function (result) {
+        if (result == 'success') {
+            var returnJSON = {
+                "status": "success",
+                "message": "Delete Success"
+            }
+            sendBackJSON(returnJSON, res);
+        } else if (result == 'error') {
+            console.log("Err in delete course");
+            var returnJSON = {
+                "status": "error",
+                "message": "Err in delete course"
+            }
+            sendBackJSON(returnJSON, res);
         }
-        sendBackJSON(returnJSON, res);
     });
 };
 
-exports.unenrollHandler = unenrollHandler;
-exports.test.unenrollHandler = unenrollHandler;
+exports.test.unenrollHandler = exports.unenrollHandler;
 
 /* Renders the profile for the user with the userId equal to profileUserId. */
 var getProfileHandler = function (req, res, profileUserId) {
@@ -502,46 +468,57 @@ var logoutHandler = function (req, res) {
 exports.logoutHandler = logoutHandler;
 exports.test.logoutHandler = logoutHandler;
 
-//CASCADE ALL USERS and CLASSES
-var deleteUserHandler = function (req, res) {
+
+exports.deleteUserHelper = function (user_id, callback) {
+        db.query("DELETE FROM LOGIN_CREDENTIALS WHERE user_id= $1", {
+            bind: [user_id]
+        }).spread(function (results, metadata) {
+            db.query("DELETE FROM USERS WHERE id= $1", {
+                bind: [user_id]
+            }).spread(function (results, metadata) {
+                callback('success');
+            }).catch(function (err) {
+                callback('errorinner')
+            });
+        }).catch(function (err) {
+            callback('errorouter')
+        });
+    }
+    //CASCADE ALL USERS and CLASSES
+exports.deleteUserHandler = function (req, res) {
     var user_id = getLoggedInUserId(req);
     // always set the user_id to logged out
     setLoggedInUserId(req, 0);
 
-    db.query("DELETE FROM LOGIN_CREDENTIALS WHERE user_id= $1",{
-        bind: [user_id]
-    }).spread(function (results, metadata) {
-        db.query("DELETE FROM USERS WHERE id= $1",{
-           bind: [user_id] 
-        }).spread(function (results, metadata) {
+    exports.deleteUserHelper(user_id, function (result) {
+        if (result == 'success') {
             var returnJSON = {
                 "status": "success",
                 "message": "Delete Success"
             }
             sendBackJSON(returnJSON, res);
-        }).catch(function (err) {
+        } else if (result == 'errorinner') {
             console.log("Err in deleting user");
             var returnJSON = {
                 "status": "error",
                 "message": "Err in delete inner"
             }
             sendBackJSON(returnJSON, res);
-        });
-    }).catch(function (err) {
-        console.log("Err in delete course");
-        var returnJSON = {
-            "status": "error",
-            "message": "Err in delete user outer"
+        } else if (result == 'errorouter') {
+            console.log("Err in delete course");
+            var returnJSON = {
+                "status": "error",
+                "message": "Err in delete user outer"
+            }
+            sendBackJSON(returnJSON, res);
         }
-        sendBackJSON(returnJSON, res);
-    });
+    })
 };
 
-exports.deleteUserHandler = deleteUserHandler;
-exports.test.deleteUserHandler = deleteUserHandler;
+exports.test.deleteUserHandler = exports.deleteUserHandler;
 
 /* Checks for error and returns the profile picture color for a user */
-exports.getProfilePictureColor = function(backgroundColor) {
+exports.getProfilePictureColor = function (backgroundColor) {
     if (backgroundColor === undefined || backgroundColor === null || color.indexOf(backgroundColor) < 0) {
         backgroundColor = 'grey_background';
     }
@@ -551,10 +528,10 @@ exports.getProfilePictureColor = function(backgroundColor) {
 /* Returns the first letter of `name` in capital case for displaying in the user profile picture */
 exports.getFirstLetterForProfile = function (name) {
     var firstLetterProfile = name.charAt(0);
-    
+
     if (firstLetterProfile >= 'a' && firstLetterProfile <= 'z') {
         firstLetterProfile = firstLetterProfile.toUpperCase();
     }
-    
-    return firstLetterProfile;       
+
+    return firstLetterProfile;
 };
