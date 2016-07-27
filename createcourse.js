@@ -15,7 +15,7 @@ exports.validate = function(req, res, next) {
     }
     console.log("res.bannerpath in alreadyInDb: "+res.bannerpath);
     db.query('SELECT * FROM CLASSES WHERE class_name =$1 AND instructor = $2', 
-            { bind: [courseTitle, getLoggedInUserId(req)]}
+            { bind: [courseTitle, common.getLoggedInUserId(req)]}
             ).spread(function(results, metadata) {
                     if (results.length > 0) {
                         res.courseTitleErr = "Course with that name already exists";
