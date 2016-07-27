@@ -57,6 +57,39 @@
             {{/if}} {{/if}}
         </div>
     </div>
+    
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-4">
+            <h2 class="standard-font">Classes Teaching</h2></div>
+        <div class="col-md-5"></div>
+    </div>
+    {{#each classteaching}}
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-9">
+            <div class="class_container">
+                <div class="row">
+                    <div class="col-md-10">
+                        <div>
+                            <h1 class="standard-title class_title">{{this.class_name}}</h1>
+                        </div>
+                        <div>
+                            <h1 class="standard-title professor_title">{{this.instructor}}</h1>
+                        </div>
+                    </div>
+                    {{#if ../userIsOwner }}
+                    <div class="col-md-2">
+                        <a href="#">
+                            <button value="{{this.id}}" type="button" class="btn btn-danger standard-red-button stop_teaching_btn">Stop Teaching</button>
+                        </a>
+                    </div>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/each}}
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-4">

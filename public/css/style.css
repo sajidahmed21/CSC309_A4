@@ -575,5 +575,10 @@ aside#notifications-feed article.notification p {
     margin-top: 4px;
 }
 
+.stop_teaching_btn {
+    padding: 24px 15px;
+    margin-top: 4px;
+}
+
 
 /* profile page style ends*/

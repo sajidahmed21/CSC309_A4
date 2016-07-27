@@ -213,6 +213,8 @@ app.post('/user/unenrollClasses', checkAuthentication, user.unenrollHandler);
 
 app.post('/user/deleteuser', checkAuthentication, user.deleteUserHandler);
 
+app.post('/user/stopTeaching', checkAuthentication, user.stopTeachingHandler);
+
 
 /* Admins  ----------------------------------------------------------*/
 
