@@ -334,7 +334,7 @@ var signinHandler = function (req, res, testing) {
             }
         })
     }).catch(function (err) {
-        if(testing != undefined)
+        if (testing != undefined)
             return testing('Invalid Username and Password');
         res.status(401);
         return res.render('home', {

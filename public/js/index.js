@@ -261,7 +261,7 @@ var signupPage = function () {
     });
 
     $input.appendTo($form);
-
+    
     $input = $('<input/>', {
         id: 'signupPassword',
         name: 'signupPassword',
@@ -287,6 +287,14 @@ var signupPage = function () {
     });
 
     $input.appendTo($form);
+    
+    $div = $('<div/>',{
+        id: 'signup-error-message',
+        class: 'invis'
+    })
+    
+    $div.text('Your passwords do not match')
+    $div.appendTo($form);
 
     /*$input = $('<input/>', {
         id: 'userEmail',
@@ -307,35 +315,6 @@ var signupPage = function () {
 
     $input.appendTo($form);
 
-//    $input.click(function () {
-//        console.log($('#name').val());
-//        console.log($('#userPassword').val());
-//        var body = {
-//            "signupName": $('#name').val(),
-//            "signupUsername": $('#userName').val(),
-//            "signupPassword": $('#userPassword').val(),
-//            "userPasswordConfirm": $('#userPasswordConfirm').val(),
-//            "signupProfilePicture": "sfkjsdn"
-//        }
-//
-//        $.ajax({
-//            type: "POST",
-//            url: "/user/signup",
-//            data: JSON.stringify(body),
-//            contentType: "application/json; charset=utf-8",
-//            dataType: "json",
-//            success: function (data) {
-//                hidePopup();
-//                console.log(data);
-//                window.location.href = "/user/profile";
-//            },
-//            error: function (data) {
-//                hidePopup();
-//                $("body").html(data.responseText);
-//            }
-//        });
-//    });
-
     $input = $('<input/>', {
         type: 'button',
         value: 'Facebook Sign Up',
@@ -352,35 +331,41 @@ var signupPage = function () {
     $input.appendTo($form);
     
     $form.submit(function(e){
+        e.preventDefault();
         console.log($('#signupName').val());
         console.log($('#signupUsername').val());
         console.log($('#signupPassword').val());
         console.log($('#userPasswordConfirm').val());
-        e.preventDefault();
-        var body = {
-            "signupName": $('#signupName').val(),
-            "signupUsername": $('#signupUsername').val(),
-            "signupPassword": $('#signupPassword').val(),
-            "userPasswordConfirm": $('#userPasswordConfirm').val(),
-            "signupProfilePicture": "sfkjsdn"
+        
+        if($('#signupPassword').val() != $('#userPasswordConfirm').val()){
+            $('#signup-error-message').css('display', 'block');
         }
-
-        $.ajax({
-            type: "POST",
-            url: "/user/signup",
-            data: JSON.stringify(body),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (data) {
-                hidePopup();
-                console.log(data);
-                window.location.href = "/user/profile";
-            },
-            error: function (data) {
-                hidePopup();
-                $("body").html(data.responseText);
+        else{
+            var body = {
+                "signupName": $('#signupName').val(),
+                "signupUsername": $('#signupUsername').val(),
+                "signupPassword": $('#signupPassword').val(),
+                "userPasswordConfirm": $('#userPasswordConfirm').val(),
+                "signupProfilePicture": "sfkjsdn"
             }
-        });
+
+            $.ajax({
+                type: "POST",
+                url: "/user/signup",
+                data: JSON.stringify(body),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    hidePopup();
+                    console.log(data);
+                    window.location.href = "/user/profile";
+                },
+                error: function (data) {
+                    hidePopup();
+                    $("body").html(data.responseText);
+                }
+            });
+        }
     })
     
     $form.appendTo($container);
