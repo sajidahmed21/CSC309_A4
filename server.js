@@ -65,6 +65,7 @@ app.use(bodyParser.urlencoded({
 
 
 // custom modules
+var notifications = require('./notifications');
 var recommendations = require('./recommendations');
 var messaging = require('./messaging');
 var user = require('./user');
@@ -100,6 +101,8 @@ app.get('/', renderHome);
 
 
 /* Courses ----------------------------------------------------------*/
+
+app.post('/course/enroll', courses.enrollHandler);
 
 app.get('/course/:id',
     courses.get_class_info,
@@ -159,7 +162,6 @@ app.post('/submitreview', checkAuthentication, function(req, res, next) {
             { bind: [user_id, class_id, content, rating]}
             ).then(function(rows) {
                     res.end('{"success" : "Updated Successfully", "status" : 200}');
-                    res.end();
             })
             .catch(function(err) {
             console.log("query failed");
@@ -167,37 +169,9 @@ app.post('/submitreview', checkAuthentication, function(req, res, next) {
             res.end();
             })
 });
-        
-         
-      
-//for testing authentication puropse
-app.get('/content', checkAuthentication, function (req, res) {
-    res.send("You can only see this after you've logged in.");
-});
 
 
 /* Users ------------------------------------------------------------*/
-
-app.get('/enrolls', function (req, res) {
-    db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (18, 1)").spread(function (results, metadata) {
-        console.log("JOIN 1");
-    })
-    db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (18, 2)").spread(function (results, metadata) {
-        console.log("JOIN 2");
-    })
-})
-app.get('/enroll', function (req, res) {
-    db.query("INSERT INTO CLASSES (id, class_name, instructor) VALUES (1, 'TESTCOURSE', 3)").spread(function (results, metadata) {
-        db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (18, 1)").spread(function (results, metadata) {
-            console.log("JOIN 1");
-        })
-    });
-    db.query("INSERT INTO CLASSES (id, class_name, instructor) VALUES (2, 'TESTCOURSE2', 3)").spread(function (results, metadata) {
-        db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (18, 2)").spread(function (results, metadata) {
-            console.log("JOIN 2");
-        })
-    });
-});
 
 
 

@@ -8,13 +8,19 @@ var getLoggedInUserId = common.getLoggedInUserId;
  * Returns the result of the callback. Note that the callback is called with
  * an error if one occurred, or null otherwise.
  */
-function notifyOfClassEnrolment(userId, classId) {
+function notifyOfClassEnrollment(userId, classId) {
     var query =
         'INSERT INTO NOTIFICATIONS(user_id, followee_id, class_id) ' +
         'VALUES (' +
             'SELECT follower_id, $1, $2 ' +
             'FROM FOLLOWINGS ' +
-            'WHERE followee_id = $1 ' +
+            // only where the followee is this user, and there hasn't already
+            // been a notification for this added
+            'WHERE followee_id = $1 AND user_id NOT IN ( ' +
+                'SELECT N1.user_id ' +
+                'FROM NOTIFICATIONS N1 ' +
+                'WHERE N1.followee_id = $1 AND N1.class_id = $2 ' +
+            ')' +
         ')'
     ;
     
@@ -68,5 +74,5 @@ function recentNotifications(userId, limit, callback) {
 }
 
 
-exports.notifyOfClassEnrolment = notifyOfClassEnrolment;
+exports.notifyOfClassEnrollment = notifyOfClassEnrollment;
 exports.recentNotifications = recentNotifications;
