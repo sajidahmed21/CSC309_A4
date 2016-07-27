@@ -367,13 +367,13 @@ p.class-name {
 /* global style ends*/
 
 
-/* index page style starts*/
+/* home page style starts*/
 
 .homepage_img {
     width: 100%;
 }
 
-.standard-title-top-course {
+h1.standard {
     text-align: center;
     font-size: 225%;
     color: #757575;
@@ -430,8 +430,30 @@ p#no-recommended-courses {
     margin-top: 20px;
 }
 
+/* ensure that the notifications well has no upper padding */
+aside#notifications-feed .well {
+    padding-top: 0px;
+}
 
-/* index page style ends*/
+
+/* add a border between notifications, and some padding */
+aside#notifications-feed article.notification:not(:last-child) {
+    border-bottom: 1px solid gray;
+}
+
+aside#notifications-feed article.notification {
+    padding-bottom: 8px;
+    margin-top: 8px;
+}
+
+
+/* don't let there be space between the message and the timestamp */
+aside#notifications-feed article.notification p {
+    margin-bottom: 0px;
+}
+
+
+/* home page style ends*/
 
 
 /* profile page style starts*/
