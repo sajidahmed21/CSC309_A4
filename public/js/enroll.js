@@ -45,7 +45,7 @@ $(document).ready(function(){
                 dataType:'json',
              success: function(data){
                 //On ajax success do this
-                alert("You were successfully enrolled"); // have a pop up here that disappears letting the user know they've enrolled
+                alert("You were successfully un-enrolled"); // have a pop up here that disappears letting the user know they've enrolled
                  $("#unenroll").replaceWith("<button id=\"enroll\" class=\"enroll-btn\">Enroll </button>"); 
               },
            error: function(jqxhr, status) {
