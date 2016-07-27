@@ -321,8 +321,8 @@ exports.handleSearch = function(req, res) {
     if (!searchString) {
         sendBadRequestResponse({'status': 'no search query provided'}, res);
     }
-    // if a user isn't logged in and the search is for users, reject is
-    else if (userId == 0 && searchType.startsWith('user')) {
+    // if a user or admin isn't logged in and the search is for users, reject it
+    else if (req.session.adminId === undefined && userId === 0 && searchType.startsWith('user')) {
         sendBadRequestResponse({'status': 'search type not allowed'}, res);
     }
     else {
