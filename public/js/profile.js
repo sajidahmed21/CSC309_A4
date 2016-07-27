@@ -373,22 +373,36 @@ var changePassword = function () {
     $title.text('Change Password').appendTo($form);
 
     $input = $('<input/>', {
-        id: 'userPassword',
-        name: 'userPassword',
+        id: 'currentPassword',
+        name: 'currentPassword',
         type: 'password',
-        placeholder: 'Password',
+        placeholder: 'Current Password',
         required: 'required',
+        pattern: '^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&\-])[A-Za-z\d$@$!%*#?&\-]{8,20}$',
+        class: 'standard-green-input'
+    });
+
+    $input.appendTo($form)
+
+    $input = $('<input/>', {
+        id: 'changePassword',
+        name: 'changePassword',
+        type: 'password',
+        placeholder: 'New Password',
+        required: 'required',
+        pattern: '^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&\-])[A-Za-z\d$@$!%*#?&\-]{8,20}$',
         class: 'standard-green-input'
     });
 
     $input.appendTo($form);
 
     $input = $('<input/>', {
-        id: 'userPasswordConfirm',
-        name: 'userPasswordConfirm',
+        id: 'newPasswordConfirm',
+        name: 'newPasswordConfirm',
         type: 'password',
-        placeholder: 'Password Confirm',
+        placeholder: 'New Password Confirm',
         required: 'required',
+        pattern: '^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&\-])[A-Za-z\d$@$!%*#?&\-]{8,20}$',
         class: 'standard-green-input'
     });
 
@@ -400,59 +414,67 @@ var changePassword = function () {
         class: 'btn standard-green-button block_btn'
     });
 
-//    $input.click(function () {
-//        if ($('#userPassword').val() != $('#userPasswordConfirm').val()) {
-//            $popup.empty();
-//            $('#error-message').empty();
-//            $('#error-message').css('display', 'block');
-//            $('#error-message').text('Your password do not match');
-//        } else if ($('#userPassword').val().length < 8) {
-//            $popup.empty();
-//            $('#error-message').empty();
-//
-//            $('#error-message').css('display', 'block');
-//            $('#error-message').text('Your password must be at least length of 8!');
-//        } else {
-//            var body = {
-//                "changePassword": $('#userPassword').val()
-//            }
-//
-//            $.ajax({
-//                type: "POST",
-//                url: "/user/changepassword",
-//                data: JSON.stringify(body),
-//                contentType: "application/json; charset=utf-8",
-//                dataType: "json",
-//                success: function (data) {
-//                    hidePopup();
-//                    console.log(data);
-//                    window.location.href = "/user/profile";
-//                },
-//                error: function (data) {
-//                    hidePopup();
-//                    window.location.href = "/?errorMessage=Your%20session%20has%20expired";
-//                }
-//            });
-//        }
-//    });
+    //    $input.click(function () {
+    //        if ($('#userPassword').val() != $('#userPasswordConfirm').val()) {
+    //            $popup.empty();
+    //            $('#error-message').empty();
+    //            $('#error-message').css('display', 'block');
+    //            $('#error-message').text('Your password do not match');
+    //        } else if ($('#userPassword').val().length < 8) {
+    //            $popup.empty();
+    //            $('#error-message').empty();
+    //
+    //            $('#error-message').css('display', 'block');
+    //            $('#error-message').text('Your password must be at least length of 8!');
+    //        } else {
+    //            var body = {
+    //                "changePassword": $('#userPassword').val()
+    //            }
+    //
+    //            $.ajax({
+    //                type: "POST",
+    //                url: "/user/changepassword",
+    //                data: JSON.stringify(body),
+    //                contentType: "application/json; charset=utf-8",
+    //                dataType: "json",
+    //                success: function (data) {
+    //                    hidePopup();
+    //                    console.log(data);
+    //                    window.location.href = "/user/profile";
+    //                },
+    //                error: function (data) {
+    //                    hidePopup();
+    //                    window.location.href = "/?errorMessage=Your%20session%20has%20expired";
+    //                }
+    //            });
+    //        }
+    //    });
 
     $input.appendTo($form);
-    $form.submit(function(e){
-        e.preventDefault(); 
-        if ($('#userPassword').val() != $('#userPasswordConfirm').val()) {
+    $form.submit(function (e) {
+        e.preventDefault();
+        console.log($('#currentPassword').val());
+        if ($('#currentPassword').val().length < 1) {
+            $('#error-message').empty();
+            $('#error-message').css('display', 'block');
+            $('#error-message').text('Current Password cannot be empty!');
+        }
+        else if ($('#changePassword').val() != $('#newPasswordConfirm').val()) {
             $popup.empty();
             $('#error-message').empty();
             $('#error-message').css('display', 'block');
             $('#error-message').text('Your password do not match');
-        } else if ($('#userPassword').val().length < 8) {
+        } else if ($('#changePassword').val().length < 8 || $('#newPasswordConfirm').val().length < 8 || $('#changePassword').val().length > 20 || $('#newPasswordConfirm').val().length > 20) {
             $popup.empty();
             $('#error-message').empty();
 
             $('#error-message').css('display', 'block');
-            $('#error-message').text('Your password must be at least length of 8!');
+            $('#error-message').text('Your password must be at least length of 8 and max of 20 characters!');
         } else {
             var body = {
-                "changePassword": $('#userPassword').val()
+                "currentPassword": $('#currentPassword').val(),
+                "changePassword": $('#changePassword').val(),
+                "newPasswordConfirm": $('#newPasswordConfirm').val()
             }
 
             $.ajax({
@@ -531,41 +553,41 @@ var changeName = function () {
         class: 'btn standard-green-button block_btn'
     });
 
-//    $input.click(function () {
-//        if ($('#changeName').val().length < 1) {
-//            $popup.empty();
-//            $('#error-message').css('display', 'block');
-//            $('#error-message').text('Your name cannot be Empty!');
-//        } else {
-//            var body = {
-//                "changeName": $('#changeName').val()
-//            }
-//
-//            $.ajax({
-//                type: "POST",
-//                url: "/user/changename",
-//                data: JSON.stringify(body),
-//                contentType: "application/json; charset=utf-8",
-//                dataType: "json",
-//                success: function (data) {
-//                    hidePopup();
-//                    console.log(data);
-//                    window.location.href = "/user/profile";
-//                },
-//                error: function (data) {
-//                    var errormsg = {
-//                        errorMessage: "Your session has expired"
-//                    }
-//                    console.log('ERRORFAIL');
-//                    window.location.href = "/?errorMessage=Your%20session%20has%20expired";
-//                }
-//            });
-//        }
-//    });
+    //    $input.click(function () {
+    //        if ($('#changeName').val().length < 1) {
+    //            $popup.empty();
+    //            $('#error-message').css('display', 'block');
+    //            $('#error-message').text('Your name cannot be Empty!');
+    //        } else {
+    //            var body = {
+    //                "changeName": $('#changeName').val()
+    //            }
+    //
+    //            $.ajax({
+    //                type: "POST",
+    //                url: "/user/changename",
+    //                data: JSON.stringify(body),
+    //                contentType: "application/json; charset=utf-8",
+    //                dataType: "json",
+    //                success: function (data) {
+    //                    hidePopup();
+    //                    console.log(data);
+    //                    window.location.href = "/user/profile";
+    //                },
+    //                error: function (data) {
+    //                    var errormsg = {
+    //                        errorMessage: "Your session has expired"
+    //                    }
+    //                    console.log('ERRORFAIL');
+    //                    window.location.href = "/?errorMessage=Your%20session%20has%20expired";
+    //                }
+    //            });
+    //        }
+    //    });
 
     $input.appendTo($form);
-    
-    $form.submit(function(e){
+
+    $form.submit(function (e) {
         e.preventDefault();
         if ($('#changeName').val().length < 1) {
             $popup.empty();

@@ -41,6 +41,12 @@ socketIO.use(sharedSession(session, {
     saveUninitialized: true
 }));
 
+var helmet = require('helmet');
+app.use(helmet.xssFilter());
+app.use(helmet.hsts({
+  maxAge: 7776000000,
+  includeSubdomains: true
+}));
 
 // set hostname and port here
 var hostname = 'localhost';
@@ -59,6 +65,7 @@ app.use(bodyParser.urlencoded({
 
 
 // custom modules
+var notifications = require('./notifications');
 var recommendations = require('./recommendations');
 var messaging = require('./messaging');
 var user = require('./user');
@@ -94,6 +101,8 @@ app.get('/', renderHome);
 
 
 /* Courses ----------------------------------------------------------*/
+
+app.post('/course/enroll', courses.enrollHandler);
 
 app.get('/course/:id',
     courses.get_class_info,
@@ -140,20 +149,17 @@ app.post('/createcourse', function (req, res, next) {
 }, createcourse.validate, createcourse.addClassInfoAndRedirect);
 
 app.post('/submitreview', checkAuthentication, function(req, res, next) {
-        console.log(req.params.id);
         // do some validation
         // how to get user_id and instructor id? 
         var data = req.body;
             var user_id = getLoggedInUserId(req);
-            var str = req.headers.referer;
-            var class_id = str.slice(str.lastIndexOf('/')+1);
+            var class_id = data.class_id;
             var content = data.review;
             var rating = data.rating;
             db.query('INSERT INTO REVIEWS (user_id, class_id, content, rating) VALUES ($1, $2, $3, $4)', 
             { bind: [user_id, class_id, content, rating]}
             ).then(function(rows) {
                     res.end('{"success" : "Updated Successfully", "status" : 200}');
-                    res.end();
             })
             .catch(function(err) {
             console.log("query failed");
@@ -162,36 +168,24 @@ app.post('/submitreview', checkAuthentication, function(req, res, next) {
             })
 });
         
-         
-      
-//for testing authentication puropse
-app.get('/content', checkAuthentication, function (req, res) {
-    res.send("You can only see this after you've logged in.");
+app.delete('/unenroll', function(req, res, next) {
+    var data = req.body;
+    var class_id = data.class_id;
+    var user_id = getLoggedInUserId(req);
+    db.query('DELETE FROM ENROLMENT WHERE user_id= $1 AND class_id = $2', 
+        { bind: [user_id, class_id]}
+        ).then(function(rows) {
+                    res.end('{"success" : "Successfully Un-Enrolled", "status" : 200}');         
+        })
+        .catch(function(Err) {
+console.log("query failed");
+            res.status(500);
+            res.end(); 
+        })
 });
 
 
 /* Users ------------------------------------------------------------*/
-
-app.get('/enrolls', function (req, res) {
-    db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (18, 1)").spread(function (results, metadata) {
-        console.log("JOIN 1");
-    })
-    db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (18, 2)").spread(function (results, metadata) {
-        console.log("JOIN 2");
-    })
-})
-app.get('/enroll', function (req, res) {
-    db.query("INSERT INTO CLASSES (id, class_name, instructor) VALUES (1, 'TESTCOURSE', 3)").spread(function (results, metadata) {
-        db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (18, 1)").spread(function (results, metadata) {
-            console.log("JOIN 1");
-        })
-    });
-    db.query("INSERT INTO CLASSES (id, class_name, instructor) VALUES (2, 'TESTCOURSE2', 3)").spread(function (results, metadata) {
-        db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (18, 2)").spread(function (results, metadata) {
-            console.log("JOIN 2");
-        })
-    });
-});
 
 
 

@@ -22,8 +22,8 @@
     <link rel="stylesheet" type="text/css" href="/css/edit-profile-admin.css">
     <script src="/js/profile.js" defer></script>
 
-	<!-- include files necessary for the searchbar -->
-	{{> searchbar_head }}
+    <!-- include files necessary for the searchbar -->
+    {{> searchbar_head }}
 
 </head>
 
@@ -33,6 +33,9 @@
     <!--<form name="course-form" class='form-horizontal' enctype="multipart/form-data" action="/createcourse" onsubmit="return validateForm()" method="post">
         <input name="profileBanner" class="col-md-10" type="file" accept='image/*' onchange="updateImg(event)">
     </form>-->
+
+    <div id="error-message" class="alert alert-danger nomargin profile_error" role="alert">
+    </div>
 
     <img class="profilepage_img" src="/img/profile_background.jpg">
     <div id="{{background_color}}" class="img-circle profile_pic" height="150" width="150">

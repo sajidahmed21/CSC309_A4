@@ -1,34 +1,54 @@
 var common = require('./common');
 var recommendations = require('./recommendations');
+var notifications = require('./notifications');
 
 
-function renderPage(req, res, errorContent, popularClasses, recommendedClasses) {
+function renderPage(req, res, errorContent, popularClasses, recommendedClasses, notifications) {
     res.render('home', {
         loggedIn: common.userIsLoggedIn(req),
         errorContent: errorContent,
         popularClasses: popularClasses,
-        popularWellColumnSize: popularClasses ? 12 / popularClasses.length : 12,
         recommendedClasses: recommendedClasses,
-        recommendedWellColumnSize: recommendedClasses ? 12 / recommendedClasses.length : 12
+        notifications: notifications
     });
 }
 
 
 exports.render = function(req, res, errorContent) {
     // retrieve the popular courses and if a user is logged in, the recommended courses
-    recommendations.popularClasses(function(err, popularClasses) {
+    recommendations.popularClasses(6, function(err, popularClasses) {
         if (err) {
             console.log(err);
             renderPage(req, res, '<p><strong>Oh no!</strong> We couldn\'t load the popular courses.</p>');
         }
         else if (common.userIsLoggedIn(req)) {
-            recommendations.recommendedClasses(common.getLoggedInUserId(req), function(err, recommendedClasses) {
+            var userId = common.getLoggedInUserId(req);
+            recommendations.recommendedClasses(userId, 6, function(err, recommendedClasses) {
                 if (err) {
-                    console.log(err);
-                    renderPage(req, res, '<p><strong>Oh no!</strong> We couldn\'t load recommended classes for you.</p>', popularClasses);
+                    // even if we fail, try to load notifications
+                    notifications.recentNotifications(userId, 10, function(err, notifications) {
+                        if (err) {
+                            console.log(err);
+                            renderPage(req, res, '<p><strong>Oh no!</strong> We couldn\'t load notifications or recommended classes for you.</p>', popularClasses);
+                        }
+                        else {
+                            console.log(err);
+                            renderPage(req, res, '<p><strong>Oh no!</strong> We couldn\'t load recommended classes for you.</p>', popularClasses);
+                        }
+                    });
                 }
                 else {
-                    renderPage(req, res, null, popularClasses, recommendedClasses);
+                    // finally, load the notification feed
+                    notifications.recentNotifications(userId, 10, function(err, notifications) {
+                        if (err) {
+                            console.log(err);
+                            var errorContent = '<p><strong>Doh!</strong> We weren\'t able to load your notification feed.';
+                            renderPage(req, res, errorContent, popularClasses, recommendedClasses, null);
+                        }
+                        else {
+                            renderPage(req, res, null, popularClasses, recommendedClasses, notifications);
+                        }
+                    });
                 }
             });
         }

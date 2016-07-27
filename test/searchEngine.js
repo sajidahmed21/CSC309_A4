@@ -26,6 +26,7 @@ var compareResultScores = searchEngine.compareResultScores;
 var sortResults = searchEngine.sortResults;
 var limitResults = searchEngine.limitResults;
 var mergeStrings = searchEngine.mergeStrings;
+var mergeResults = searchEngine.mergeResults;
 
 
 describe('scoring', function() {
@@ -118,79 +119,79 @@ describe('scoring', function() {
     
     describe('sortResults()', function() {
         it('two items', function() {
-            var unsorted = [
+            var input = [
                 {score: 1},
                 {score: 12}
             ];
             
-            var sorted = [
+            var expectedResult = [
                 {score: 12},
                 {score: 1}
             ];
             
-            sortResults(unsorted);
-            assert.deepEqual(unsorted, sorted);
+            sortResults(input);
+            assert.deepEqual(input, expectedResult);
         });
         
         it('four items', function() {
-            var unsorted = [
+            var input = [
                 {score: 213},
                 {score: 31},
                 {score: 51},
                 {score: 124}
             ];
             
-            var sorted = [
+            var expectedResult = [
                 {score: 213},
                 {score: 124},
                 {score: 51},
                 {score: 31}
             ];
             
-            sortResults(unsorted);
-            assert.deepEqual(unsorted, sorted);
+            sortResults(input);
+            assert.deepEqual(input, expectedResult);
         });
     });
     
     describe('limitResults()', function() {
         it('no limit', function() {
-            var original = [
+            var input = [
                 {score: 213},
                 {score: 124},
                 {score: 51},
                 {score: 31}
             ];
             
-            var limited = [
+            var expectedResult = [
                 {score: 213},
                 {score: 124},
                 {score: 51},
                 {score: 31}
             ];
             
-            limitResults(null, original);
-            assert.deepEqual(original, limited);
+            limitResults(null, input);
+            assert.deepEqual(input, expectedResult);
         });
         
         it('remove two', function() {
-            var original = [
+            var input = [
                 {score: 213},
                 {score: 124},
                 {score: 51},
                 {score: 31}
             ];
             
-            var limited = [
+            var expectedResult = [
                 {score: 213},
                 {score: 124}
             ];
             
-            limitResults(2, original);
-            assert.deepEqual(original, limited);
+            limitResults(2, input);
+            assert.deepEqual(input, expectedResult);
         });
         
         it('remove all', function() {
-            var original = [
+            var input = [
                 {score: 213},
                 {score: 124},
                 {score: 51},
@@ -198,10 +199,10 @@ describe('scoring', function() {
                 {score: 2}
             ];
             
-            var limited = [];
+            var expectedResult = [];
             
-            limitResults(-1, original);
-            assert.deepEqual(original, limited);
+            limitResults(-1, input);
+            assert.deepEqual(input, expectedResult);
         });
     });
     
@@ -219,6 +220,101 @@ describe('scoring', function() {
         it('secondary only', function() {
             assert.equal(mergeStrings('', 'test'), 'test');
             assert.equal(mergeStrings('', 'jk123'), 'jk123');
+        });
+    });
+    
+    describe('mergeResults()', function() {
+        it ('empty with full', function() {
+            var empty = [];
+            var full = [
+                { score: 102, data: 'green' },
+                { score: 85, data: 'blue' },
+                { score: 85, data: 'orange' },
+                { score: 1, data: 'yellow' },
+            ];
+            
+            var expectedResult = [
+                { score: 102, data: 'green' },
+                { score: 85, data: 'blue' },
+                { score: 85, data: 'orange' },
+                { score: 1, data: 'yellow' },
+            ];
+            
+            assert.deepEqual(expectedResult, mergeResults(empty, full));
+            assert.deepEqual(expectedResult, mergeResults(full, empty));
+        });
+        
+        it ('no duplicates', function() {
+            var first = [
+                { score: 402, data: 'red' },
+                { score: 15, data: 'black' },
+            ];
+            var second = [
+                { score: 102, data: 'green' },
+                { score: 85, data: 'blue' },
+                { score: 85, data: 'orange' },
+                { score: 1, data: 'yellow' },
+            ];
+            
+            var expectedResult = [
+                { score: 402, data: 'red' },
+                { score: 15, data: 'black' },
+                { score: 102, data: 'green' },
+                { score: 85, data: 'blue' },
+                { score: 85, data: 'orange' },
+                { score: 1, data: 'yellow' },
+            ];
+            
+            assert.deepEqual(expectedResult, mergeResults(first, second));
+            assert.notDeepEqual(expectedResult, mergeResults(second, first));
+        });
+        
+        it ('one duplicate', function() {
+            var first = [
+                { score: 402, data: 'red' },
+                { score: 15, data: 'black' },
+            ];
+            var second = [
+                { score: 102, data: 'green' },
+                { score: 85, data: 'red' },
+                { score: 85, data: 'orange' },
+                { score: 1, data: 'yellow' },
+            ];
+            
+            var expectedResult = [
+                { score: 402, data: 'red' },
+                { score: 15, data: 'black' },
+                { score: 102, data: 'green' },
+                { score: 85, data: 'orange' },
+                { score: 1, data: 'yellow' },
+            ];
+            
+            assert.deepEqual(expectedResult, mergeResults(first, second));
+            assert.notDeepEqual(expectedResult, mergeResults(second, first));
+        });
+        
+        it ('multiple duplicates', function() {
+            var first = [
+                { score: 402, data: 'red' },
+                { score: 15, data: 'black' },
+                { score: 2, data: 'green' }
+            ];
+            var second = [
+                { score: 102, data: 'green' },
+                { score: 85, data: 'red' },
+                { score: 85, data: 'black' },
+                { score: 1, data: 'yellow' },
+            ];
+            
+            var expectedResult = [
+                { score: 402, data: 'red' },
+                { score: 102, data: 'green' },
+                { score: 85, data: 'black' },
+                { score: 1, data: 'yellow' },
+            ];
+            
+            assert.deepEqual(expectedResult, mergeResults(first, second));
+            assert.notDeepEqual(expectedResult, mergeResults(second, first));
         });
     });
 });
