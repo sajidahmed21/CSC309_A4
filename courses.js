@@ -27,7 +27,7 @@ exports.get_class_info = function(req, res, next) {
 	 	})
 	 	.catch(function(err) {
 	 		console.log("query failed");
-	 		return res.send('404');
+	 		common.sendInternalServerErrorResponse(res);
 	 	})
 }
 
@@ -47,7 +47,7 @@ exports.get_course_rating = function(req, res, next) {
 	 	})
 	 	.catch(function(err) {
 	 		console.log("query failed");
-	 		return res.send('404');
+	 		common.sendInternalServerErrorResponse(res);
 	 	})
 }
 
@@ -63,7 +63,7 @@ exports.get_enrolled_students = function(req, res, next) {
 			})
 			.catch(function(err) {
 	 		console.log("query failed");
-	 		return res.send('404');
+	 		common.sendInternalServerErrorResponse(res);
 	 	})
 }
 
@@ -84,7 +84,7 @@ exports.get_reviews = function(req, res, next) {
 			})
 			.catch(function(err) {
 	 		console.log("query failed");
-	 		return res.send('404');
+	 		common.sendInternalServerErrorResponse(res);
 	 	})
 } 
 // get info about logged in user
@@ -106,7 +106,7 @@ exports.hasLoggedInUserReviewed = function(req, res, next) {
 			})
 			.catch(function(err) {
 	 		console.log("query failed");
-	 		return res.send('404');
+	 		common.sendInternalServerErrorResponse(res);
 	 	})
 	} else {
 		res.reviewed = false;
@@ -129,7 +129,7 @@ exports.isLoggedInUserEnrolled = function(req, res, next) {
 			})
 			.catch(function(err) {
 	 		console.log("query failed");
-	 		return res.send('404');
+	 		common.sendInternalServerErrorResponse(res);
 	 	})
 	} else { 
 	// not logged in user can't be enrolled
@@ -151,7 +151,7 @@ exports.isLoggedInUserInstructor= function(req, res, next) {
 			})
 			.catch(function(err) {
 	 		console.log("query failed");
-	 		return res.send('404');
+	 		common.sendInternalServerErrorResponse(res);
 	 	})
 	} else {
 		// should not get to this in handlebars, 
@@ -175,7 +175,7 @@ exports.getLoggedInUserAvatar = function(req, res, next) {
 			})
 			.catch(function(err) {
 	 		console.log("query failed");
-	 		return res.send('404');
+	 		common.sendInternalServerErrorResponse(res);
 	 	})	
 	} else {
 		// don't need to set these, but just in case
