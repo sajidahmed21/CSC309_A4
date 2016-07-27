@@ -149,13 +149,11 @@ app.post('/createcourse', function (req, res, next) {
 }, createcourse.validate, createcourse.addClassInfoAndRedirect);
 
 app.post('/submitreview', checkAuthentication, function(req, res, next) {
-        console.log(req.params.id);
         // do some validation
         // how to get user_id and instructor id? 
         var data = req.body;
             var user_id = getLoggedInUserId(req);
-            var str = req.headers.referer;
-            var class_id = str.slice(str.lastIndexOf('/')+1);
+            var class_id = data.class_id;
             var content = data.review;
             var rating = data.rating;
             db.query('INSERT INTO REVIEWS (user_id, class_id, content, rating) VALUES ($1, $2, $3, $4)', 
@@ -168,6 +166,22 @@ app.post('/submitreview', checkAuthentication, function(req, res, next) {
             res.status(500);
             res.end();
             })
+});
+        
+app.delete('/unenroll', function(req, res, next) {
+    var data = req.body;
+    var class_id = data.class_id;
+    var user_id = getLoggedInUserId(req);
+    db.query('DELETE FROM ENROLMENT WHERE user_id= $1 AND class_id = $2', 
+        { bind: [user_id, class_id]}
+        ).then(function(rows) {
+                    res.end('{"success" : "Successfully Un-Enrolled", "status" : 200}');         
+        })
+        .catch(function(Err) {
+console.log("query failed");
+            res.status(500);
+            res.end(); 
+        })
 });
 
 

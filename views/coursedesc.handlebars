@@ -21,7 +21,7 @@
     <link rel="stylesheet" type="text/css" href="/css/coursedesc-style.css">
     <script src="/js/logout.js" defer></script>
     <script src="/js/rating.js" defer></script>
-
+    <script src="/js/enroll.js" defer></script>
 	<!-- include files necessary for the searchbar -->
 	{{> searchbar_head }}
 
@@ -31,16 +31,19 @@
 	
 	<div id="course-profile">
             <div class="course-banner">
+                <button id="enroll" class="enroll-btn">Enroll </button>
                 <img alt="<course img>" src="{{imgPath}}">
+                 <div class="banner-container">
+                    
                 <div id="course-title-box" class="standard-container">
-                    <h1 class="standard-font course-title">
+                    <h1 class="standard-font course-title" style="font-size: {{titlefont}};">
                             
                         {{courseTitle}}
                         </h1>
 
                 </div>
 
-            </div>
+           
             <div class="standard-container quick-info">
                 <div class="col-sm-4 qi-box">
                     <h3 class="standard-font">Instructor </h3>
@@ -56,6 +59,8 @@
                 </div>
 
             </div>
+        </div>
+    </div>
             <div id="desc-content">
 
                 <div id="course-nav" class="standard-font">
@@ -151,7 +156,7 @@
                                 <div class="panel-heading">
                                     <strong>Guest</strong>
                                 </div>
-                                <textarea id="reviewinput" class="form-control" rows="3" placeholder="Add your review here! (optional)"></textarea>
+                                <textarea id="reviewinput" class="form-control" rows="3" placeholder="Add your review here!"></textarea>
                             </div>
                         </div>
                         <div class="col-sm-offset-1 col-sm-1">

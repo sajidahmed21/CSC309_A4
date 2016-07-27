@@ -41,7 +41,7 @@ exports.get_course_rating = function(req, res, next) {
 	 		if (num_rating == 0) { // nobody has rated/reviewed the course
 	 			res.rating = "No Ratings Yet";
 	 		} else {
-	 			res.rating = avg_rating + "/5 ("+num_rating+ " ratings)";
+	 			res.rating = avg_rating + "/5 ("+num_rating+ " rating(s))";
 	 		}
 	 		next();
 	 	})
@@ -94,9 +94,17 @@ exports.render_course_page = function(req, res, next) {
 	console.log(res.enrolled_students);
 	console.log(res.rating);
 	console.log(res.reviews);
+	if (res.class_info[0].class_name.length > 20) {
+		titlefont = "4vw";
+	} else if (res.class_info[0].class_name.length > 16) {
+		titlefont = "4vw";
+	} else {
+		titlefont = "5vw";
+	}
 		res.render('coursedesc', {
 			loggedIn: common.userIsLoggedIn(req),
 			imgPath: res.class_info[0].banner_picture_path,
+			titlefont: titlefont,
 			courseTitle: res.class_info[0].class_name,
 			instructor: res.class_info[0].instructor,
 			rating: res.rating,

@@ -73,6 +73,7 @@ function removeHover(number) {
                 alert("Enter A Rating!");
                 return;
             }
+
             // disable comment section
             // we assume the review comment section is available only to users who can review, so no need to check that
             // send JSON data to server, server checks data, adds it to database, and responds with success, 
@@ -82,8 +83,14 @@ function removeHover(number) {
                 $("#star"+i).unbind();
               }
            var review = $('textarea#reviewinput').val();
+           if (!review) {
+            alert("Enter a Review ! ");
+            return;
+           }
+           var url = window.location.pathname;
+           var class_id = url.slice(url.lastIndexOf('/')+1);
            // we need to send server review, rating, user_id, class_id
-           var data = {review: review, rating: rating};
+           var data = {review: review, rating: rating, class_id: class_id};
             $.ajax({
                 url: '/submitreview',
                 type: 'POST',
