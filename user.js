@@ -66,12 +66,14 @@ exports.changeName = function (userId, newName, callback) {
         callback('Invalid name');
         return;
     }
-    
+
     var updateQuery = 'UPDATE USERS SET name = $1 WHERE id = $2';
-    db.query(updateQuery, {bind: [newName, userId]}).spread(function () {
+    db.query(updateQuery, {
+        bind: [newName, userId]
+    }).spread(function () {
         callback('Success');
-    
-    }).catch(function() {
+
+    }).catch(function () {
         callback('Database error');
     });
 };
@@ -83,18 +85,17 @@ exports.changeName = function (userId, newName, callback) {
 exports.changeNameHandler = function (request, response) {
     var userId = request.session.userId;
     var newName = request.body.changeName;
-    
+
     exports.changeName(userId, newName, function (result) {
         var responseBody = {};
-        
+
         console.log(result);
         if (result == 'Success') {
             responseBody = {
                 "status": "success",
                 "message": "Change Name Success"
             };
-        }
-        else {
+        } else {
             responseBody = {
                 "status": "error",
                 "message": "Err in change name"
@@ -110,7 +111,7 @@ exports.test.changeNameHandler = exports.changeNameHandler;
  * it doesn't verify the `currentPassword`. Otherwise, it only updates the password only after
  * verifying `currentPassword`.
  **/
-exports.changePassword = function (userId, currentPassword, newPassword, isAdminChanging, callback) {
+exports.changePassword = function (userId, currentPassword, newPassword, newPasswordConfirm, isAdminChanging, callback) {
     // Error checking
     if (userId === undefined || userId === 0) {
         callback('Invalid user id');
@@ -124,21 +125,23 @@ exports.changePassword = function (userId, currentPassword, newPassword, isAdmin
         callback('Invalid new password');
         return;
     }
-    
+    if (newPassword != newPasswordConfirm) {
+        callback('Passwords do not match');
+        return
+    }
+
     if (isAdminChanging) {
         // No need to verify current password if admin is changing the users password
         updatePassword(userId, newPassword, callback);
-    }
-    else {
+    } else {
         // Otherwise first verify current password if user is themeselves changing their password
         verifyUserPassword(userId, currentPassword, function (result) {
-            
+
             if (result == 'Valid') {
                 updatePassword(userId, newPassword, callback);
-             }
-             else {
+            } else {
                 callback('Incorrect password');
-             }
+            }
         });
     }
 };
@@ -149,24 +152,24 @@ exports.changePasswordHandler = function (request, response) {
     var userId = request.session.userId;
     var currentPassword = request.body.currentPassword;
     var newPassword = request.body.changePassword;
-    
-    exports.changePassword(userId, currentPassword, newPassword, false, function (result) {
+    var newPasswordConfirm = request.body.newPasswordConfirm;
+
+
+    exports.changePassword(userId, currentPassword, newPassword, newPasswordConfirm, false, function (result) {
         var responseBody = {};
-        
+
         console.log(result);
         if (result == 'Success') {
             responseBody = {
                 "status": "success",
                 "message": "Change Password Success"
             };
-        }
-        else if (result == 'Incorrect password') {
+        } else if (result == 'Incorrect password') {
             responseBody = {
                 "status": "error",
                 "message": "Incorrect Password"
             };
-        }
-        else {
+        } else {
             responseBody = {
                 "status": "error",
                 "message": result
@@ -182,13 +185,13 @@ exports.test.changePasswordHandler = exports.changePasswordHandler;
 /* Updates the password in the database for the user specified by `userId` */
 function updatePassword(userId, newPassword, callback) {
     var hashedPassword = common.generatePasswordHash(newPassword);
-    
+
     db.query("UPDATE LOGIN_CREDENTIALS SET password = $1 WHERE user_id= $2", {
         bind: [hashedPassword, userId]
-    
+
     }).spread(function () {
         callback('Success'); // Password successfully changed
-    
+
     }).catch(function () {
         callback('Error');
     });
@@ -196,7 +199,7 @@ function updatePassword(userId, newPassword, callback) {
 
 /* Verifies passwrod for the user specified by `userId`.
  * Notifies the result through the given callback function.
-*/
+ */
 function verifyUserPassword(userId, password, callback) {
     //db.query('SELECT * FROM USERS U, LOGIN_CREDENTIALS L WHERE U.id = L.userId AND U.id = $1', {
     db.query('SELECT * FROM LOGIN_CREDENTIALS WHERE user_id = $1', {
@@ -209,8 +212,7 @@ function verifyUserPassword(userId, password, callback) {
         var currentPasswordHash = results[0].password;
         if (common.comparePassword(password, currentPasswordHash)) {
             callback('Valid');
-        }
-        else {
+        } else {
             callback('Invalid');
         }
     });
@@ -244,7 +246,7 @@ exports.test.changeProfilePicHandler = changeProfilePicHandler;
 var unenrollHandler = function (req, res) {
     var user_id = getLoggedInUserId(req);
     var class_id = req.body.dropCourse_id;
-    db.query("DELETE FROM ENROLMENT WHERE user_id= $1 AND class_id = $2",{
+    db.query("DELETE FROM ENROLMENT WHERE user_id= $1 AND class_id = $2", {
         bind: [user_id, class_id]
     }).spread(function (results, metadata) {
         var returnJSON = {
@@ -269,7 +271,7 @@ exports.test.unenrollHandler = unenrollHandler;
 var getProfileHandler = function (req, res, profileUserId) {
     console.log("GETPROFILE" + profileUserId);
     console.log(common.getLoggedInUserId(req));
-    db.query("SELECT name, profile_picture_path FROM USERS WHERE id = $1",{
+    db.query("SELECT name, profile_picture_path FROM USERS WHERE id = $1", {
         bind: [profileUserId]
     }).spread(function (results, metadata) {
         var name = results[0].name;
@@ -280,11 +282,11 @@ var getProfileHandler = function (req, res, profileUserId) {
         if (firstLetterProfile >= 'a' && firstLetterProfile <= 'z')
             firstLetterProfile = firstLetterProfile.toUpperCase();
         console.log('HERREEEEEE');
-        db.query("SELECT CLASSES.id AS id, CLASSES.class_name AS class_name, USERS.name AS instructor FROM ENROLMENT, CLASSES, USERS WHERE USERS.id=CLASSES.instructor AND CLASSES.id=ENROLMENT.class_id AND ENROLMENT.user_id = $1",{
+        db.query("SELECT CLASSES.id AS id, CLASSES.class_name AS class_name, USERS.name AS instructor FROM ENROLMENT, CLASSES, USERS WHERE USERS.id=CLASSES.instructor AND CLASSES.id=ENROLMENT.class_id AND ENROLMENT.user_id = $1", {
             bind: [profileUserId]
         }).spread(function (result, meta) {
-            db.query("SELECT EXISTS(SELECT 1 FROM FOLLOWINGS WHERE follower = $1 AND followee= $2 ) AS checkfollow",{
-                bind:[getLoggedInUserId(req), profileUserId]
+            db.query("SELECT EXISTS(SELECT 1 FROM FOLLOWINGS WHERE follower = $1 AND followee= $2 ) AS checkfollow", {
+                bind: [getLoggedInUserId(req), profileUserId]
             }).spread(function (resultInner, metaInner) {
                 var boolFollow = false;
                 if (resultInner[0]['checkfollow'] == 1)
@@ -320,7 +322,19 @@ exports.test.getProfileHandler = getProfileHandler;
 var signinHandler = function (req, res, testing) {
     var signinUsername = req.body.signinUsername;
     var signinPassword = req.body.signinPassword;
-    db.query("SELECT user_id, password FROM LOGIN_CREDENTIALS WHERE username = $1",{
+    if (signinUsername == null || signinUsername == undefined || signinPassword == null || signinPassword == undefined) {
+        return res.render('home', {
+            errorContent: '<p><strong>Opps!</strong> Some of your required fields are missing!</p>',
+            loggedIn: false
+        });
+    }
+    if (signinUsername < 8 || signinUsername > 20 || signinPassword < 8 || signinPassword > 20) {
+        return res.render('home', {
+            errorContent: '<p><strong>Opps!</strong> Your username and password must be at least 8 characters long and max 20 characters!</p>',
+            loggedIn: false
+        });
+    }
+    db.query("SELECT user_id, password FROM LOGIN_CREDENTIALS WHERE username = $1", {
         bind: [signinUsername]
     }).spread(function (results, metadata) {
         var thisid = results[0].user_id;
@@ -334,7 +348,7 @@ var signinHandler = function (req, res, testing) {
                     loggedIn: false
                 });
             } else {
-                if(testing != undefined)
+                if (testing != undefined)
                     return testing(true);
                 console.log("signinHandler " + results[0].user_id);
                 setLoggedInUserId(req, results[0].user_id);
@@ -362,9 +376,9 @@ exports.signupHandler = function (request, response) {
     var username = request.body.signupUsername;
     var password = request.body.signupPassword;
     var passwordConfirmation = request.body.userPasswordConfirm;
-    
+
     exports.createUser(name, username, password, passwordConfirmation, function (errorType, userId) {
-        
+
         console.log(errorType);
         if (errorType === undefined) { // Success
             // Automatically log the user in
@@ -372,27 +386,33 @@ exports.signupHandler = function (request, response) {
             exports.getProfileHandler(request, response, userId);
             return;
         }
-        
+
         // Check error type and render web page with the appropriate message for the end user
         switch (errorType) {
-            case 'Incorrect Password Length':
-                response.status(401);
-                return response.render('home', {
-                    errorContent: '<p><strong>Opps!</strong> Your password must be at least 8 characters long!</p>',
-                    loggedIn: false
-                });
-            case 'Passwords Don\'t Match':
-                response.status(401);
-                return response.render('home', {
-                    errorContent: '<p><strong>Opps!</strong> Your password do not match!</p>',
-                    loggedIn: false
-                });
-            case 'Username Already Taken':
-                response.status(401);
-                return response.render('home', {
-                    errorContent: '<p><strong>Opps!</strong> The username has been taken! Please choose another username!</p>',
-                    loggedIn: false
-                });
+        case 'Incorrect Password Length':
+            response.status(401);
+            return response.render('home', {
+                errorContent: '<p><strong>Opps!</strong> Your username and password must be at least 8 characters long and max 20 characters!</p>',
+                loggedIn: false
+            });
+        case 'Passwords Don\'t Match':
+            response.status(401);
+            return response.render('home', {
+                errorContent: '<p><strong>Opps!</strong> Your password do not match!</p>',
+                loggedIn: false
+            });
+        case 'Username Already Taken':
+            response.status(401);
+            return response.render('home', {
+                errorContent: '<p><strong>Opps!</strong> The username has been taken! Please choose another username!</p>',
+                loggedIn: false
+            });
+        case 'Required field missing':
+            response.status(401);
+            return response.render('home', {
+                errorContent: '<p><strong>Opps!</strong> You have missed some required fields!</p>',
+                loggedIn: false
+            });
         }
     });
 };
@@ -405,44 +425,49 @@ exports.test.signupHandler = exports.signupHandler;
  * the provided callback.
  */
 exports.createUser = function (name, username, password, passwordConfirmation, callback) {
-    
+
+    if (name == null || name == undefined || username == null || username == undefined || password == null || password == undefined || passwordConfirmation == null || passwordConfirmation == undefined) {
+        callback('Required field missing');
+        return;
+    }
+
     if (password != passwordConfirmation) {
         callback('Passwords Don\'t Match');
         return;
     }
-    
-    if (password.length < 8) {
+
+    if (username.length < 8 || username > 20 || password.length < 8 || password.length > 20) {
         callback('Incorrect Password Length');
         return;
     }
-    
+
     var hashedPassword = common.generatePasswordHash(password);
-    
+
     // Randomly select a profile picture color for newly joined user
     var signupProfilePicture = color[Math.floor(Math.random() * 5)];
 
     db.transaction(function (transactionObject) {
         // Insert into USERS table
         return db.query("INSERT INTO USERS (name, profile_picture_path) VALUES ( $1 , $2 )", {
-            transaction: transactionObject,
-            bind: [name, signupProfilePicture]
-        })
-        .then(function (result) {
-            var metadata = result[1];
-            
-            // Insert into LOGIN_CREDENTIALS table
-            return db.query("INSERT INTO LOGIN_CREDENTIALS (user_id, username, password) VALUES ( $1 , $2 , $3 )", {
                 transaction: transactionObject,
-                bind: [metadata.lastID, username, hashedPassword]
+                bind: [name, signupProfilePicture]
+            })
+            .then(function (result) {
+                var metadata = result[1];
+
+                // Insert into LOGIN_CREDENTIALS table
+                return db.query("INSERT INTO LOGIN_CREDENTIALS (user_id, username, password) VALUES ( $1 , $2 , $3 )", {
+                    transaction: transactionObject,
+                    bind: [metadata.lastID, username, hashedPassword]
+                });
             });
-        });
     }).then(function (results) {
         // Transaction has been successfully committed
         var metadata = results[1];
-        
+
         // Notify about succesful user creation to the caller
         callback(undefined, metadata.lastID);
-        
+
     }).catch(function () {
         // Transaction has been rolled back
         // Notify caller about duplicate user name

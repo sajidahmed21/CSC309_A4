@@ -4,6 +4,90 @@ var db = common.db;
 
 var notifications = require('./notifications');
 
+
+/* Fetches the instructor for a class and calls the callback.
+ *
+ * Note that the callback is called with the error information, if any, 
+ * and the results if successful.
+ */
+function fetchInstructor(classId, callback) {
+    var query =
+        'SELECT instructor ' +
+        'FROM CLASSES ' +
+        'WHERE id = $1 '
+    ;
+    
+    db.query(query, { bind: [classId] })
+    .spread(function(results, metadata) {
+        if (results[0] && results[0].instructor) {
+            callback(null, results[0].instructor);
+        }
+        else {
+            callback('Class not found.', null);
+        }
+    })
+    .catch(function(err) {
+        callback(err, null);
+    });
+}
+
+
+/* Deterines whether the given user is enrolled in a given class and calls
+ * the callback.
+ *
+ * Note that the callback is called with the error information, if any,
+ * and the results if successful.
+ */
+function isEnrolledIn(userId, classId, callback) {
+    var query =
+        'SELECT COUNT(*) as count ' +
+        'FROM ENROLMENT ' +
+        'WHERE user_id = $1 AND class_id = $2 '
+    ;
+    
+    db.query(query, { bind: [userId, classId] })
+    .spread(function(results, metadata) {
+        if (results[0] && results[0].count > 0) {
+            callback(null, true);
+        }
+        else {
+            callback(null, false);
+        }
+    })
+    .catch(function(err) {
+        callback(err, null);
+    });
+}
+
+
+/* Deterines whether the given class exists and calls the callback.
+ *
+ * Note that the callback is called with the error information, if any,
+ * and the results if successful.
+ */
+function doesClassExist(classId, callback) {
+    var query =
+        'SELECT COUNT(*) as count ' +
+        'FROM CLASSES ' +
+        'WHERE id = $1 '
+    ;
+    
+    db.query(query, { bind: [classId] })
+    .spread(function(results, metadata) {
+        if (results[0] && results[0].count > 0) {
+            callback(null, true);
+        }
+        else {
+            callback(null, false);
+        }
+    })
+    .catch(function(err) {
+        callback(err, null);
+    });
+}
+
+
+
 // TODO: 
 // SUPPORT ADDING COMMENT FUNCTIONALITY
 // ARE WE GOING TO ALLOW GUESTS TO COMMENT? 
@@ -212,6 +296,7 @@ exports.unenrollHandler = function(req, res, next) {
 /* Handles requests to enroll in a class. */
 exports.enrollHandler = function (req, res) {
     var classId = req.body.class_id;
+    var userId = common.getLoggedInUserId(req)
     
     if (!common.userIsLoggedIn(req)) {
         common.sendUnauthorizedResponse({
@@ -233,71 +318,66 @@ exports.enrollHandler = function (req, res) {
             message: 'invalid classId'
         }, res);
     }
-    // valid integer
     else {
-        var classExistsQuery =
-            'SELECT COUNT(*) AS count ' +
-            'FROM CLASSES ' +
-            'WHERE id = $1 '
-        ;
-        
-        db.query(classExistsQuery, { bind: [classId] })
-        .spread(function(results, metadata) {
-            console.log(results);
-            // if no class with that id exists, this was a bad request
-            if (results[0].count == 0 ) {
+        // check if the class actually exists
+        doesClassExist(classId, function(err, exists) {
+            if (err) {
+                console.log(err);
                 common.sendBadRequestResponse({
                     status: 'ERROR',
                     message: 'invalid classId'
                 }, res);
             }
-            // otherwise, check if already enrolled
             else {
-                var userId = common.getLoggedInUserId(req);
-                
-                var alreadyEnrolledQuery =
-                    'SELECT user_id ' +
-                    'FROM ENROLMENT ' +
-                    'WHERE user_id = $1 AND class_id = $2 '
-                ;
-                
-                db.query(alreadyEnrolledQuery, { bind: [userId, classId] })
-                .spread(function(results, metadata) {
-                    // if there is already an enrollment
-                    if (results.length !== 0 ) {
+                // check if the user is the instructor
+                fetchInstructor(classId, function(err, instructorId) {
+                    // there should always be an instructor
+                    if (err) {
+                        console.log(err);
+                        common.sendInternalServerErrorResponse(res);
+                    }
+                    else if (instructorId == userId) {
                         common.sendBadRequestResponse({
                             status: 'ERROR',
-                            message: 'already enrolled'
+                            message: 'cannot enrol in one\'s own class'
                         }, res);
                     }
-                    // otherwise, we can enrol the user
                     else {
-                        var query =
-                            'INSERT INTO ENROLMENT(user_id, class_id) ' +
-                            'VALUES($1, $2) '
-                        ;
+                        // check if the user is already enrolled
+                        isEnrolledIn(userId, classId, function(err, alreadyEnrolled) {
+                            // we should always be able to determine if the user was enrolled
+                            if (err) {
+                                console.log(err);
+                                common.sendInternalServerErrorResponse(res);
+                            }
+                            else if (alreadyEnrolled) {
+                                common.sendBadRequestResponse({
+                                    status: 'ERROR',
+                                    message: 'already enrolled'
+                                }, res);
+                            }
+                            // otherwise, we can enrol the user
+                            else {
+                                var query =
+                                    'INSERT INTO ENROLMENT(user_id, class_id) ' +
+                                    'VALUES($1, $2) '
+                                ;
 
-                        db.query(query, { bind: [userId, classId] })
-                        .spread(function(results, metadata) {
-                            // add notifications, but don't worry about the result
-                            notifications.notifyOfClassEnrollment(userId, classId);
-                            common.sendBackJSON({status: 'SUCCESS'}, res);
-                        })
-                        .catch(function(err) {
-                            console.log(err);
-                            common.sendInternalServerErrorResponse(res);
+                                db.query(query, { bind: [userId, classId] })
+                                .spread(function(results, metadata) {
+                                    // add notifications, but don't worry about the result
+                                    notifications.notifyOfClassEnrollment(userId, classId);
+                                    common.sendBackJSON({status: 'SUCCESS'}, res);
+                                })
+                                .catch(function(err) {
+                                    console.log(err);
+                                    common.sendInternalServerErrorResponse(res);
+                                });
+                            }
                         });
                     }
-                })
-                .catch(function(err) {
-                    console.log(err);
-                    common.sendInternalServerErrorResponse(res);
                 });
             }
-        })
-        .catch(function(err) {
-            console.log(err);
-            common.sendInternalServerErrorResponse(res);
         });
     }
 };
