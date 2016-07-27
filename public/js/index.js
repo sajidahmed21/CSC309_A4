@@ -141,7 +141,7 @@ var loginPage = function () {
         required: 'required',
         pattern: '^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&\\-])[A-Za-z\\d$@$!%*#?&\\-]{6,20}$',
         title: 'Password must contain at least 1 letter, 1 number, 1 special character, ' +
-               ' and must be between 6 and 20 characters long. Special characters include $@!%*#?&-',
+            ' and must be between 6 and 20 characters long. Special characters include $@!%*#?&-',
         class: 'standard-red-input'
     });
 
@@ -152,33 +152,33 @@ var loginPage = function () {
         text: 'Login',
         class: 'btn btn-danger standard-red-button block_btn',
     });
-    
-//    $input.click(function () {
-//        var body = {
-//            "signinUsername": $('#userName').val(),
-//            "signinPassword": $('#userPassword').val(),
-//        }
-//
-//        $.ajax({
-//            type: "POST",
-//            url: "/user/signin",
-//            data: JSON.stringify(body),
-//            contentType: "application/json; charset=utf-8",
-//            dataType: "json",
-//            success: function (data) {
-//                hidePopup();
-//                console.log(data);
-//                window.location.href = "/user/profile";
-//            },
-//            error: function (data) {
-//                hidePopup();
-//                $("body").html(data.responseText);
-//            }
-//        });
-//    });
+
+    //    $input.click(function () {
+    //        var body = {
+    //            "signinUsername": $('#userName').val(),
+    //            "signinPassword": $('#userPassword').val(),
+    //        }
+    //
+    //        $.ajax({
+    //            type: "POST",
+    //            url: "/user/signin",
+    //            data: JSON.stringify(body),
+    //            contentType: "application/json; charset=utf-8",
+    //            dataType: "json",
+    //            success: function (data) {
+    //                hidePopup();
+    //                console.log(data);
+    //                window.location.href = "/user/profile";
+    //            },
+    //            error: function (data) {
+    //                hidePopup();
+    //                $("body").html(data.responseText);
+    //            }
+    //        });
+    //    });
 
     $input.appendTo($form);
-    
+
     $input = $('<input/>', {
         type: 'button',
         value: 'Facebook Login',
@@ -191,15 +191,42 @@ var loginPage = function () {
         hidePopup();
         window.location = "./profile";
     });
-    
-    
+
+
     $input.appendTo($form);
-    
+
+    $form.submit(function (e) {
+        e.preventDefault();
+        console.log('HEY');
+        var body = {
+            "signinUsername": $('#signinUsername').val(),
+            "signinPassword": $('#signinPassword').val(),
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/user/signin",
+            data: JSON.stringify(body),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                hidePopup();
+                console.log("INDEX LOGIN");                console.log(data);
+                window.location.href = "/user/profile";
+            },
+            error: function (data) {
+                hidePopup();
+                $("body").html(data.responseText);
+            }
+        });
+        return false;
+    });
+
     $form.appendTo($container);
     $container.appendTo($middle);
     $middle.appendTo($outer);
     $outer.appendTo($popup);
-    
+
     $('input#signinUsername').focus();
 };
 
@@ -270,7 +297,7 @@ var signupPage = function () {
         required: 'required',
         pattern: '^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&\\-])[A-Za-z\\d$@$!%*#?&\\-]{6,20}$',
         title: 'Password must contain at least 1 letter, 1 number, 1 special character, ' +
-               ' and must be between 6 and 20 characters long. Special characters include $@!%*#?&-',
+            ' and must be between 6 and 20 characters long. Special characters include $@!%*#?&-',
         class: 'standard-input'
     });
 
@@ -288,6 +315,14 @@ var signupPage = function () {
 
     $input.appendTo($form);
 
+    $div = $('<div/>', {
+        id: 'signup-error-message',
+        class: 'invis'
+    })
+
+    $div.text('Your passwords do not match')
+    $div.appendTo($form);
+
     /*$input = $('<input/>', {
         id: 'userEmail',
         name: 'userEmail',
@@ -298,7 +333,7 @@ var signupPage = function () {
     });
 
     $input.appendTo($form);*/
-    
+
     $input = $('<button/>', {
         type: 'submit',
         text: 'Join Now!',
@@ -306,35 +341,6 @@ var signupPage = function () {
     });
 
     $input.appendTo($form);
-
-//    $input.click(function () {
-//        console.log($('#name').val());
-//        console.log($('#userPassword').val());
-//        var body = {
-//            "signupName": $('#name').val(),
-//            "signupUsername": $('#userName').val(),
-//            "signupPassword": $('#userPassword').val(),
-//            "userPasswordConfirm": $('#userPasswordConfirm').val(),
-//            "signupProfilePicture": "sfkjsdn"
-//        }
-//
-//        $.ajax({
-//            type: "POST",
-//            url: "/user/signup",
-//            data: JSON.stringify(body),
-//            contentType: "application/json; charset=utf-8",
-//            dataType: "json",
-//            success: function (data) {
-//                hidePopup();
-//                console.log(data);
-//                window.location.href = "/user/profile";
-//            },
-//            error: function (data) {
-//                hidePopup();
-//                $("body").html(data.responseText);
-//            }
-//        });
-//    });
 
     $input = $('<input/>', {
         type: 'button',
@@ -350,44 +356,53 @@ var signupPage = function () {
     });
 
     $input.appendTo($form);
-    
-    $form.submit(function(e){
+
+    $form.submit(function (e) {
+        e.preventDefault();
         console.log($('#signupName').val());
         console.log($('#signupUsername').val());
         console.log($('#signupPassword').val());
         console.log($('#userPasswordConfirm').val());
-        e.preventDefault();
-        var body = {
-            "signupName": $('#signupName').val(),
-            "signupUsername": $('#signupUsername').val(),
-            "signupPassword": $('#signupPassword').val(),
-            "userPasswordConfirm": $('#userPasswordConfirm').val(),
-            "signupProfilePicture": "sfkjsdn"
-        }
 
-        $.ajax({
-            type: "POST",
-            url: "/user/signup",
-            data: JSON.stringify(body),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (data) {
-                hidePopup();
-                console.log(data);
-                window.location.href = "/user/profile";
-            },
-            error: function (data) {
-                hidePopup();
-                $("body").html(data.responseText);
+        if ($('#signupPassword').val() != $('#userPasswordConfirm').val()) {
+            $('#signup-error-message').css('display', 'block');
+            return false;
+        } else {
+            var body = {
+                "signupName": $('#signupName').val(),
+                "signupUsername": $('#signupUsername').val(),
+                "signupPassword": $('#signupPassword').val(),
+                "userPasswordConfirm": $('#userPasswordConfirm').val(),
+                "signupProfilePicture": "sfkjsdn"
             }
-        });
+
+            $.ajax({
+                type: "POST",
+                url: "/user/signup",
+                data: JSON.stringify(body),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    hidePopup();
+                    console.log('SUCCESS');
+                    console.log(data);
+                    window.location.href = "/user/profile";
+                },
+                error: function (data) {
+                    hidePopup();
+                    $("body").html(data.responseText);
+                }
+            });
+            return false;
+        }
+        return false;
     })
-    
+
     $form.appendTo($container);
     $container.appendTo($middle);
     $middle.appendTo($outer);
     $outer.appendTo($popup);
-    
+
     $('input#signupName').focus();
 };
 

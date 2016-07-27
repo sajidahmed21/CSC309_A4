@@ -198,6 +198,41 @@ var changeProfilePicHandler = function (req, res) {
 exports.changeProfilePicHandler = changeProfilePicHandler;
 exports.test.changeProfilePicHandler = changeProfilePicHandler;
 
+exports.stopTeachingHelper = function (user_id, class_id, callback) {
+    console.log("execute STOP TECHING");
+    db.query("DELETE FROM CLASSES WHERE instructor= $1 AND id = $2", {
+        bind: [user_id, class_id]
+    }).spread(function (results, metadata) {
+        callback('success');
+    }).catch(function (err) {
+        callback('error');
+    });
+}
+
+
+//function for unenroll class
+exports.stopTeachingHandler = function (req, res) {
+    var user_id = getLoggedInUserId(req);
+    var class_id = req.body.stopteachingCourse_id;
+    exports.stopTeachingHelper(user_id, class_id, function (result) {
+        if (result == 'success') {
+            var returnJSON = {
+                "status": "success",
+                "message": "Delete Success"
+            }
+            sendBackJSON(returnJSON, res);
+        } else if (result == 'error') {
+            console.log("Err in delete course");
+            var returnJSON = {
+                "status": "error",
+                "message": "Err in delete course"
+            }
+            sendBackJSON(returnJSON, res);
+        }
+    });
+};
+
+
 exports.unenrollHelper = function (user_id, class_id, callback) {
     db.query("DELETE FROM ENROLMENT WHERE user_id= $1 AND class_id = $2", {
         bind: [user_id, class_id]
@@ -257,19 +292,27 @@ var getProfileHandler = function (req, res, profileUserId) {
                 var boolFollow = false;
                 if (resultInner[0]['checkfollow'] == 1)
                     boolFollow = true;
+                var classenroll = result;
                 console.log(result);
-                res.render('profile', {
-                    profile_name: firstLetterProfile,
-                    background_color: background_color,
-                    name: name,
-                    classes: result,
-                    loggedIn: common.userIsLoggedIn(req),
-                    current_id: profileUserId,
-                    followed: boolFollow,
-                    userIsOwner: profileUserId == getLoggedInUserId(req)
+                db.query("SELECT class_name, name AS instructor, CLASSES.id AS id FROM USERS, CLASSES WHERE USERS.id = $1 AND USERS.id = instructor", {
+                    bind: [profileUserId]
+                }).spread(function (classtaught, metadata) {
+                    var classteaching = classtaught;
+                    console.log(classteaching);
+                    res.render('profile', {
+                        profile_name: firstLetterProfile,
+                        background_color: background_color,
+                        name: name,
+                        classes: classenroll,
+                        classteaching: classteaching,
+                        loggedIn: common.userIsLoggedIn(req),
+                        current_id: profileUserId,
+                        followed: boolFollow,
+                        userIsOwner: profileUserId == getLoggedInUserId(req)
+                    });
                 });
-            })
-        })
+            });
+        });
 
     }).catch(function (err) {
         console.log("Err in getting user profile");
@@ -292,6 +335,7 @@ var signinHandler = function (req, res, testing) {
         if (testing != undefined)
             return 'Missing Required Field!';
         else {
+            res.status(401);
             return res.render('home', {
                 errorContent: '<p><strong>Opps!</strong> Some of your required fields are missing!</p>',
                 loggedIn: false
@@ -302,6 +346,7 @@ var signinHandler = function (req, res, testing) {
         if (testing != undefined)
             return 'Too long / Too Short Username or Password'
         else {
+            res.status(401);
             return res.render('home', {
                 errorContent: '<p><strong>Opps!</strong> Your username and password must be at least 8 characters long and max 20 characters!</p>',
                 loggedIn: false
@@ -334,7 +379,7 @@ var signinHandler = function (req, res, testing) {
             }
         })
     }).catch(function (err) {
-        if(testing != undefined)
+        if (testing != undefined)
             return testing('Invalid Username and Password');
         res.status(401);
         return res.render('home', {
@@ -363,7 +408,13 @@ exports.signupHandler = function (request, response) {
         if (errorType === undefined) { // Success
             // Automatically log the user in
             setLoggedInUserId(request, userId);
-            exports.getProfileHandler(request, response, userId);
+            //exports.getProfileHandler(request, response, userId);
+            response.status(200);
+            var returnJSON = {
+                "status": "success",
+                "message": "Success"
+            }
+            sendBackJSON(returnJSON, response);
             return;
         }
 
