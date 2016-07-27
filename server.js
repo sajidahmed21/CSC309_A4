@@ -103,12 +103,17 @@ app.get('/', renderHome);
 /* Courses ----------------------------------------------------------*/
 
 app.post('/course/enroll', courses.enrollHandler);
+app.delete('/course/unenroll', courses.unenrollHandler);
 
 app.get('/course/:id',
     courses.get_class_info,
     courses.get_course_rating,
     courses.get_enrolled_students,
-    courses.get_reviews,
+    courses.get_reviews, 
+    courses.hasLoggedInUserReviewed, 
+    courses.isLoggedInUserInstructor,
+    courses.isLoggedInUserEnrolled,
+    courses.getLoggedInUserAvatar,
     courses.render_course_page);
 
 app.get('/createcourse', checkAuthentication, function (req, res) {
@@ -168,21 +173,6 @@ app.post('/submitreview', checkAuthentication, function(req, res, next) {
             })
 });
         
-app.delete('/unenroll', function(req, res, next) {
-    var data = req.body;
-    var class_id = data.class_id;
-    var user_id = getLoggedInUserId(req);
-    db.query('DELETE FROM ENROLMENT WHERE user_id= $1 AND class_id = $2', 
-        { bind: [user_id, class_id]}
-        ).then(function(rows) {
-                    res.end('{"success" : "Successfully Un-Enrolled", "status" : 200}');         
-        })
-        .catch(function(Err) {
-console.log("query failed");
-            res.status(500);
-            res.end(); 
-        })
-});
 
 
 /* Users ------------------------------------------------------------*/
