@@ -229,7 +229,7 @@ exports.enrollHandler = function (req, res) {
     else {
         // check if the class actually exists
         doesClassExist(classId, function(err, exists) {
-            if (err || !exists) {
+            if (err) {
                 console.log(err);
                 common.sendBadRequestResponse({
                     status: 'ERROR',
