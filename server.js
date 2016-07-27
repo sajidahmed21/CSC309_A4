@@ -104,7 +104,7 @@ app.get('/', renderHome);
 
 app.post('/course/enroll', courses.enrollHandler);
 app.delete('/course/unenroll', courses.unenrollHandler);
-
+app.post('/submitpost', courses.checkLoggedIn, courses.classExists, courses.isInstructor);
 app.get('/course/:id',
     courses.get_class_info,
     courses.get_course_rating,
