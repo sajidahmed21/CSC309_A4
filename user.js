@@ -355,6 +355,12 @@ exports.signupHandler = function (request, response) {
 
         // Check error type and render web page with the appropriate message for the end user
         switch (errorType) {
+        case 'Incorrect Username Length':
+            response.status(401);
+            return response.render('home', {
+                errorContent: '<p><strong>Opps!</strong> Your username and password must be at least 8 characters long and max 20 characters!</p>',
+                loggedIn: false
+            });
         case 'Incorrect Password Length':
             response.status(401);
             return response.render('home', {
@@ -392,7 +398,7 @@ exports.test.signupHandler = exports.signupHandler;
  */
 exports.createUser = function (name, username, password, passwordConfirmation, callback) {
 
-    if (name == null || name == undefined || username == null || username == undefined || password == null || password == undefined || passwordConfirmation == null || passwordConfirmation == undefined) {
+    if (name == null || name == undefined || name==''|| username == null || username == undefined || username=='' || password == null || password == undefined || password == ''|| passwordConfirmation == null || passwordConfirmation == undefined || passwordConfirmation=='') {
         callback('Required field missing');
         return;
     }
@@ -402,7 +408,12 @@ exports.createUser = function (name, username, password, passwordConfirmation, c
         return;
     }
 
-    if (username.length < 8 || username > 20 || password.length < 8 || password.length > 20) {
+    if(username.length < 8 || username.length > 20){
+        callback('Incorrect Username Length');
+        return;
+    }
+    
+    if (password.length < 8 || password.length > 20) {
         callback('Incorrect Password Length');
         return;
     }
@@ -441,6 +452,7 @@ exports.createUser = function (name, username, password, passwordConfirmation, c
     });
 };
 
+exports.test.createUser = exports.createUser;
 
 //function for logout 
 var logoutHandler = function (req, res) {
