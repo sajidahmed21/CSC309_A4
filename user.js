@@ -292,6 +292,7 @@ var signinHandler = function (req, res, testing) {
         if (testing != undefined)
             return 'Missing Required Field!';
         else {
+            res.status(401);
             return res.render('home', {
                 errorContent: '<p><strong>Opps!</strong> Some of your required fields are missing!</p>',
                 loggedIn: false
@@ -302,6 +303,7 @@ var signinHandler = function (req, res, testing) {
         if (testing != undefined)
             return 'Too long / Too Short Username or Password'
         else {
+            res.status(401);
             return res.render('home', {
                 errorContent: '<p><strong>Opps!</strong> Your username and password must be at least 8 characters long and max 20 characters!</p>',
                 loggedIn: false
@@ -363,7 +365,13 @@ exports.signupHandler = function (request, response) {
         if (errorType === undefined) { // Success
             // Automatically log the user in
             setLoggedInUserId(request, userId);
-            exports.getProfileHandler(request, response, userId);
+                        //exports.getProfileHandler(request, response, userId);
+            response.status(200);
+            var returnJSON = {
+                "status": "success",
+                "message": "Success"
+            }
+            sendBackJSON(returnJSON, response);
             return;
         }
 
