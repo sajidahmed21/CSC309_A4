@@ -508,8 +508,12 @@ var deleteUserHandler = function (req, res) {
     // always set the user_id to logged out
     setLoggedInUserId(req, 0);
 
-    db.query("DELETE FROM LOGIN_CREDENTIALS WHERE user_id=" + user_id).spread(function (results, metadata) {
-        db.query("DELETE FROM USERS WHERE id=" + user_id).spread(function (results, metadata) {
+    db.query("DELETE FROM LOGIN_CREDENTIALS WHERE user_id= $1",{
+        bind: [user_id]
+    }).spread(function (results, metadata) {
+        db.query("DELETE FROM USERS WHERE id= $1",{
+           bind: [user_id] 
+        }).spread(function (results, metadata) {
             var returnJSON = {
                 "status": "success",
                 "message": "Delete Success"
