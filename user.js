@@ -43,38 +43,179 @@ app.get('/enroll', function (req, res) {
 });*/
 var common = require('./common');
 var bcrypt = require('bcryptjs');
+
 var sendBackJSON = common.sendBackJSON;
-var sendUnauthorizedResponse = common.sendUnauthorizedResponse;
 var setLoggedInUserId = common.setLoggedInUserId;
 var getLoggedInUserId = common.getLoggedInUserId;
 var db = common.db;
 var color = ['green_background', 'light_green_background', 'blue_background', 'yellow_background', 'orange_background', 'red_background'];
 
 exports.test = {};
-//function for change user name
-var changeNameHandler = function (req, res) {
-    var changeName = req.body.changeName;
-    var user_id = getLoggedInUserId(req);
-    db.query("UPDATE USERS SET name = $1 WHERE id= $2", {
-        bind: [changeName, user_id]
-    }).spread(function (results, metadata) {
-        var returnJSON = {
-            "status": "success",
-            "message": "Change Name Success"
-        }
-        sendBackJSON(returnJSON, res);
-    }).catch(function (err) {
-        console.log("Err in change name");
-        var returnJSON = {
-            "status": "error",
-            "message": "Err in change name"
-        }
-        sendBackJSON(returnJSON, res);
+
+
+/* Updates the name of a user with `userId` to `newName`.
+ * Notifies about success / failure using the callback.
+ */
+exports.changeName = function (userId, newName, callback) {
+    // Error checking
+    if (userId === undefined || userId === 0) {
+        callback('Invalid user id');
+        return;
+    }
+    if (newName === undefined || newName.length === 0) {
+        callback('Invalid name');
+        return;
+    }
+    
+    var updateQuery = 'UPDATE USERS SET name = $1 WHERE id = $2';
+    db.query(updateQuery, {bind: [newName, userId]}).spread(function () {
+        callback('Success');
+    
+    }).catch(function() {
+        callback('Database error');
     });
 };
 
-exports.changeNameHandler = changeNameHandler;
-exports.test.changeNameHandler = changeNameHandler;
+
+/* Handles name change requests from users by updating their name in the database
+ * and responding with success / failure response.
+ */
+exports.changeNameHandler = function (request, response) {
+    var userId = request.session.userId;
+    var newName = request.body.changeName;
+    
+    exports.changeName(userId, newName, function (result) {
+        var responseBody = {};
+        
+        console.log(result);
+        if (result == 'Success') {
+            responseBody = {
+                "status": "success",
+                "message": "Change Name Success"
+            };
+        }
+        else {
+            responseBody = {
+                "status": "error",
+                "message": "Err in change name"
+            };
+        }
+        sendBackJSON(responseBody, response);
+    });
+};
+
+exports.test.changeNameHandler = exports.changeNameHandler;
+
+/* Changes the password for the user specified by `userId`. If `isAdminChanging` is true,
+ * it doesn't verify the `currentPassword`. Otherwise, it only updates the password only after
+ * verifying `currentPassword`.
+ **/
+exports.changePassword = function (userId, currentPassword, newPassword, isAdminChanging, callback) {
+    // Error checking
+    if (userId === undefined || userId === 0) {
+        callback('Invalid user id');
+        return;
+    }
+    if ((currentPassword === undefined || currentPassword.length === 0) && !isAdminChanging) {
+        callback('Incorrect password');
+        return;
+    }
+    if (newPassword === undefined || newPassword.length === 0) {
+        callback('Invalid new password');
+        return;
+    }
+    
+    if (isAdminChanging) {
+        // No need to verify current password if admin is changing the users password
+        updatePassword(userId, newPassword, callback);
+    }
+    else {
+        // Otherwise first verify current password if user is themeselves changing their password
+        verifyUserPassword(userId, currentPassword, function (result) {
+            
+            if (result == 'Valid') {
+                updatePassword(userId, newPassword, callback);
+             }
+             else {
+                callback('Incorrect password');
+             }
+        });
+    }
+};
+
+
+/* Handles change password requests from users by verifying and then updating their password. */
+exports.changePasswordHandler = function (request, response) {
+    var userId = request.session.userId;
+    var currentPassword = request.body.currentPassword;
+    var newPassword = request.body.changePassword;
+    
+    exports.changePassword(userId, currentPassword, newPassword, false, function (result) {
+        var responseBody = {};
+        
+        console.log(result);
+        if (result == 'Success') {
+            responseBody = {
+                "status": "success",
+                "message": "Change Password Success"
+            };
+        }
+        else if (result == 'Incorrect password') {
+            responseBody = {
+                "status": "error",
+                "message": "Incorrect Password"
+            };
+        }
+        else {
+            responseBody = {
+                "status": "error",
+                "message": result
+            };
+        }
+        sendBackJSON(responseBody, response);
+    });
+};
+
+exports.test.changePasswordHandler = exports.changePasswordHandler;
+
+
+/* Updates the password in the database for the user specified by `userId` */
+function updatePassword(userId, newPassword, callback) {
+    var hashedPassword = common.generatePasswordHash(newPassword);
+    
+    db.query("UPDATE LOGIN_CREDENTIALS SET password = $1 WHERE user_id= $2", {
+        bind: [hashedPassword, userId]
+    
+    }).spread(function () {
+        callback('Success'); // Password successfully changed
+    
+    }).catch(function () {
+        callback('Error');
+    });
+}
+
+/* Verifies passwrod for the user specified by `userId`.
+ * Notifies the result through the given callback function.
+*/
+function verifyUserPassword(userId, password, callback) {
+    //db.query('SELECT * FROM USERS U, LOGIN_CREDENTIALS L WHERE U.id = L.userId AND U.id = $1', {
+    db.query('SELECT * FROM LOGIN_CREDENTIALS WHERE user_id = $1', {
+        bind: [userId]
+    }).spread(function (results) {
+        if (results === undefined || results.length != 1) {
+            callback('Error');
+            return;
+        }
+        var currentPasswordHash = results[0].password;
+        if (common.comparePassword(password, currentPasswordHash)) {
+            callback('Valid');
+        }
+        else {
+            callback('Invalid');
+        }
+    });
+}
+
 //function for change profile picture
 var changeProfilePicHandler = function (req, res) {
     var changeProfilepic = req.body.changeProfilepic;
@@ -98,41 +239,6 @@ var changeProfilePicHandler = function (req, res) {
 exports.changeProfilePicHandler = changeProfilePicHandler;
 exports.test.changeProfilePicHandler = changeProfilePicHandler;
 
-//function for change password
-var changePasswordHandler = function (req, res) {
-    bcrypt.hash(req.body.changePassword, 8, function (err, hashedPassword) {
-        if (err) {
-            console.log('failed to hash password:');
-            console.log(err);
-
-            sendBackJSON({
-                "error": "server error"
-            }, res);
-            return;
-        }
-
-        var user_id = getLoggedInUserId(req);
-        db.query("UPDATE LOGIN_CREDENTIALS SET password = $1 WHERE user_id= $2", {
-            bind: [hashedPassword, user_id]
-        }).spread(function (results, metadata) {
-            var returnJSON = {
-                "status": "success",
-                "message": "Change Password Success"
-            }
-            sendBackJSON(returnJSON, res);
-        }).catch(function (err) {
-            console.log("Err in change password");
-            var returnJSON = {
-                "status": "error",
-                "message": "Err in change password"
-            }
-            sendBackJSON(returnJSON, res);
-        });
-    });
-};
-
-exports.changePasswordHandler = changePasswordHandler;
-exports.test.changePasswordHandler = changePasswordHandler;
 
 //function for unenroll class
 var unenrollHandler = function (req, res) {
@@ -247,89 +353,103 @@ var signinHandler = function (req, res, testing) {
 exports.signinHandler = signinHandler;
 exports.test.signinHandler = signinHandler;
 
-//function for sign up
-var signupHandler = function (req, res) {
-    if (req.body.signupPassword.length < 8) {
-        res.status(401);
-        return res.render('home', {
-            errorContent: '<p><strong>Opps!</strong> Your password must be at least length of 8!</p>',
-            loggedIn: false
-        });
-    }
-    if (req.body.signupPassword != req.body.userPasswordConfirm) {
-        console.log("return");
-        res.status(401);
-        return res.render('home', {
-            errorContent: '<p><strong>Opps!</strong> Your password do not match!</p>',
-            loggedIn: false
-        });
-    }
-    bcrypt.hash(req.body.signupPassword, 8, function (err, hashedPassword) {
-        if (err) {
-            console.log('failed to hash password:');
-            console.log(err);
 
-            sendUnauthorizedResponse({
-                "error": "server error"
-            }, res);
+/* Handles sign up requests for new users by creating a new user account and then
+ * rendering the profile page for the newly created user.
+ */
+exports.signupHandler = function (request, response) {
+    var name = request.body.signupName;
+    var username = request.body.signupUsername;
+    var password = request.body.signupPassword;
+    var passwordConfirmation = request.body.userPasswordConfirm;
+    
+    exports.createUser(name, username, password, passwordConfirmation, function (errorType, userId) {
+        
+        console.log(errorType);
+        if (errorType === undefined) { // Success
+            // Automatically log the user in
+            setLoggedInUserId(request, userId);
+            exports.getProfileHandler(request, response, userId);
             return;
         }
-
-        console.log("ab")
-        console.log(req.body);
-
-        db.transaction(function (transaction) {
-                var signupName = req.body.signupName;
-                var signupUsername = req.body.signupUsername;
-                var signupProfilePicture = color[Math.floor(Math.random() * 5)];
-                return db.query("INSERT INTO USERS (name, profile_picture_path) VALUES ( $1 , $2 )", {
-                    transaction: transaction,
-                    bind: [signupName, signupProfilePicture]
-                }).then(function (result) {
-                    var metadata = result[1];
-                    return exports.loginInsert(transaction, metadata.lastID, signupUsername, hashedPassword, res, req);
+        
+        // Check error type and render web page with the appropriate message for the end user
+        switch (errorType) {
+            case 'Incorrect Password Length':
+                response.status(401);
+                return response.render('home', {
+                    errorContent: '<p><strong>Opps!</strong> Your password must be at least 8 characters long!</p>',
+                    loggedIn: false
                 });
-            })
-            .catch(function (err) {
-                res.status(401);
-                return res.render('home', {
+            case 'Passwords Don\'t Match':
+                response.status(401);
+                return response.render('home', {
+                    errorContent: '<p><strong>Opps!</strong> Your password do not match!</p>',
+                    loggedIn: false
+                });
+            case 'Username Already Taken':
+                response.status(401);
+                return response.render('home', {
                     errorContent: '<p><strong>Opps!</strong> The username has been taken! Please choose another username!</p>',
                     loggedIn: false
                 });
-            });
+        }
     });
 };
 
-exports.signupHandler = signupHandler;
-exports.test.signupHandler = signupHandler;
+exports.test.signupHandler = exports.signupHandler;
 
-//function for sign up insert into login_credentials table
-var loginInsert = function (transaction, id, signupUsername, signupPassword, res, req) {
-    return db.query("INSERT INTO LOGIN_CREDENTIALS (user_id, username, password) VALUES ( $1 , $2 , $3 )", {
-            transaction: transaction,
-            bind: [id, signupUsername, signupPassword]
+
+/* Validates the name, username, password, passworedConfirmation and then creates
+ * a new user account. Success / failure of the account creation is notified via
+ * the provided callback.
+ */
+exports.createUser = function (name, username, password, passwordConfirmation, callback) {
+    
+    if (password != passwordConfirmation) {
+        callback('Passwords Don\'t Match');
+        return;
+    }
+    
+    if (password.length < 8) {
+        callback('Incorrect Password Length');
+        return;
+    }
+    
+    var hashedPassword = common.generatePasswordHash(password);
+    
+    // Randomly select a profile picture color for newly joined user
+    var signupProfilePicture = color[Math.floor(Math.random() * 5)];
+
+    db.transaction(function (transactionObject) {
+        // Insert into USERS table
+        return db.query("INSERT INTO USERS (name, profile_picture_path) VALUES ( $1 , $2 )", {
+            transaction: transactionObject,
+            bind: [name, signupProfilePicture]
         })
-        .then(function (result, metadata) {
-            console.log("LOGININSERT" + id);
-            // automatically log the user in
-            setLoggedInUserId(req, id);
-            exports.getProfileHandler(req, res, getLoggedInUserId(req));
-//            var returnJSON = {
-//                "status": "success",
-//                "message": "Signup Success"
-//            };
-//            sendBackJSON(returnJSON, res);
-        }).catch(function (err) {
-            res.status(401);
-            return res.render('home', {
-                errorContent: '<p><strong>Opps!</strong> The username has been taken! Please choose another username!</p>',
-                loggedIn: false
+        .then(function (result) {
+            var metadata = result[1];
+            
+            // Insert into LOGIN_CREDENTIALS table
+            return db.query("INSERT INTO LOGIN_CREDENTIALS (user_id, username, password) VALUES ( $1 , $2 , $3 )", {
+                transaction: transactionObject,
+                bind: [metadata.lastID, username, hashedPassword]
             });
         });
+    }).then(function (results) {
+        // Transaction has been successfully committed
+        var metadata = results[1];
+        
+        // Notify about succesful user creation to the caller
+        callback(undefined, metadata.lastID);
+        
+    }).catch(function () {
+        // Transaction has been rolled back
+        // Notify caller about duplicate user name
+        callback('Username Already Taken');
+    });
 };
 
-exports.loginInsert = loginInsert;
-exports.test.loginInsert = loginInsert;
 
 //function for logout 
 var logoutHandler = function (req, res) {

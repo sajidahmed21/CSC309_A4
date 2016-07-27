@@ -2,6 +2,7 @@
    (including analytics) */
 
 var common = require('./common');
+var user = require('./user');
 
 /* Function for sending JSON response with 400 `Bad Request` status code */
 var sendBadRequestResponse = common.sendBadRequestResponse;
@@ -32,7 +33,12 @@ exports.checkAuthentication = function(request, response, next) {
 
 /* Renders the admin home page */
 exports.handleAdminHomeRequest = function (request, response) {
-    response.render('admin_home');
+    response.render('admin_home', {
+        errorContent: request.session.errorContent
+    });
+    
+    // Reset the error content once it has been displayed to the admin
+    request.session.errorContent = undefined;
 };
 
 
@@ -88,10 +94,53 @@ exports.handleLogoutRequest = function (request, response) {
     common.redirectToPage('/admin', response);
 };
 
+/* Handles all create user account request for admins by creating an user account
+ * and redirecting to the appropriate page based on the result
+*/
+exports.handleCreateUserRequest = function (request, response) {
+    var name = request.body.name;
+    var username = request.body.username;
+    var password = request.body.password;
+    var passwordConfirmation = request.body.passwordConfirmation;
+    
+    user.createUser(name, username, password, passwordConfirmation, function(errorType, userId) {
+        
+        if (errorType === undefined) { // Account Successfully created
+            request.session.message = '<p>Account successfully created</p>';
+            common.redirectToPage('/admin/edit_user_profile/' + userId, response);
+            return;
+        }
+        
+        // Check error type and render web page with the appropriate message for the end user
+        switch (errorType) {
+            case 'Incorrect Password Length':
+                request.session.errorContent = '<p><strong>Opps!</strong> Password must be between 6 and 20 characters</p>';
+                common.redirectToPage('/admin', response);
+                return;
+            case 'Passwords Don\'t Match':
+                request.session.errorContent = '<p><strong>Opps!</strong> The provided passwords do not match!</p>';
+                common.redirectToPage('/admin', response);
+                return;
+            case 'Username Already Taken':
+                request.session.errorContent = '<p><strong>Opps!</strong> This username has been taken! Please try a different username!</p>';
+                common.redirectToPage('/admin', response);
+                return;
+        }
+        
+        // We shouldn't get here
+        request.session.errorContent = '<p><strong>Opps!</strong> Something went wrong. Please try later!</p>';
+        common.redirectToPage('/admin', response);
+    });
+};
+
 
 /* Hanldes edit user profile requests by rendering the edit user profile page for admins */
 exports.handleEditProfileRequest = function (request, response) {
-    response.render('edit_user_profile_admin');
+    response.render('edit_user_profile_admin', {
+        message: request.session.message
+    });
+    // Reset message after it has been rendered
+    request.session.message = undefined;
 };
 
 /* Handles edit course requests by rendering the edit course page for admins */
@@ -101,12 +150,12 @@ exports.handleEditCourseRequest = function (request, response) {
 
 
 function sendMalformedRequestResponse(message, response) {
-    var responseBody = {status: 'LOGIN_FAILED', 'message': message};
+    var responseBody = {status: 'ERROR', 'message': message};
     sendBadRequestResponse(responseBody, response);
 }
 
 function sendInvalidCredentialsResponse(response) {
-    var responseBody = {status: 'LOGIN_FAILED', message: 'Invalid credentials'};
+    var responseBody = {status: 'ERROR', message: 'Invalid credentials'};
     sendUnauthorizedResponse(responseBody, response);
 }
 

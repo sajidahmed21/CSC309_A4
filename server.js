@@ -108,12 +108,11 @@ app.get('/course/:id',
     courses.get_reviews,
     courses.render_course_page);
 
-app.get('/createcourse', function (req, res) {
-    userIsLoggedIn(req);
+app.get('/createcourse', checkAuthentication, function (req, res) {
     // if logged in render page 
     // otherwise display page that says the user must be signed in to create a course. 
     res.render('createcourse', {
-        loggedIn: true,
+        loggedIn: userIsLoggedIn(req),
         courseBannerErr: '',
         courseReqs: '',
         courseDesc: '',
@@ -146,6 +145,31 @@ app.post('/createcourse', function (req, res, next) {
     })
 }, createcourse.validate, createcourse.addClassInfoAndRedirect);
 
+app.post('/submitreview', checkAuthentication, function(req, res, next) {
+        console.log(req.params.id);
+        // do some validation
+        // how to get user_id and instructor id? 
+        var data = req.body;
+            var user_id = getLoggedInUserId(req);
+            var str = req.headers.referer;
+            var class_id = str.slice(str.lastIndexOf('/')+1);
+            var content = data.review;
+            var rating = data.rating;
+            db.query('INSERT INTO REVIEWS (user_id, class_id, content, rating) VALUES ($1, $2, $3, $4)', 
+            { bind: [user_id, class_id, content, rating]}
+            ).then(function(rows) {
+                    res.end('{"success" : "Updated Successfully", "status" : 200}');
+                    res.end();
+            })
+            .catch(function(err) {
+            console.log("query failed");
+            res.status(500);
+            res.end();
+            })
+});
+        
+         
+      
 //for testing authentication puropse
 app.get('/content', checkAuthentication, function (req, res) {
     res.send("You can only see this after you've logged in.");
@@ -217,6 +241,8 @@ app.post('/admin/login', admin.handleLoginRequest);
 app.get('/admin/logout', admin.handleLogoutRequest);
 
 app.get('/admin/analytics', admin.checkAuthentication, admin.handleAnalyticsDataRequest);
+
+app.post('/admin/create_user', admin.checkAuthentication, admin.handleCreateUserRequest);
 
 app.get('/admin/edit_user_profile/:id', admin.checkAuthentication, admin.handleEditProfileRequest);
 
