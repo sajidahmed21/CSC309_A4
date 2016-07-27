@@ -93,7 +93,7 @@ app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 
 // set public directory for css, js, and imgs
-app.use(express.static('public'));
+app.use(express.static( __dirname + '/public'));
 
 
 /* page routing -----------------------------------------------------*/
@@ -124,7 +124,7 @@ app.get('/createcourse', checkAuthentication, function (req, res) {
 });
 
 var upload = multer({
-    dest: 'public/img/'
+    dest: __dirname + '/public/img/'
 }).single('courseBanner');
 app.post('/createcourse', function (req, res, next) {
     upload(req, res, function (err) {
@@ -254,6 +254,6 @@ socketIO.on('connection', messaging.onConnection);
 
 /* server start up --------------------------------------------------*/
 
-server.listen(port, hostname, function () {
+server.listen(process.env.PORT || port, function () {
     console.log(`Server running at http://${hostname}:${port}/`);
 });
