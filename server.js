@@ -140,13 +140,11 @@ app.post('/createcourse', function (req, res, next) {
 }, createcourse.validate, createcourse.addClassInfoAndRedirect);
 
 app.post('/submitreview', checkAuthentication, function(req, res, next) {
-        console.log(req.params.id);
         // do some validation
         // how to get user_id and instructor id? 
         var data = req.body;
             var user_id = getLoggedInUserId(req);
-            var str = req.headers.referer;
-            var class_id = str.slice(str.lastIndexOf('/')+1);
+            var class_id = data.class_id;
             var content = data.review;
             var rating = data.rating;
             db.query('INSERT INTO REVIEWS (user_id, class_id, content, rating) VALUES ($1, $2, $3, $4)', 
@@ -162,7 +160,41 @@ app.post('/submitreview', checkAuthentication, function(req, res, next) {
             })
 });
         
-         
+app.post('/enroll', checkAuthentication, function(req, res, next) {
+    var data = req.body;
+    var class_id = data.class_id;
+    var user_id = getLoggedInUserId(req);
+    // make sure they aren't already enrolled
+    db.query('SELECT * FROM ENROLMENT WHERE class_id = $1 AND user_id = $2', 
+        { bind: [class_id, user_id]}
+        ).then(function(rows) {
+            if (rows.length > 0) {
+                res.end('{"success" : "Updated Successfully", "status" : 200}');
+                    res.end();
+            } 
+            next();
+        })
+        .catch(function(Err) {
+            console.log("query failed");
+            res.status(500);
+            res.end(); 
+        })
+}, function(req, res, next) { 
+    var data = req.body;
+    var class_id = data.class_id;
+    var user_id = getLoggedInUserId(req);
+    db.query('INSERT INTO ENROLMENT (user_id, class_id) VALUES ($1, $2)', 
+        { bind: [user_id, class_id]}
+        ).then(function(rows) {
+                    res.end('{"success" : "Updated Successfully", "status" : 200}');
+                    res.end();
+        })
+        .catch(function(Err) {
+console.log("query failed");
+            res.status(500);
+            res.end(); 
+        })
+});         
       
 //for testing authentication puropse
 app.get('/content', checkAuthentication, function (req, res) {
