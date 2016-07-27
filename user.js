@@ -1,46 +1,3 @@
-/*app.get('/check', function (req, res) {
-    db.query('SELECT * FROM USERS').spread(function (results, metadata) {
-        console.log(results);
-        res.render('demo', {
-            userCount: results[0].userCount,
-            leggedIn: false,
-            demo: true
-        });
-
-    });
-});
-app.get('/checkk', function (req, res) {
-    db.query('SELECT * FROM FOLLOWINGS').spread(function (results, metadata) {
-        console.log(results);
-        res.render('demo', {
-            //userCount: results[0].userCount,
-            leggedIn: false,
-            demo: true
-        });
-
-    });
-});
-
-app.get('/enrolls', function (req, res) {
-    db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (5, 1)").spread(function (results, metadata) {
-        console.log("JOIN 1");
-    });
-    db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (5, 2)").spread(function (results, metadata) {
-        console.log("JOIN 2");
-    });
-});
-app.get('/enroll', function (req, res) {
-    db.query("INSERT INTO CLASSES (id, class_name, instructor) VALUES (1, 'TESTCOURSE', 3)").spread(function (results, metadata) {
-        db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (18, 1)").spread(function (results, metadata) {
-            console.log("JOIN 1");
-        })
-    });
-    db.query("INSERT INTO CLASSES (id, class_name, instructor) VALUES (2, 'TESTCOURSE2', 3)").spread(function (results, metadata) {
-        db.query("INSERT INTO ENROLMENT (user_id, class_id) VALUES (18, 2)").spread(function (results, metadata) {
-            console.log("JOIN 2");
-        })
-    });
-});*/
 var common = require('./common');
 var bcrypt = require('bcryptjs');
 
@@ -241,31 +198,40 @@ var changeProfilePicHandler = function (req, res) {
 exports.changeProfilePicHandler = changeProfilePicHandler;
 exports.test.changeProfilePicHandler = changeProfilePicHandler;
 
-
-//function for unenroll class
-var unenrollHandler = function (req, res) {
-    var user_id = getLoggedInUserId(req);
-    var class_id = req.body.dropCourse_id;
+exports.unenrollHelper = function (user_id, class_id, callback) {
     db.query("DELETE FROM ENROLMENT WHERE user_id= $1 AND class_id = $2", {
         bind: [user_id, class_id]
     }).spread(function (results, metadata) {
-        var returnJSON = {
-            "status": "success",
-            "message": "Delete Success"
-        }
-        sendBackJSON(returnJSON, res);
+        callback('success');
     }).catch(function (err) {
-        console.log("Err in delete course");
-        var returnJSON = {
-            "status": "error",
-            "message": "Err in delete course"
+        callback('error');
+    });
+}
+
+
+//function for unenroll class
+exports.unenrollHandler = function (req, res) {
+    var user_id = getLoggedInUserId(req);
+    var class_id = req.body.dropCourse_id;
+    exports.unenrollHelper(user_id, class_id, function (result) {
+        if (result == 'success') {
+            var returnJSON = {
+                "status": "success",
+                "message": "Delete Success"
+            }
+            sendBackJSON(returnJSON, res);
+        } else if (result == 'error') {
+            console.log("Err in delete course");
+            var returnJSON = {
+                "status": "error",
+                "message": "Err in delete course"
+            }
+            sendBackJSON(returnJSON, res);
         }
-        sendBackJSON(returnJSON, res);
     });
 };
 
-exports.unenrollHandler = unenrollHandler;
-exports.test.unenrollHandler = unenrollHandler;
+exports.test.unenrollHandler = exports.unenrollHandler;
 
 /* Renders the profile for the user with the userId equal to profileUserId. */
 var getProfileHandler = function (req, res, profileUserId) {
@@ -322,17 +288,25 @@ exports.test.getProfileHandler = getProfileHandler;
 var signinHandler = function (req, res, testing) {
     var signinUsername = req.body.signinUsername;
     var signinPassword = req.body.signinPassword;
-    if (signinUsername == null || signinUsername == undefined || signinPassword == null || signinPassword == undefined) {
-        return res.render('home', {
-            errorContent: '<p><strong>Opps!</strong> Some of your required fields are missing!</p>',
-            loggedIn: false
-        });
+    if (signinUsername == null || signinUsername == undefined || signinUsername == '' || signinPassword == null || signinPassword == undefined || signinPassword == '') {
+        if (testing != undefined)
+            return 'Missing Required Field!';
+        else {
+            return res.render('home', {
+                errorContent: '<p><strong>Opps!</strong> Some of your required fields are missing!</p>',
+                loggedIn: false
+            });
+        }
     }
-    if (signinUsername < 8 || signinUsername > 20 || signinPassword < 8 || signinPassword > 20) {
-        return res.render('home', {
-            errorContent: '<p><strong>Opps!</strong> Your username and password must be at least 8 characters long and max 20 characters!</p>',
-            loggedIn: false
-        });
+    if (signinUsername.length < 8 || signinUsername.length > 20 || signinPassword.length < 8 || signinPassword.length > 20) {
+        if (testing != undefined)
+            return 'Too long / Too Short Username or Password'
+        else {
+            return res.render('home', {
+                errorContent: '<p><strong>Opps!</strong> Your username and password must be at least 8 characters long and max 20 characters!</p>',
+                loggedIn: false
+            });
+        }
     }
     db.query("SELECT user_id, password FROM LOGIN_CREDENTIALS WHERE username = $1", {
         bind: [signinUsername]
@@ -341,21 +315,27 @@ var signinHandler = function (req, res, testing) {
         console.log(thisid);
         bcrypt.compare(signinPassword, results[0].password, function (err, result) {
             if (err || result === false) {
-                console.log("Err in login");
-                res.status(401);
-                return res.render('home', {
-                    errorContent: '<p><strong>Opps!</strong> Your username and password do not match!</p>',
-                    loggedIn: false
-                });
+                if (testing != undefined)
+                    return testing('Invalid Username and Password');
+                else {
+                    console.log("Err in login");
+                    res.status(401);
+                    return res.render('home', {
+                        errorContent: '<p><strong>Opps!</strong> Your username and password do not match!</p>',
+                        loggedIn: false
+                    });
+                }
             } else {
                 if (testing != undefined)
-                    return testing(true);
+                    return testing('true');
                 console.log("signinHandler " + results[0].user_id);
                 setLoggedInUserId(req, results[0].user_id);
                 exports.getProfileHandler(req, res, results[0].user_id);
             }
         })
     }).catch(function (err) {
+        if(testing != undefined)
+            return testing('Invalid Username and Password');
         res.status(401);
         return res.render('home', {
             errorContent: '<p><strong>Opps!</strong> Your username and password do not match!</p>',
@@ -389,6 +369,12 @@ exports.signupHandler = function (request, response) {
 
         // Check error type and render web page with the appropriate message for the end user
         switch (errorType) {
+        case 'Incorrect Username Length':
+            response.status(401);
+            return response.render('home', {
+                errorContent: '<p><strong>Opps!</strong> Your username and password must be at least 8 characters long and max 20 characters!</p>',
+                loggedIn: false
+            });
         case 'Incorrect Password Length':
             response.status(401);
             return response.render('home', {
@@ -426,7 +412,7 @@ exports.test.signupHandler = exports.signupHandler;
  */
 exports.createUser = function (name, username, password, passwordConfirmation, callback) {
 
-    if (name == null || name == undefined || username == null || username == undefined || password == null || password == undefined || passwordConfirmation == null || passwordConfirmation == undefined) {
+    if (name == null || name == undefined || name == '' || username == null || username == undefined || username == '' || password == null || password == undefined || password == '' || passwordConfirmation == null || passwordConfirmation == undefined || passwordConfirmation == '') {
         callback('Required field missing');
         return;
     }
@@ -436,7 +422,12 @@ exports.createUser = function (name, username, password, passwordConfirmation, c
         return;
     }
 
-    if (username.length < 8 || username > 20 || password.length < 8 || password.length > 20) {
+    if (username.length < 8 || username.length > 20) {
+        callback('Incorrect Username Length');
+        return;
+    }
+
+    if (password.length < 8 || password.length > 20) {
         callback('Incorrect Password Length');
         return;
     }
@@ -475,6 +466,7 @@ exports.createUser = function (name, username, password, passwordConfirmation, c
     });
 };
 
+exports.test.createUser = exports.createUser;
 
 //function for logout 
 var logoutHandler = function (req, res) {
@@ -502,36 +494,70 @@ var logoutHandler = function (req, res) {
 exports.logoutHandler = logoutHandler;
 exports.test.logoutHandler = logoutHandler;
 
-//CASCADE ALL USERS and CLASSES
-var deleteUserHandler = function (req, res) {
+
+exports.deleteUserHelper = function (user_id, callback) {
+        db.query("DELETE FROM LOGIN_CREDENTIALS WHERE user_id= $1", {
+            bind: [user_id]
+        }).spread(function (results, metadata) {
+            db.query("DELETE FROM USERS WHERE id= $1", {
+                bind: [user_id]
+            }).spread(function (results, metadata) {
+                callback('success');
+            }).catch(function (err) {
+                callback('errorinner')
+            });
+        }).catch(function (err) {
+            callback('errorouter')
+        });
+    }
+    //CASCADE ALL USERS and CLASSES
+exports.deleteUserHandler = function (req, res) {
     var user_id = getLoggedInUserId(req);
     // always set the user_id to logged out
     setLoggedInUserId(req, 0);
 
-    db.query("DELETE FROM LOGIN_CREDENTIALS WHERE user_id=" + user_id).spread(function (results, metadata) {
-        db.query("DELETE FROM USERS WHERE id=" + user_id).spread(function (results, metadata) {
+    exports.deleteUserHelper(user_id, function (result) {
+        if (result == 'success') {
             var returnJSON = {
                 "status": "success",
                 "message": "Delete Success"
             }
             sendBackJSON(returnJSON, res);
-        }).catch(function (err) {
+        } else if (result == 'errorinner') {
             console.log("Err in deleting user");
             var returnJSON = {
                 "status": "error",
                 "message": "Err in delete inner"
             }
             sendBackJSON(returnJSON, res);
-        });
-    }).catch(function (err) {
-        console.log("Err in delete course");
-        var returnJSON = {
-            "status": "error",
-            "message": "Err in delete user outer"
+        } else if (result == 'errorouter') {
+            console.log("Err in delete course");
+            var returnJSON = {
+                "status": "error",
+                "message": "Err in delete user outer"
+            }
+            sendBackJSON(returnJSON, res);
         }
-        sendBackJSON(returnJSON, res);
-    });
+    })
 };
 
-exports.deleteUserHandler = deleteUserHandler;
-exports.test.deleteUserHandler = deleteUserHandler;
+exports.test.deleteUserHandler = exports.deleteUserHandler;
+
+/* Checks for error and returns the profile picture color for a user */
+exports.getProfilePictureColor = function (backgroundColor) {
+    if (backgroundColor === undefined || backgroundColor === null || color.indexOf(backgroundColor) < 0) {
+        backgroundColor = 'grey_background';
+    }
+    return backgroundColor;
+};
+
+/* Returns the first letter of `name` in capital case for displaying in the user profile picture */
+exports.getFirstLetterForProfile = function (name) {
+    var firstLetterProfile = name.charAt(0);
+
+    if (firstLetterProfile >= 'a' && firstLetterProfile <= 'z') {
+        firstLetterProfile = firstLetterProfile.toUpperCase();
+    }
+
+    return firstLetterProfile;
+};

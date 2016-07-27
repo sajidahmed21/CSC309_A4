@@ -110,6 +110,7 @@ app.get('/course/:id',
     courses.get_course_rating,
     courses.get_enrolled_students,
     courses.get_reviews, 
+    courses.get_posts,
     courses.hasLoggedInUserReviewed, 
     courses.isLoggedInUserInstructor,
     courses.isLoggedInUserEnrolled,
@@ -131,7 +132,7 @@ app.get('/createcourse', checkAuthentication, function (req, res) {
 var upload = multer({
     dest: __dirname + '/public/img/'
 }).single('courseBanner');
-app.post('/createcourse', function (req, res, next) {
+app.post('/createcourse', checkAuthentication, function (req, res, next) {
     upload(req, res, function (err) {
         res.courseBannerErr = '';
         res.courseTitleErr = '';
@@ -151,7 +152,7 @@ app.post('/createcourse', function (req, res, next) {
 
         }
     })
-}, createcourse.validate, createcourse.addClassInfoAndRedirect);
+}, createcourse.validate, checkAuthentication, createcourse.addClassInfoAndRedirect);
 
 app.post('/submitreview', checkAuthentication, function(req, res, next) {
         // do some validation

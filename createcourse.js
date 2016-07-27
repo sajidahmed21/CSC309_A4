@@ -15,7 +15,7 @@ exports.validate = function(req, res, next) {
     }
     console.log("res.bannerpath in alreadyInDb: "+res.bannerpath);
     db.query('SELECT * FROM CLASSES WHERE class_name =$1 AND instructor = $2', 
-            { bind: [courseTitle, 1]}
+            { bind: [courseTitle, common.getLoggedInUserId(req)]}
             ).spread(function(results, metadata) {
                     if (results.length > 0) {
                         res.courseTitleErr = "Course with that name already exists";
@@ -44,8 +44,8 @@ exports.addClassInfoAndRedirect = function(req, res) {
         var courseTitle = formatTitle(req.body.courseTitle);
         var courseDesc = formatDesc(req.body.courseDesc);
         var courseReqs = formatReqs(req.body.courseReqs);
-	db.query('INSERT INTO CLASSES (class_name, instructor, banner_picture_path) VALUES ($1, $2, $3)', 
-			{ bind: [courseTitle, common.getLoggedInUserId(req), res.bannerpath.slice(6)]}
+	db.query('INSERT INTO CLASSES (class_name, instructor, coursedesc, coursereqs, banner_picture_path) VALUES ($1, $2, $3, $4, $5)', 
+			{ bind: [courseTitle, common.getLoggedInUserId(req),courseDesc, courseReqs, res.bannerpath.slice(6)]}
 			).spread(function(results, metadata) {
 					console.log(results);
 					console.log(metadata);

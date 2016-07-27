@@ -135,7 +135,7 @@ function showUsersTab(deleteErrorMessage) {
     /* Autocomplete attributes for search box */
     $searchBox.autocomplete({
         serviceUrl: '/search',
-        params: {type: 'usersbyusername', limit: 8}, // TODO: Should it by username or users name ?
+        params: {type: 'users', limit: 8}, // TODO: Should it by username or users name ?
         noCache: true, // don't use a cache
         minLength: 0,
         autoFocus: true,

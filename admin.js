@@ -34,6 +34,7 @@ exports.checkAuthentication = function(request, response, next) {
 /* Renders the admin home page */
 exports.handleAdminHomeRequest = function (request, response) {
     response.render('admin_home', {
+        adminUsername: request.session.adminId,
         errorContent: request.session.errorContent
     });
     
@@ -136,17 +137,72 @@ exports.handleCreateUserRequest = function (request, response) {
 
 /* Hanldes edit user profile requests by rendering the edit user profile page for admins */
 exports.handleEditProfileRequest = function (request, response) {
-    response.render('edit_user_profile_admin', {
-        message: request.session.message
+    
+    getUserProfileData(request.params.id, function (status, profileData) {
+        if (status == 'Success') {
+            response.render('edit_user_profile_admin', {
+                message: request.session.message,
+                adminUsername: request.session.adminId,
+                profile_name: profileData.profile_name,
+                background_color: profileData.background_color,
+                name: profileData.name,
+                classes: profileData.classes,
+                userId: request.params.id /* May be I need this in case I need the user id in the html page */
+            });
+            // Reset message after it has been rendered
+            request.session.message = undefined;
+        }
+        else {
+            // Show error message if the user could not be succssfully retrieve from the database.
+            request.session.errorContent = '<p><strong>Opps!</strong> Something went wrong. Please try again later!</p>';
+            common.redirectToPage('/admin', response);
+        }
     });
-    // Reset message after it has been rendered
-    request.session.message = undefined;
 };
 
 /* Handles edit course requests by rendering the edit course page for admins */
 exports.handleEditCourseRequest = function (request, response) {
     response.render('edit_course_admin');
 };
+
+
+/* Utility function that queries data about a users profile and their classes.
+ * It provides the profile data back through the `callback` function.
+ */
+function getUserProfileData(profileUserId, callback) {
+    if (profileUserId === undefined || profileUserId < 1) {
+        callback('Invalid user id');
+        return;
+    }
+    
+    db.query("SELECT name, profile_picture_path FROM USERS WHERE id = $1", {
+        bind: [profileUserId]
+    }).spread(function (results) {
+        if (results === undefined || results.length !== 1) {
+            callback('No user found');
+            return;
+        }
+        var name = results[0].name;
+        var firstLetterProfile = user.getFirstLetterForProfile(name);
+        var backgroundColor = user.getProfilePictureColor(results[0].profile_picture_path);
+
+        db.query("SELECT CLASSES.id AS id, CLASSES.class_name AS class_name, USERS.name AS instructor FROM ENROLMENT, CLASSES, USERS WHERE USERS.id=CLASSES.instructor AND CLASSES.id=ENROLMENT.class_id AND ENROLMENT.user_id = $1", {
+            bind: [profileUserId]
+        
+        }).spread(function (result) {
+            var profileData = {
+                profile_name: firstLetterProfile,
+                background_color: backgroundColor,
+                name: name,
+                classes: result,
+            };
+            callback('Success', profileData);
+        });
+
+    }).catch(function () {
+        callback('Database Error');
+    });
+}
 
 
 function sendMalformedRequestResponse(message, response) {
