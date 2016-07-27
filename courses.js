@@ -90,7 +90,7 @@ exports.get_reviews = function(req, res, next) {
 } 
 
 exports.get_posts = function(req, res, next) {
-    db.query('SELECT content as post, created_timestamp as timestamp FROM INSTRUCTOR_POSTS WHERE class_id = $1', 
+    db.query('SELECT content as post, created_timestamp as timestamp FROM INSTRUCTOR_POSTS WHERE class_id = $1 ORDER BY timestamp ASC', 
             { bind: [req.params.id]}
             ).spread(function(results, metadata) {
                 // circular avatars
@@ -243,6 +243,8 @@ exports.render_course_page = function(req, res, next) {
 		}); 
 		return;
 }
+
+
 
 /* Fetches the instructor for a class and calls the callback.
  *
@@ -397,7 +399,7 @@ exports.unenrollHandler = function (req, res) {
                                 .catch(function(err) {
                                     console.log(err);
                                     common.sendInternalServerErrorResponse(res);
-                                });
+                                })
                             }
                         });
                     }
@@ -496,3 +498,68 @@ exports.enrollHandler = function (req, res) {
         });
     }
 };
+exports.checkLoggedIn = function(req, res, next) {
+    var class_id = req.body.class_id;
+    var user_id= common.getLoggedInUserId(req);
+    var post = req.body.post;
+    if (!common.userIsLoggedIn(req)) {
+        common.sendUnauthorizedResponse({
+            status: 'ERROR', 
+            message: 'not logged in'
+        }, res);
+    } else {
+        next();
+    }
+}
+exports.classExists = function(req, res, next) {
+    var class_id = req.body.class_id;
+    var user_id= common.getLoggedInUserId(req);
+    var post = req.body.post;
+    db.query('SELECT * FROM CLASSES WHERE id = $1', 
+                    { bind: [class_id] }
+                    ).spread(function(results, metadata) {
+                        if (results.length == 1) {
+                            next();
+                        } else {
+                            //shouldn't happen
+                            common.sendInternalServerErrorResponse(res);
+                        }
+            })
+            .catch(function(err) {
+            console.log("query failed");
+            common.sendInternalServerErrorResponse(res);
+            }) 
+}
+exports.isInstructor = function(req, res, next) {
+    var class_id = req.body.class_id;
+    var user_id= common.getLoggedInUserId(req);
+    var post = req.body.post;
+   fetchInstructor(class_id, function(err, instructorId) {
+                // there should always be an instructor
+                if (err) {
+                    console.log(err);
+                    common.sendInternalServerErrorResponse(res);
+                }
+                else if (instructorId != user_id) {
+                    common.sendBadRequestResponse({
+                        status: 'ERROR',
+                        message: 'Only instructor can make a post'
+                    }, res);
+                } else if (!post) {
+                    common.sendBadRequestResponse({
+                        status: 'ERROR',
+                        message: 'Post cannot be null'
+                    }, res);
+                } else { // everything is good
+                    db.query('INSERT INTO INSTRUCTOR_POSTS (class_id, content) VALUES ($1, $2)', 
+                    { bind: [class_id, post] }
+                     ).spread(function(results, metadata) {
+                        common.sendBackJSON({status: 'SUCCESS'}, res);
+                     })
+                    .catch(function(err) {
+                    console.log("query failed");
+                    common.sendInternalServerErrorResponse(res);
+                })  
+            }
+            });
+}
