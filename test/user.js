@@ -96,14 +96,21 @@ describe('user', function () {
                 });
             });
             describe('too short/too long password', function () {
-                it('too short username', function () {
+                it('too short password', function () {
                     test.createUser('testingpurpose', 'testingpurpose', 'short', 'short', function (result) {
                         assert.equal(result, 'Incorrect Password Length');
                     });
                 });
-                it('too long username', function () {
+                it('too long password', function () {
                     test.createUser('testingpurpose', 'testingpurpose', 'testingpurpose1.longlonglonglong', 'testingpurpose1.longlonglonglong', function (result) {
                         assert.equal(result, 'Incorrect Password Length');
+                    });
+                });
+            });
+            describe('success', function () {
+                it('successs', function () {
+                    test.createUser('testingpurpos', 'testingpurpos', 'testingpurpose1.', 'testingpurpose1.', function (result) {
+                        assert.equal(result, 'true');
                     });
                 });
             });
