@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
-
-<!-- Head starts here. Define stylesheet and tottal width-->
+<!-- Head starts here. Define stylesheet and total width-->
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,9 +9,9 @@
     <script src="/js/jquery-2.0.0.min.js" defer></script>
     <script src="/js/index.js" defer></script>
 
-	<!-- include files necessary for the searchbar -->
-	{{> searchbar_head }}
-	
+    <!-- include files necessary for the searchbar -->
+    {{> searchbar_head }}
+
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
@@ -31,65 +30,117 @@
 <!-- Body Start here, where content is. -->
 
 <body class="global_font container-fluid">
-    {{> nav }}
-
-	{{#if errorContent}}
-		<div id="error-message" class="alert alert-danger nomargin" role="alert">
-			{{{errorContent}}}
-		</div>
-	{{/if}}
-	<div id="error-message-front" class="alert alert-danger nomargin invis" role="alert">
+    {{> nav }} {{#if errorContent}}
+    <div id="error-message" class="alert alert-danger nomargin" role="alert">
+        {{{errorContent}}}
     </div>
-	{{#if loggedIn}}
-		<section id="recommended-courses" class="row">
-		{{#if recommendedClasses.length }}
-			<h1 class="standard-title-top-course">Your Recommended Classes</h1>
-			{{#each recommendedClasses}}
-				<article class="class col-xs-12 col-md-{{../recommendedWellColumnSize}} col-lg-{{../recommendedWellColumnSize}}">
-		            <div class="well">
-		                <p class="class-name text-primary">
-		                    {{class_name}}
-		                </p>
-		                <p class="class-instructor">
-		                    {{instructor}}
-		                </p>
-		                <div class="class-description">
-		                    <p>
-		                        TODO
-		                    </p>
-		                </div>
-		                <a href="/course/{{class_id}}" class="standard-blue-button fullblock_btn" role="button">Class Page</a>
-		            </div>
-		        </article>
-			{{/each}}
-		{{else}}
-			<p id="no-recommended-courses">Follow other users to be shown recommended classes!<p>
-		{{/if}}
-		</section>
-	{{/if}}
-	
-	<section id="popular-courses" class="row">
-		<h1 class="standard-title-top-course">Popular Classes</h1>
-		{{#each popularClasses}}
-			<article class="class col-xs-12 col-md-{{../popularWellColumnSize}} col-lg-{{../popularWellColumnSize}}">
-	            <div class="well">
-	                <p class="class-name text-primary">
-	                    {{class_name}}
-	                </p>
-	                <p class="class-instructor">
-	                    {{instructor}}
-	                </p>
-	                <div class="class-description">
-	                    <p>
-	                        TODO
-	                    </p>
-	                </div>
-	                <a href="/course/{{class_id}}" class="standard-blue-button fullblock_btn" role="button">Class Page</a>
-	            </div>
-	        </article>
-		{{/each}}
-	</section>
-	<!-- end of popular courses -->
+    {{/if}}
+
+    <main class="row">
+        <!-- if the user is logged in, show a feed of notifications -->
+        {{#if loggedIn}}
+        <aside id="notifications-feed" class="col-xs-12 col-md-4 col-lg-4">
+            <div class="well">
+                <h1 class="standard">Notification Feed</h1> {{#if notifications.length}} {{#each notifications}}
+                <article class="notification row">
+                    <p class="col-xs-12">
+                        {{followee_name}} enrolled in
+                        <a href="/courses/{{class_id}}">{{class_name}}</a>.
+                    </p>
+                    <time class="col-xs-12" datetime="{{timestamp}}">{{timestamp}}</time>
+                </article>
+                {{/each}}
+                <!-- if there are no notifications, present information text -->
+                {{else}}
+                <p>
+                    No recent notifications to display.
+                </p>
+                {{/if}}
+            </div>
+        </aside>
+        <!-- otherwise, show a description of LearnR -->
+        {{else}}
+        <aside id="learnr-description" class="col-xs-12 col-md-4 col-lg-4">
+            <div class="well">
+                <h1 class="standard">What is LearnR?</h1>
+
+                <p>
+                    LearnR is a site for everyone looking to learn something. Users can enrol in classes which interest them and even create their own classes to share their knowledge.
+                </p>
+                <p>
+                    Users will automatically be given a list of recommended classes, can explore what classes other users are taking, and can even search for classes by name, to find new classes to enrol in.
+                    <p>
+                        <p>
+                            Course descriptions, reviews and ratings help users decide on whether a course fits what they are looking for. And once enrolled, users can view all of the posts an instructor has made.
+                        </p>
+                        <p>
+                            LearnR also provides a social network between users in two ways:
+                        </p>
+                        <ul>
+                            <li>
+                                Messaging: users can message other users using the built-in IM system;
+                            </li>
+                            <li>
+                                Following: users can 'follow' users they share interests with so that they can receive notifications when the other user enrols in a course.
+                            </li>
+                        </ul>
+            </div>
+        </aside>
+        {{/if}}
+
+        <!-- if the user is logged in, show a list of recommended classes -->
+        {{#if loggedIn}}
+        <section id="recommended-courses" class="class col-xs-12 col-md-4">
+            <h1 class="standard">Recommended Classes</h1> {{#if recommendedClasses.length }} {{#each recommendedClasses}}
+            <article class="well">
+                <p class="class-name text-primary">
+                    {{class_name}}
+                </p>
+                <p class="class-instructor">
+                    {{instructor}}
+                </p>
+                <div class="class-description">
+                    <p>
+                        TODO
+                    </p>
+                </div>
+                <a href="/course/{{class_id}}" class="standard-blue-button fullblock_btn" role="button">Class Page</a>
+            </article>
+            {{/each}}
+            <!-- though if there were no recommendations, show some help text -->
+            {{else}}
+            <p id="no-recommended-courses">Follow other users to be shown recommended classes!
+                <p>
+                    {{/if}}
+        </section>
+        {{/if}}
+
+        <!-- always show a list of the popular courses, but if a user
+				 is logged in, keep some room for the recommended courses -->
+        {{#if loggedIn}}
+        <section id="popular-courses" class="class col-xs-12 col-md-4">
+            {{else}}
+            <section id="popular-courses" class="class col-xs-12 col-md-8">
+                {{/if}}
+                <h1 class="standard">Popular Classes</h1> {{#each popularClasses}}
+                <article class="well">
+                    <p class="class-name text-primary">
+                        {{class_name}}
+                    </p>
+                    <p class="class-instructor">
+                        {{instructor}}
+                    </p>
+                    <div class="class-description">
+                        <p>
+                            TODO
+                        </p>
+                    </div>
+                    <a href="/course/{{class_id}}" class="standard-blue-button fullblock_btn" role="button">Class Page</a>
+                </article>
+                {{/each}}
+            </section>
+            <!-- end of popular courses -->
+    </main>
 
     <div id="popup">
     </div>

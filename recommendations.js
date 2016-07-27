@@ -3,13 +3,13 @@ var common = require('./common');
 var db = common.db;
 var sendBackJSON = common.sendBackJSON;
 
-/* Calls the callback with a list of up to 3 recommended clases for the logged in user.
+/* Calls the callback with a list of recommended clases for the logged in user.
  *
  * Recommended courses are determined by finding all of a user's classmates and
  * finding the classes which those classmates are taking, returning them in
  * order based on how many fellow classmates are also taking the other courses.
  */
-exports.recommendedClasses = function(userId, callback) {
+exports.recommendedClasses = function(userId, limit, callback) {
     var queryString =
         'SELECT C.id as class_id, C.class_name, count(*) as user_count ' +
         'FROM CLASSES C ' +
@@ -26,10 +26,10 @@ exports.recommendedClasses = function(userId, callback) {
         'AND F.follower = $1 ' +
         'GROUP BY C.id ' +
         'ORDER BY user_count DESC ' +
-        'LIMIT 3 '
+        'LIMIT $2 '
     ;
 
-    db.query(queryString, { bind: [userId] })
+    db.query(queryString, { bind: [userId, limit] })
     .spread(function(results, metadata) {
         callback(null, results);
     })
@@ -39,8 +39,8 @@ exports.recommendedClasses = function(userId, callback) {
 }
 
 
-/* Calls the callback with up to three of the most popular classes. */
-exports.popularClasses = function(callback) {
+/* Calls the callback with the most popular classes. */
+exports.popularClasses = function(limit, callback) {
     var queryString =
         'SELECT E.class_id, U.name as instructor, ' +
             'count(*) AS user_count, C.class_name ' +
@@ -51,10 +51,10 @@ exports.popularClasses = function(callback) {
             'ON U.id = C.instructor ' +
         'GROUP BY E.class_id ' +
         'ORDER BY user_count DESC ' +
-        'LIMIT 3 '
+        'LIMIT $1 '
     ;
     
-    db.query(queryString)
+    db.query(queryString, { bind: [limit] })
     .spread(function(results, metadata) {
         callback(null, results);
     })

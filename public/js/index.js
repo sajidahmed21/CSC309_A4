@@ -196,6 +196,8 @@ var loginPage = function () {
     $container.appendTo($middle);
     $middle.appendTo($outer);
     $outer.appendTo($popup);
+    
+    $('input#signinUsername').focus();
 };
 
 var signupPage = function () {
@@ -375,6 +377,8 @@ var signupPage = function () {
     $container.appendTo($middle);
     $middle.appendTo($outer);
     $outer.appendTo($popup);
+    
+    $('input#signupName').focus();
 };
 
 

@@ -1,6 +1,9 @@
 var common = require('./common');
 var sequelize = require('sequelize');
 var db = common.db;
+
+var notifications = require('./notifications');
+
 // TODO: 
 // SUPPORT ADDING COMMENT FUNCTIONALITY
 // ARE WE GOING TO ALLOW GUESTS TO COMMENT? 
@@ -38,7 +41,7 @@ exports.get_course_rating = function(req, res, next) {
 	 		if (num_rating == 0) { // nobody has rated/reviewed the course
 	 			res.rating = "No Ratings Yet";
 	 		} else {
-	 			res.rating = avg_rating + "/5 ("+num_rating+ " ratings)";
+	 			res.rating = avg_rating + "/5 ("+num_rating+ " rating(s))";
 	 		}
 	 		next();
 	 	})
@@ -91,9 +94,17 @@ exports.render_course_page = function(req, res, next) {
 	console.log(res.enrolled_students);
 	console.log(res.rating);
 	console.log(res.reviews);
+	if (res.class_info[0].class_name.length > 20) {
+		titlefont = "4vw";
+	} else if (res.class_info[0].class_name.length > 16) {
+		titlefont = "4vw";
+	} else {
+		titlefont = "5vw";
+	}
 		res.render('coursedesc', {
 			loggedIn: common.userIsLoggedIn(req),
 			imgPath: res.class_info[0].banner_picture_path,
+			titlefont: titlefont,
 			courseTitle: res.class_info[0].class_name,
 			instructor: res.class_info[0].instructor,
 			rating: res.rating,
@@ -103,4 +114,98 @@ exports.render_course_page = function(req, res, next) {
 			students: res.enrolled_students,
 			reviews: res.reviews
 		}); 
-} 
+}
+
+
+/* Handles requests to enroll in a class. */
+exports.enrollHandler = function (req, res) {
+    var classId = req.body.class_id;
+    
+    if (!common.userIsLoggedIn(req)) {
+        common.sendUnauthorizedResponse({
+            status: 'ERROR', 
+            message: 'not logged in'
+        }, res);
+    }
+    // check that the class id is provided
+    else if (!classId) {
+        common.sendBadRequestResponse({
+            status: 'ERROR',
+            message: 'missing classId'
+        }, res);
+    }
+    // check that the class id is a valid integer
+    else if (classId <= 0) {
+        common.sendBadRequestResponse({
+            status: 'ERROR',
+            message: 'invalid classId'
+        }, res);
+    }
+    // valid integer
+    else {
+        var classExistsQuery =
+            'SELECT COUNT(*) AS count ' +
+            'FROM CLASSES ' +
+            'WHERE id = $1 '
+        ;
+        
+        db.query(classExistsQuery, { bind: [classId] })
+        .spread(function(results, metadata) {
+            console.log(results);
+            // if no class with that id exists, this was a bad request
+            if (results[0].count == 0 ) {
+                common.sendBadRequestResponse({
+                    status: 'ERROR',
+                    message: 'invalid classId'
+                }, res);
+            }
+            // otherwise, check if already enrolled
+            else {
+                var userId = common.getLoggedInUserId(req);
+                
+                var alreadyEnrolledQuery =
+                    'SELECT user_id ' +
+                    'FROM ENROLMENT ' +
+                    'WHERE user_id = $1 AND class_id = $2 '
+                ;
+                
+                db.query(alreadyEnrolledQuery, { bind: [userId, classId] })
+                .spread(function(results, metadata) {
+                    // if there is already an enrollment
+                    if (results.length !== 0 ) {
+                        common.sendBadRequestResponse({
+                            status: 'ERROR',
+                            message: 'already enrolled'
+                        }, res);
+                    }
+                    // otherwise, we can enrol the user
+                    else {
+                        var query =
+                            'INSERT INTO ENROLMENT(user_id, class_id) ' +
+                            'VALUES($1, $2) '
+                        ;
+
+                        db.query(query, { bind: [userId, classId] })
+                        .spread(function(results, metadata) {
+                            // add notifications, but don't worry about the result
+                            notifications.notifyOfClassEnrollment(userId, classId);
+                            common.sendBackJSON({status: 'SUCCESS'}, res);
+                        })
+                        .catch(function(err) {
+                            console.log(err);
+                            common.sendInternalServerErrorResponse(res);
+                        });
+                    }
+                })
+                .catch(function(err) {
+                    console.log(err);
+                    common.sendInternalServerErrorResponse(res);
+                });
+            }
+        })
+        .catch(function(err) {
+            console.log(err);
+            common.sendInternalServerErrorResponse(res);
+        });
+    }
+};
