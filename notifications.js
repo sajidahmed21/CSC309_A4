@@ -42,9 +42,9 @@ function markAsSeen(notificationIds) {
     ;
     
     db.query(query, { bind: [notificationIds, getLoggedInUserId()] })
-    .then() {
+    .spread(function(results, metadata) {
         return callback(null);
-    }
+    })
     .catch(function(err) {
         return callback(err);
     });
