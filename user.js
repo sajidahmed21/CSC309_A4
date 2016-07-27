@@ -535,3 +535,24 @@ var deleteUserHandler = function (req, res) {
 
 exports.deleteUserHandler = deleteUserHandler;
 exports.test.deleteUserHandler = deleteUserHandler;
+
+/* Checks for error and returns the profile picture color for a user */
+exports.getProfilePictureColor = function(backgroundColor) {
+    if (backgroundColor === undefined || backgroundColor === null || color.indexOf(backgroundColor) < 0) {
+        backgroundColor = 'grey_background';
+    }
+    return backgroundColor;
+};
+
+/* Returns the first letter of `name` in capital case for displaying in the user profile picture */
+exports.getFirstLetterForProfile = function (name) {
+    var firstLetterProfile = name.charAt(0);
+    
+    if (firstLetterProfile >= 'a' && firstLetterProfile <= 'z') {
+        firstLetterProfile = firstLetterProfile.toUpperCase();
+    }
+    
+    return firstLetterProfile;
+        
+        
+}

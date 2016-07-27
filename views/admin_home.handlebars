@@ -31,12 +31,14 @@
     
     <body>
 		<header class="global_font">
-			<h1>LearnR</h1>
-			<h2>Admin</h2>
+			<a class="headerbar-title-anchor" href="/admin">
+				<h1>LearnR</h1>
+				<h2>Admin</h2>
+			</a>
 			
 			<a id="logout-anchor" class="standard-clear-button" href="/admin/logout">Logout</a>
 			<img src="/img/profile.png" alt="Profile" height="40" width="45" class="profile_icon">
-			<h3 id="admin-username">admin.username</h3>
+			<h3 id="admin-username">{{adminUsername}}</h3>
 
             <nav>
 				<ul id="tabs-list">

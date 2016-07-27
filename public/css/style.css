@@ -98,6 +98,28 @@
     background-color: #16a085;
 }
 
+.headerbar-title-anchor {
+    color: #337ab7;
+}
+
+.headerbar-title-anchor:hover {
+    color: #3498db;
+}
+
+.headerbar-title-anchor:active {
+    text-decoration: none;
+    color: #3498db;
+}
+
+.headerbar-title-anchor:focus {
+    text-decoration: none;
+    color: #3498db;
+}
+
+.headerbar-title-anchor:visited {
+    color: #3498db;
+}
+
 .standard-headbar {
     width: 100%;
     background-color: #ffffff;
