@@ -41,6 +41,12 @@ socketIO.use(sharedSession(session, {
     saveUninitialized: true
 }));
 
+var helmet = require('helmet');
+app.use(helmet.xssFilter());
+app.use(helmet.hsts({
+  maxAge: 7776000000,
+  includeSubdomains: true
+}));
 
 // set hostname and port here
 var hostname = 'localhost';
