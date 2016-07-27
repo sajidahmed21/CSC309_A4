@@ -5,31 +5,30 @@ var getLoggedInUserId = common.getLoggedInUserId;
 
 /* Creates all notifications that a user enrolled in a certain class.
  *
- * Returns the result of the callback. Note that the callback is called with
- * an error if one occurred, or null otherwise.
+ * Returns true on success and false otherwise.
  */
 function notifyOfClassEnrollment(userId, classId) {
     var query =
         'INSERT INTO NOTIFICATIONS(user_id, followee_id, class_id) ' +
-        'VALUES (' +
-            'SELECT follower_id, $1, $2 ' +
-            'FROM FOLLOWINGS ' +
-            // only where the followee is this user, and there hasn't already
-            // been a notification for this added
-            'WHERE followee_id = $1 AND user_id NOT IN ( ' +
-                'SELECT N1.user_id ' +
-                'FROM NOTIFICATIONS N1 ' +
-                'WHERE N1.followee_id = $1 AND N1.class_id = $2 ' +
-            ')' +
+        'SELECT follower, $1, $2 ' +
+        'FROM FOLLOWINGS ' +
+        // only where the followee is this user, and there hasn't already
+        // been a notification for this added
+        'WHERE followee = $1 AND follower NOT IN ( ' +
+            'SELECT N1.user_id ' +
+            'FROM NOTIFICATIONS N1 ' +
+            'WHERE N1.followee_id = $1 AND N1.class_id = $2 ' +
         ')'
     ;
     
     db.query(query, { bind: [userId, classId] })
     .spread(function(results, metadata) {
-        return callback(null);
+        console.log('sent enrollment notification');
+        return true;
     })
     .catch(function(err) {
-        return callback(err);
+        console.log(err);
+        return false;
     });
 }
 

@@ -1,6 +1,9 @@
 var common = require('./common');
 var sequelize = require('sequelize');
 var db = common.db;
+
+var notifications = require('./notifications');
+
 // TODO: 
 // SUPPORT ADDING COMMENT FUNCTIONALITY
 // ARE WE GOING TO ALLOW GUESTS TO COMMENT? 
@@ -177,6 +180,8 @@ exports.enrollHandler = function (req, res) {
 
                         db.query(query, { bind: [userId, classId] })
                         .spread(function(results, metadata) {
+                            // add notifications, but don't worry about the result
+                            notifications.notifyOfClassEnrollment(userId, classId);
                             common.sendBackJSON({status: 'SUCCESS'}, res);
                         })
                         .catch(function(err) {
