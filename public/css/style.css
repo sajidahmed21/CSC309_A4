@@ -394,6 +394,12 @@ p.class-name {
 
 
 /* home page style starts*/
+#signup-error-message{
+    text-align: center;
+    margin-bottom: 13px;
+    color: #e74c3c;
+    font-size: 105%;
+}
 
 .homepage_img {
     width: 100%;
