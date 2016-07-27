@@ -103,12 +103,17 @@ app.get('/', renderHome);
 /* Courses ----------------------------------------------------------*/
 
 app.post('/course/enroll', courses.enrollHandler);
+app.delete('/course/unenroll', courses.unenrollHandler);
 
 app.get('/course/:id',
     courses.get_class_info,
     courses.get_course_rating,
     courses.get_enrolled_students,
-    courses.get_reviews,
+    courses.get_reviews, 
+    courses.hasLoggedInUserReviewed, 
+    courses.isLoggedInUserInstructor,
+    courses.isLoggedInUserEnrolled,
+    courses.getLoggedInUserAvatar,
     courses.render_course_page);
 
 app.get('/createcourse', checkAuthentication, function (req, res) {
@@ -168,7 +173,6 @@ app.post('/submitreview', checkAuthentication, function(req, res, next) {
             })
 });
         
-app.delete('/unenroll', courses.unenrollHandler);
 
 
 /* Users ------------------------------------------------------------*/

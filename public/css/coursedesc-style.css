@@ -21,7 +21,11 @@
     display: inline;
     position: absolute;
 }
-
+.reviewmsg {
+    margin-top: 50px;
+    padding: 30px;
+    text-align: center;
+}
 .enroll-btn:hover {
     color: #ffffff;
     background-color: #16a085;

@@ -32,12 +32,12 @@
 	<div id="course-profile">
             <div class="course-banner">
                 {{#if loggedIn}}
-                    {{#unless instructor}} 
-                        {{#if enrolled}}
-                            <button id="enroll" class="enroll-btn">Enroll </button>
-                        {{else}}
-                             <button id="unenroll" class="unenroll-btn">Un-Enroll </button> 
-                        {{/if}}
+                   {{#unless isInstructor}}
+                            {{#if enrolled}}
+                                 <button id="unenroll" class="unenroll-btn">Un-Enroll </button> 
+                            {{else}}
+                                <button id="enroll" class="enroll-btn">Enroll </button>
+                            {{/if}}
                     {{/unless}}
                 {{/if}}
                 <img alt="<course img>" src="{{imgPath}}">
@@ -69,6 +69,8 @@
             </div>
         </div>
     </div>
+
+
             <div id="desc-content">
 
                 <div id="course-nav" class="standard-font">
@@ -150,41 +152,54 @@
                     {{/each}}
 
                     {{#if loggedIn}}
-                    <div class="add-comment">
-                        <div class="col-sm-1">
-                           
-                               <div class="img-circle profile_circle" style="background-color: {{LIbackgroundColor}};">
-                                    <h2 id="profile_letter" class="nomargin"> {{LIfirstLetter}} </h2> </div>
-                 
-                            <!-- /thumbnail -->
-                        </div>
-                        <!-- /col-sm-1 -->
-                        <div class="col-sm-11">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <strong>Guest</strong>
+                        {{#if Reviewed}}
+                        <div class="reviewmsg"> 
+                            <h4 class="standard-font"> You've aleady left a review for this course ! </h4> 
+                             </div> 
+                        {{else}} 
+                                {{#if isInstructor}}
+                                    <div class="reviewmsg"> 
+                                     <h4 class="standard-font"> No one's left a review yet :( ! </a></h4>
+                                    </div> 
+                                {{else}}
+                            <div class="add-comment">
+                                <div class="col-sm-1">
+                                   
+                                       <div class="img-circle profile_circle" style="background-color: {{LIbackgroundColor}};">
+                                            <h2 id="profile_letter" class="nomargin"> {{LIfirstLetter}} </h2> </div>
+                         
+                                    <!-- /thumbnail -->
                                 </div>
-                                <textarea id="reviewinput" class="form-control" rows="3" placeholder="Add your review here!"></textarea>
+                                <!-- /col-sm-1 -->
+                                <div class="col-sm-11">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <strong>{{LIname}}</strong>
+                                        </div>
+                                        <textarea id="reviewinput" class="form-control" rows="3" placeholder="Add your review here!"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-sm-offset-1 col-sm-1">
+                                    <button id="reviewsubmit" class="standard-blue-button" type="submit">Submit</button>
+                                </div>
+                                <div class="col-sm-offset-1 col-sm-5">
+                                    <div class="stars">
+                                        <span id="star1" class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                        <span id="star2" class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                        <span id="star3" class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                        <span id="star4" class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                        <span id="star5" class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                        <span id="rating"> </span>
+                                        <div id="message"> </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-sm-offset-1 col-sm-1">
-                            <button id="reviewsubmit" class="standard-blue-button" type="submit">Submit</button>
-                        </div>
-                        <div class="col-sm-offset-1 col-sm-5">
-                            <div class="stars">
-                                <span id="star1" class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                                <span id="star2" class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                                <span id="star3" class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                                <span id="star4" class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                                <span id="star5" class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                                <span id="rating"> </span>
-                                <div id="message"> </div>
-                            </div>
-                        </div>
-                    </div>
-
+                                {{/if}}
+                        {{/if}}
                     {{else}}
-                     <h2> Oops! You have to be logged in to review a course ! <a href="">Log In </a> or <a href="">Sign Up!</a></h2> 
+                    <div class="reviewmsg"> 
+                     <h4 class="standard-font"> Oops! You have to be logged in to review a course ! <a href="">Log In </a> or <a href="">Sign Up!</a></h4>
+                     </div> 
 
                     {{/if}}
                     <!-- add-comment -->
