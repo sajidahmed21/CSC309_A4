@@ -22,6 +22,7 @@
     <script src="/js/logout.js" defer></script>
     <script src="/js/rating.js" defer></script>
     <script src="/js/enroll.js" defer></script>
+    <script src="/js/tab.js" defer> </script>
 	<!-- include files necessary for the searchbar -->
 	{{> searchbar_head }}
 
@@ -74,29 +75,37 @@
             <div id="desc-content">
 
                 <div id="course-nav" class="standard-font">
-                    <ul>
-                        <li> <a href="#course-desc"> Course Description </a> </li>
+                      <ul class="nav nav-tabs">
+                        <li class="active"> <a href="#course-desc"> Course Description </a> </li>
                         <li> <a href="#requirements"> Requirements </a> </li>
                         <li> <a href="#course-enrollment"> Current Course Enrollment </a> </li>
+                        {{#if enrolled}} 
+                             <li> <a href="#course-posts"> Course Posts </a> </li>
+                        {{/if}}
+                        {{#if isInstructor }}
+                            <li> <a href="#course-posts"> Course Posts </a> </li>
+                        {{/if}}
                     </ul>
                 </div>
-                <div id="course-desc" class="standard-container course-container">
-                    <h1 class="standard-font"> Course Description </h1>
+                <div class="tab-content">
+                <div id="course-desc" class="tab-pane fade in active">
+                    <!-- <h1 class="standard-font"> Course Description </h1> -->
                     <p class="standard-font"> 
                     	{{courseDesc}}
                     </p>
                 </div>
-                <div id="requirements" class="standard-container course-container">
-                    <h1 class="standard-font"> Requirements </h1>
+                <div id="requirements" class="tab-pane fade">
+                    <!-- <h1 class="standard-font"> Requirements </h1> -->
                     <p class="standard-font">
                         {{courseRequirements}}
                     </p>
 
                 </div>
 
-                <div id="course-enrollment" class="standard-container course-container">
-                    <h1 class="standard-font"> Course Enrollment </h1>
-                    <table class="table table-hover" style="width: 400px; margin-left: auto; margin-right: auto;">
+                <div id="course-enrollment" class="tab-pane fade">
+                    <!-- <h1 class="standard-font"> Course Enrollment </h1> -->
+                    {{#if students}}
+                    <table class="table table-hover">
                         <thead>
 
                             <tr>
@@ -114,13 +123,56 @@
                        	{{/each}}
                         </tbody>
                     </table>
+
+                    {{else}}
+                                <h1 class="standard-font post-container" style="text-align: center;"> :( </h1>
+                            <h4 class="standard-font post-container" style="text-align: center;"> No one has enrolled yet </h4>
+                    {{/if}}
                 </div>
+
+                {{#if enrolled}} 
+
+                             <div id="course-posts" class="tab-pane fade">
+                                {{#if anyposts}}
+                                    {{#each posts}}
+                                    <div class="standard-container post-container">
+                                        <h4 class="standard-font"> Posted On {{timestamp}} </h4>
+                                           <p class="standard-font"> {{post}} </p>
+                                    </div>
+                                    {{/each}}
+                                {{else}}
+                                        <h1 class="standard-font post-container" style="text-align: center;"> :( </h1>
+                                    <h4 class="standard-font post-container" style="text-align: center;"> The instructor hasn't made any posts yet </h4>
+                                {{/if}}
+                             </div>
+                {{/if}}
+
+
+                {{#if isInstructor}}
+
+                        <div id="course-posts" class="tab-pane fade">
+
+                                {{#if anyposts}}
+                                    {{#each posts}}
+                                    <div class="standard-container post-container">
+                                        <h4 class="standard-font"> Posted On {{timestamp}} </h4>
+                                           <p class="standard-font"> {{post}} </p>
+                                    </div>
+                                    {{/each}}
+                                {{else}}
+                                        <h2 class="standard-font post-container" style="text-align: center;"> :( </h2>
+                                    <h4 class="standard-font post-container" style="text-align: center;"> You haven't made any posts yet ! </h4>
+                                {{/if}}
+                             </div>
+
+                {{/if}}
+            </div>
                 <div id="comments" class="standard-container course-container">
 
                     <div class="col-sm-12">
                         <h3 class="standard-font">Reviews and Ratings</h3>
                     </div>
-                  
+                    <div id="review-content">
                     <!-- /col-sm-12 -->
                     {{#each reviews}}
                     <div class="col-sm-1">
@@ -150,7 +202,7 @@
                     </div>
                     <!-- /col-sm-5 -->
                     {{/each}}
-
+                </div>
                     {{#if loggedIn}}
                         {{#if Reviewed}}
                         <div class="reviewmsg"> 
@@ -159,7 +211,7 @@
                         {{else}} 
                                 {{#if isInstructor}}
                                     <div class="reviewmsg"> 
-                                     <h4 class="standard-font"> No one's left a review yet :( ! </a></h4>
+                                     <h4 class="standard-font"> No one's left a review yet :( ! </h4>
                                     </div> 
                                 {{else}}
                             <div class="add-comment">

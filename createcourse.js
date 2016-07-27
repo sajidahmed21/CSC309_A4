@@ -44,7 +44,7 @@ exports.addClassInfoAndRedirect = function(req, res) {
         var courseTitle = formatTitle(req.body.courseTitle);
         var courseDesc = formatDesc(req.body.courseDesc);
         var courseReqs = formatReqs(req.body.courseReqs);
-	db.query('INSERT INTO CLASSES (class_name, instructor, coursedesc, coursereqs, banner_picture_path) VALUES ($1, $2, $3)', 
+	db.query('INSERT INTO CLASSES (class_name, instructor, coursedesc, coursereqs, banner_picture_path) VALUES ($1, $2, $3, $4, $5)', 
 			{ bind: [courseTitle, common.getLoggedInUserId(req),courseDesc, courseReqs, res.bannerpath.slice(6)]}
 			).spread(function(results, metadata) {
 					console.log(results);
