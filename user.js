@@ -552,7 +552,5 @@ exports.getFirstLetterForProfile = function (name) {
         firstLetterProfile = firstLetterProfile.toUpperCase();
     }
     
-    return firstLetterProfile;
-        
-        
-}
+    return firstLetterProfile;       
+};
