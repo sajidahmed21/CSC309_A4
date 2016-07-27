@@ -11,7 +11,7 @@ $(document).ready(function(){
            // we need to send server review, rating, user_id, class_id
            var data = {class_id: class_id};
             $.ajax({
-                url: '/enroll',
+                url: '/course/enroll',
                 type: 'POST',
                 contentType:'application/json',
                 data: JSON.stringify(data),

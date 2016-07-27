@@ -119,6 +119,8 @@ exports.render_course_page = function(req, res, next) {
 
 /* Handles requests to enroll in a class. */
 exports.enrollHandler = function (req, res) {
+    var classId = req.body.class_id;
+    
     if (!common.userIsLoggedIn(req)) {
         common.sendUnauthorizedResponse({
             status: 'ERROR', 
@@ -126,14 +128,14 @@ exports.enrollHandler = function (req, res) {
         }, res);
     }
     // check that the class id is provided
-    else if (!req.body.classId) {
+    else if (!classId) {
         common.sendBadRequestResponse({
             status: 'ERROR',
             message: 'missing classId'
         }, res);
     }
     // check that the class id is a valid integer
-    else if (req.body.classId <= 0) {
+    else if (classId <= 0) {
         common.sendBadRequestResponse({
             status: 'ERROR',
             message: 'invalid classId'
@@ -141,9 +143,6 @@ exports.enrollHandler = function (req, res) {
     }
     // valid integer
     else {
-        // check that the class actually exists
-        var classId = req.body.classId;
-        
         var classExistsQuery =
             'SELECT COUNT(*) AS count ' +
             'FROM CLASSES ' +
