@@ -45,7 +45,7 @@ exports.addClassInfoAndRedirect = function(req, res) {
         var courseDesc = formatDesc(req.body.courseDesc);
         var courseReqs = formatReqs(req.body.courseReqs);
 	db.query('INSERT INTO CLASSES (class_name, instructor, banner_picture_path) VALUES ($1, $2, $3)', 
-			{ bind: [courseTitle, 1, res.bannerpath.slice(6)]}
+			{ bind: [courseTitle, common.getLoggedInUserId(req), res.bannerpath.slice(6)]}
 			).spread(function(results, metadata) {
 					console.log(results);
 					console.log(metadata);
@@ -82,7 +82,7 @@ function capitalizeEveryElement(array) {
 		if (i > 0) {
 			str += " " + capitalizeFirstChar(array[i]);
 		} else {
-		str += capitalizeFirstChar(array[i]);
+		     str += capitalizeFirstChar(array[i]);
 		}
 	}
 	return str;

@@ -21,10 +21,6 @@
     display: inline;
     position: absolute;
 }
-.enroll-btn:active {
-    color: #ffffff !important;
-    background-color: #16a085;
-}
 
 .enroll-btn:hover {
     color: #ffffff;
@@ -36,6 +32,20 @@
     padding-bottom: 2px;
     height: 40px;
     
+}
+
+.unenroll-btn {
+    margin-left: 8px;
+    padding: 15px;
+    background-color: #ff5a5f;
+    color: #ffffff !important;
+    border: none;
+    border-radius: 0;
+    display: inline;
+    position: absolute;
+}
+.unenroll-btn:hover {
+    background-color: #e74c3c;
 }
 .quick-info {
     width: 800px;

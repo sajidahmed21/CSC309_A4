@@ -151,7 +151,7 @@ app.post('/submitreview', checkAuthentication, function(req, res, next) {
             { bind: [user_id, class_id, content, rating]}
             ).then(function(rows) {
                     res.end('{"success" : "Updated Successfully", "status" : 200}');
-                    res.end();
+                    
             })
             .catch(function(err) {
             console.log("query failed");
@@ -160,34 +160,14 @@ app.post('/submitreview', checkAuthentication, function(req, res, next) {
             })
 });
         
-app.post('/enroll', checkAuthentication, function(req, res, next) {
+app.delete('/unenroll', function(req, res, next) {
     var data = req.body;
     var class_id = data.class_id;
     var user_id = getLoggedInUserId(req);
-    // make sure they aren't already enrolled
-    db.query('SELECT * FROM ENROLMENT WHERE class_id = $1 AND user_id = $2', 
-        { bind: [class_id, user_id]}
-        ).then(function(rows) {
-            if (rows.length > 0) {
-                res.end('{"success" : "Updated Successfully", "status" : 200}');
-                    res.end();
-            } 
-            next();
-        })
-        .catch(function(Err) {
-            console.log("query failed");
-            res.status(500);
-            res.end(); 
-        })
-}, function(req, res, next) { 
-    var data = req.body;
-    var class_id = data.class_id;
-    var user_id = getLoggedInUserId(req);
-    db.query('INSERT INTO ENROLMENT (user_id, class_id) VALUES ($1, $2)', 
+    db.query('DELETE FROM ENROLMENT WHERE user_id= $1 AND class_id = $2', 
         { bind: [user_id, class_id]}
         ).then(function(rows) {
-                    res.end('{"success" : "Updated Successfully", "status" : 200}');
-                    res.end();
+                    res.end('{"success" : "Successfully Un-Enrolled", "status" : 200}');         
         })
         .catch(function(Err) {
 console.log("query failed");
@@ -195,7 +175,22 @@ console.log("query failed");
             res.end(); 
         })
 });         
-      
+app.post('/enroll', function(req, res, next) {
+    var data = req.body;
+    var class_id = data.class_id;
+    var user_id = getLoggedInUserId(req);
+    db.query('INSERT INTO ENROLMENT (user_id, class_id) VALUES ($1, $2)', 
+        { bind: [user_id, class_id]}
+        ).then(function(rows) {
+                    res.end('{"success" : "Successfully Enrolled", "status" : 200}');         
+        })
+        .catch(function(Err) {
+console.log("query failed");
+            res.status(500);
+            res.end(); 
+        })
+}); 
+     
 //for testing authentication puropse
 app.get('/content', checkAuthentication, function (req, res) {
     res.send("You can only see this after you've logged in.");
