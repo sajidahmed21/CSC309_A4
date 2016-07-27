@@ -29,19 +29,19 @@ function notifyOfClassEnrolment(userId, classId) {
 
 
 /* Marks all provided notification as seen, provided that they belong to the
- * logged in user.
+ * given user.
  *
  * Returns the result of the callback. Note that the callback is called with
  * an error if one occurred, or null otherwise.
  */
-function markAsSeen(notificationIds) {
+function markAsSeen(notificationIds, userId) {
     var query =
         'UPDATE NOTIFICATIONS ' +
         'SET seen = 1 ' +
         'WHERE notification_id IN [$1] AND user_id = $2 '
     ;
     
-    db.query(query, { bind: [notificationIds, getLoggedInUserId()] })
+    db.query(query, { bind: [notificationIds, userId] })
     .spread(function(results, metadata) {
         return callback(null);
     })
@@ -58,11 +58,11 @@ function markAsSeen(notificationIds) {
  * Returns the result of the callback. Note that the callback is called with
  * the error information, if any, and the results if successful.
  */
-function recentNotifications(limit, callback) {
+function recentNotifications(userId, limit, callback) {
     var query =
-        'SELECT N.notification_id, N.seen, N.class_id, N.created_timestamp ' +
+        'SELECT N.id, N.seen, N.created_timestamp, ' +
             'U.name, ' +
-            'C.class_name, I.name ' +
+            'C.class_id, C.class_name, I.name ' +
         'FROM NOTIFICATIONS N' +
         // the folowee's information
         'INNER JOIN USERS U ' +
@@ -79,7 +79,7 @@ function recentNotifications(limit, callback) {
         limit = 10;
     }
     
-    db.query(query, { bind: [getLoggedInUserId(), limit] })
+    db.query(query, { bind: [userId, limit] })
     .spread(function(results, metadata) {
         return callback(null, results);
     })
