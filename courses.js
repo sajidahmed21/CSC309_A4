@@ -70,9 +70,8 @@ exports.get_reviews = function(req, res, next) {
 			+ ' FROM REVIEWS R, USERS U WHERE R.class_id = $1 AND U.id = R.user_id ORDER BY R.created_timestamp ASC;', 
 			{ bind: [res.class_info[0].id]}
 			).spread(function(results, metadata) {
-
+				// circular avatars
 				for (i = 0; i < results.length; i++) {
-
 					var username = results[i].username;
 					results[i].firstLetter = username.charAt(0).toUpperCase();
 					results[i].dp = colors[username.charCodeAt(0) % colors.length];
@@ -92,7 +91,7 @@ exports.render_course_page = function(req, res, next) {
 	console.log(res.rating);
 	console.log(res.reviews);
 	if (res.class_info[0].class_name.length > 20) {
-		titlefont = "4vw";
+		titlefont = "3vw";
 	} else if (res.class_info[0].class_name.length > 16) {
 		titlefont = "4vw";
 	} else {
