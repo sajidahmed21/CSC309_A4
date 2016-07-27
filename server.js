@@ -133,6 +133,9 @@ var upload = multer({
     dest: __dirname + '/public/img/'
 }).single('courseBanner');
 app.post('/createcourse', checkAuthentication, function (req, res, next) {
+    console.log(req);
+    console.log("FILE" + req.file);
+    console.log("FILES" + req.files);
     upload(req, res, function (err) {
         res.courseBannerErr = '';
         res.courseTitleErr = '';
