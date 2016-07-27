@@ -288,17 +288,25 @@ exports.test.getProfileHandler = getProfileHandler;
 var signinHandler = function (req, res, testing) {
     var signinUsername = req.body.signinUsername;
     var signinPassword = req.body.signinPassword;
-    if (signinUsername == null || signinUsername == undefined || signinPassword == null || signinPassword == undefined) {
-        return res.render('home', {
-            errorContent: '<p><strong>Opps!</strong> Some of your required fields are missing!</p>',
-            loggedIn: false
-        });
+    if (signinUsername == null || signinUsername == undefined || signinUsername == '' || signinPassword == null || signinPassword == undefined || signinPassword == '') {
+        if (testing != undefined)
+            return 'Missing Required Field!';
+        else {
+            return res.render('home', {
+                errorContent: '<p><strong>Opps!</strong> Some of your required fields are missing!</p>',
+                loggedIn: false
+            });
+        }
     }
-    if (signinUsername < 8 || signinUsername > 20 || signinPassword < 8 || signinPassword > 20) {
-        return res.render('home', {
-            errorContent: '<p><strong>Opps!</strong> Your username and password must be at least 8 characters long and max 20 characters!</p>',
-            loggedIn: false
-        });
+    if (signinUsername.length < 8 || signinUsername.length > 20 || signinPassword.length < 8 || signinPassword.length > 20) {
+        if (testing != undefined)
+            return 'Too long / Too Short Username or Password'
+        else {
+            return res.render('home', {
+                errorContent: '<p><strong>Opps!</strong> Your username and password must be at least 8 characters long and max 20 characters!</p>',
+                loggedIn: false
+            });
+        }
     }
     db.query("SELECT user_id, password FROM LOGIN_CREDENTIALS WHERE username = $1", {
         bind: [signinUsername]
@@ -307,21 +315,27 @@ var signinHandler = function (req, res, testing) {
         console.log(thisid);
         bcrypt.compare(signinPassword, results[0].password, function (err, result) {
             if (err || result === false) {
-                console.log("Err in login");
-                res.status(401);
-                return res.render('home', {
-                    errorContent: '<p><strong>Opps!</strong> Your username and password do not match!</p>',
-                    loggedIn: false
-                });
+                if (testing != undefined)
+                    return testing('Invalid Username and Password');
+                else {
+                    console.log("Err in login");
+                    res.status(401);
+                    return res.render('home', {
+                        errorContent: '<p><strong>Opps!</strong> Your username and password do not match!</p>',
+                        loggedIn: false
+                    });
+                }
             } else {
                 if (testing != undefined)
-                    return testing(true);
+                    return testing('true');
                 console.log("signinHandler " + results[0].user_id);
                 setLoggedInUserId(req, results[0].user_id);
                 exports.getProfileHandler(req, res, results[0].user_id);
             }
         })
     }).catch(function (err) {
+        if(testing != undefined)
+            return testing('Invalid Username and Password');
         res.status(401);
         return res.render('home', {
             errorContent: '<p><strong>Opps!</strong> Your username and password do not match!</p>',
@@ -398,7 +412,7 @@ exports.test.signupHandler = exports.signupHandler;
  */
 exports.createUser = function (name, username, password, passwordConfirmation, callback) {
 
-    if (name == null || name == undefined || name==''|| username == null || username == undefined || username=='' || password == null || password == undefined || password == ''|| passwordConfirmation == null || passwordConfirmation == undefined || passwordConfirmation=='') {
+    if (name == null || name == undefined || name == '' || username == null || username == undefined || username == '' || password == null || password == undefined || password == '' || passwordConfirmation == null || passwordConfirmation == undefined || passwordConfirmation == '') {
         callback('Required field missing');
         return;
     }
@@ -408,11 +422,11 @@ exports.createUser = function (name, username, password, passwordConfirmation, c
         return;
     }
 
-    if(username.length < 8 || username.length > 20){
+    if (username.length < 8 || username.length > 20) {
         callback('Incorrect Username Length');
         return;
     }
-    
+
     if (password.length < 8 || password.length > 20) {
         callback('Incorrect Password Length');
         return;

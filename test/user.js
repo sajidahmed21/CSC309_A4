@@ -3,7 +3,7 @@ var users = require('../user.js');
 var test = users.test;
 
 describe('user', function () {
-    describe('signinHandler()', function () {
+    describe('signupHandler()', function () {
         describe('create-user-unsuccessgful', function () {
             describe('with empty field', function () {
                 it('empty name', function () {
@@ -107,11 +107,185 @@ describe('user', function () {
                     });
                 });
             });
-            describe('success', function () {
-                it('successs', function () {
-                    test.createUser('testingpurpos', 'testingpurpos', 'testingpurpose1.', 'testingpurpose1.', function (result) {
-                        assert.equal(result, 'true');
+        });
+        //        describe('create-user-success', function () {
+        //            it('successs', function () {
+        //                test.createUser('testingpurpos', 'testingpurpos', 'testingpurpose1.', 'testingpurpose1.', function (result) {
+        //                    assert.equal(result, 'true');
+        //                });
+        //            });
+        //        });
+    });
+    describe('signinHandler()', function () {
+        describe('login-unsuccessful', function () {
+            describe('with empty input', function () {
+                var emptyUsername = {
+                    body: {
+                        signinUsername: '',
+                        signinPassword: 'testingpurpose1.'
+                    }
+                };
+                var res = {};
+                it('empty username', function () {
+                    test.signinHandler(emptyUsername, res, function (result) {
+                        assert(result, 'Missing Required Field!');
                     });
+                });
+                var emptyPassword = {
+                    body: {
+                        signinUsername: 'testingpurpose',
+                        signinPassword: ''
+                    }
+                };
+                var res = {};
+                it('empty password', function () {
+                    test.signinHandler(emptyPassword, res, function (result) {
+                        assert(result, 'Missing Required Field!');
+                    });
+                });
+            });
+            describe('with null input', function () {
+                var nullUsername = {
+                    body: {
+                        signinUsername: null,
+                        signinPassword: 'testingpurpose1.'
+                    }
+                };
+                var res = {};
+                it('null username', function () {
+                    test.signinHandler(nullUsername, res, function (result) {
+                        assert(result, 'Missing Required Field!');
+                    });
+                });
+                var nullPassword = {
+                    body: {
+                        signinUsername: 'testingpurpose',
+                        signinPassword: null
+                    }
+                };
+                var res = {};
+                it('null password', function () {
+                    test.signinHandler(nullPassword, res, function (result) {
+                        assert(result, 'Missing Required Field!');
+                    });
+                });
+            });
+            describe('with undefined input', function () {
+                var undefinedUsername = {
+                    body: {
+                        signinUsername: undefined,
+                        signinPassword: 'testingpurpose1.'
+                    }
+                };
+                var res = {};
+                it('empty username', function () {
+                    test.signinHandler(undefinedUsername, res, function (result) {
+                        assert(result, 'Missing Required Field!');
+                    });
+                });
+                var undefinedPassword = {
+                    body: {
+                        signinUsername: 'testingpurpose',
+                        signinPassword: undefined
+                    }
+                };
+                var res = {};
+                it('null password', function () {
+                    test.signinHandler(undefinedPassword, res, function (result) {
+                        assert(result, 'Missing Required Field!');
+                    });
+                });
+            });
+            describe('Too long / too short username', function () {
+                var shortUsername = {
+                    body: {
+                        signinUsername: 'short',
+                        signinPassword: 'testingpurpose1.'
+                    }
+                };
+                var res = {};
+                it('short username', function () {
+                    test.signinHandler(shortUsername, res, function (result) {
+                        assert(result, 'Too long / Too Short Username or Password');
+                    });
+                });
+                var longUsername = {
+                    body: {
+                        signinUsername: 'testingpurposelonglonglong',
+                        signinPassword: 'testingpurpose1.'
+                    }
+                };
+                var res = {};
+                it('long username', function () {
+                    test.signinHandler(longUsername, res, function (result) {
+                        assert(result, 'Too long / Too Short Username or Password');
+                    });
+                });
+            });
+            describe('Too long / too short password', function () {
+                var shortPassword = {
+                    body: {
+                        signinUsername: 'testingpurpose',
+                        signinPassword: 'short'
+                    }
+                };
+                var res = {};
+                it('short password', function () {
+                    test.signinHandler(shortPassword, res, function (result) {
+                        assert(result, 'Too long / Too Short Username or Password');
+                    });
+                });
+                var longPassword = {
+                    body: {
+                        signinUsername: 'testingpurpose',
+                        signinPassword: 'testingpurpose1.longlonglong'
+                    }
+                };
+                var res = {};
+                it('long password', function () {
+                    test.signinHandler(longPassword, res, function (result) {
+                        assert(result, 'Too long / Too Short Username or Password');
+                    });
+                });
+            });
+            describe('Invalid username and password', function () {
+                var invalidCombination = {
+                    body: {
+                        signinUsername: 'testingpurpose',
+                        signinPassword: 'wrongpassword12..'
+                    }
+                };
+                var res = {};
+                it('Invalid username and password 1', function () {
+                    test.signinHandler(invalidCombination, res, function (result) {
+                        assert(result, 'Invalid Username and Password');
+                    });
+                });
+                var invalidCombination = {
+                    body: {
+                        signinUsername: 'wrongwronguser',
+                        signinPassword: 'testingpurpose1.'
+                    }
+                };
+                var res = {};
+                it('Invalid username and password 2', function () {
+                    test.signinHandler(invalidCombination, res, function (result) {
+                        assert(result, 'Invalid Username and Password');
+                    });
+                });
+            });
+        });
+        describe('login-successful', function () {
+            var validCombination = {
+                body: {
+                    signinUsername: 'testingpurpose',
+                    signinPassword: 'testingpurpose1.'
+                }
+            };
+            var res = {};
+            it('correct username and password', function () {
+                test.signinHandler(validCombination, res, function (result) {
+                    assert(result, 'true');
                 });
             });
         });
