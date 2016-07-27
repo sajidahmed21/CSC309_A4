@@ -93,7 +93,7 @@ app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 
 // set public directory for css, js, and imgs
-app.use(express.static('public'));
+app.use(express.static( __dirname + '/public'));
 
 
 /* page routing -----------------------------------------------------*/
@@ -103,12 +103,17 @@ app.get('/', renderHome);
 /* Courses ----------------------------------------------------------*/
 
 app.post('/course/enroll', courses.enrollHandler);
+app.delete('/course/unenroll', courses.unenrollHandler);
 
 app.get('/course/:id',
     courses.get_class_info,
     courses.get_course_rating,
     courses.get_enrolled_students,
-    courses.get_reviews,
+    courses.get_reviews, 
+    courses.hasLoggedInUserReviewed, 
+    courses.isLoggedInUserInstructor,
+    courses.isLoggedInUserEnrolled,
+    courses.getLoggedInUserAvatar,
     courses.render_course_page);
 
 app.get('/createcourse', checkAuthentication, function (req, res) {
@@ -124,7 +129,7 @@ app.get('/createcourse', checkAuthentication, function (req, res) {
 });
 
 var upload = multer({
-    dest: 'public/img/'
+    dest: __dirname + '/public/img/'
 }).single('courseBanner');
 app.post('/createcourse', function (req, res, next) {
     upload(req, res, function (err) {
@@ -168,21 +173,6 @@ app.post('/submitreview', checkAuthentication, function(req, res, next) {
             })
 });
         
-app.delete('/unenroll', function(req, res, next) {
-    var data = req.body;
-    var class_id = data.class_id;
-    var user_id = getLoggedInUserId(req);
-    db.query('DELETE FROM ENROLMENT WHERE user_id= $1 AND class_id = $2', 
-        { bind: [user_id, class_id]}
-        ).then(function(rows) {
-                    res.end('{"success" : "Successfully Un-Enrolled", "status" : 200}');         
-        })
-        .catch(function(Err) {
-console.log("query failed");
-            res.status(500);
-            res.end(); 
-        })
-});
 
 
 /* Users ------------------------------------------------------------*/
@@ -254,6 +244,6 @@ socketIO.on('connection', messaging.onConnection);
 
 /* server start up --------------------------------------------------*/
 
-server.listen(port, hostname, function () {
+server.listen(process.env.PORT || port, function () {
     console.log(`Server running at http://${hostname}:${port}/`);
 });
