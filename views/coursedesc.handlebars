@@ -31,7 +31,15 @@
 	
 	<div id="course-profile">
             <div class="course-banner">
-                <button id="enroll" class="enroll-btn">Enroll </button>
+                {{#if loggedIn}}
+                    {{#unless instructor}} 
+                        {{#if enrolled}}
+                            <button id="enroll" class="enroll-btn">Enroll </button>
+                        {{else}}
+                             <button id="unenroll" class="unenroll-btn">Un-Enroll </button> 
+                        {{/if}}
+                    {{/unless}}
+                {{/if}}
                 <img alt="<course img>" src="{{imgPath}}">
                  <div class="banner-container">
                     
@@ -141,7 +149,7 @@
                     <!-- /col-sm-5 -->
                     {{/each}}
 
-                    
+                    {{#if loggedIn}}
                     <div class="add-comment">
                         <div class="col-sm-1">
                            
@@ -174,6 +182,11 @@
                             </div>
                         </div>
                     </div>
+
+                    {{else}}
+                     <h2> Oops! You have to be logged in to review a course ! <a href="">Log In </a> or <a href="">Sign Up!</a></h2> 
+
+                    {{/if}}
                     <!-- add-comment -->
                 </div>
 

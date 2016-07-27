@@ -116,6 +116,99 @@ exports.render_course_page = function(req, res, next) {
 }
 
 
+
+
+exports.unenrollHandler = function(req, res, next) {
+		// make sure user is logged in 
+		 if (!common.userIsLoggedIn(req)) {
+        		common.sendUnauthorizedResponse({
+            	status: 'ERROR', 
+            	message: 'not logged in'
+        	}, res);
+        // make sure classId is given
+    	} else if (!classId) {
+       			 common.sendBadRequestResponse({
+         	 		status: 'ERROR',
+            		message: 'missing classId'
+        	}, res);
+    	}
+    	// check if valid integer
+    	else if (classId <= 0) {
+        	common.sendBadRequestResponse({
+           		status: 'ERROR',
+           	 	message: 'invalid classId'
+        	}, res);
+   		 }
+   		 else {
+        var classExistsQuery =
+            'SELECT COUNT(*) AS count ' +
+            'FROM CLASSES ' +
+            'WHERE id = $1 '
+        ;
+        
+        db.query(classExistsQuery, { bind: [classId] })
+        .spread(function(results, metadata) {
+            console.log(results);
+            // if no class with that id exists, this was a bad request
+            if (results[0].count == 0 ) {
+                common.sendBadRequestResponse({
+                    status: 'ERROR',
+                    message: 'invalid classId'
+                }, res);
+            }
+            // otherwise, check if they're enrolled
+            else {
+                var userId = common.getLoggedInUserId(req);
+                
+                var alreadyEnrolledQuery =
+                    'SELECT user_id ' +
+                    'FROM ENROLMENT ' +
+                    'WHERE user_id = $1 AND class_id = $2 '
+                ;
+                
+                db.query(alreadyEnrolledQuery, { bind: [userId, classId] })
+                .spread(function(results, metadata) {
+                    // if user is not enrolled
+                    if (results.length ==  0 ) {
+                        common.sendBadRequestResponse({
+                            status: 'ERROR',
+                            message: 'Not Enrolled'
+                        }, res);
+                    }
+                    // otherwise, we can delete the user
+                    else {
+                        var query =
+                            'DELETE FROM ENROLMENT WHERE user_id= $1 AND class_id = $2'
+                        ;
+
+                        db.query(query, { bind: [userId, classId] })
+                        .spread(function(results, metadata) {
+                            // add notifications, but don't worry about the result
+                            notifications.notifyOfClassEnrollment(userId, classId);
+                            common.sendBackJSON({status: 'SUCCESS'}, res);
+                        })
+                        .catch(function(err) {
+                            console.log(err);
+                            common.sendInternalServerErrorResponse(res);
+                        });
+                    }
+                })
+                .catch(function(err) {
+                    console.log(err);
+                    common.sendInternalServerErrorResponse(res);
+                });
+            }
+        })
+        .catch(function(err) {
+            console.log(err);
+            common.sendInternalServerErrorResponse(res);
+        });
+    }
+};
+
+
+}
+
 /* Handles requests to enroll in a class. */
 exports.enrollHandler = function (req, res) {
     var classId = req.body.class_id;
