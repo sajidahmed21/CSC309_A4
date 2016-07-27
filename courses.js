@@ -345,7 +345,7 @@ exports.unenrollHandler = function (req, res) {
                     else if (instructorId == userId) {
                         common.sendBadRequestResponse({
                             status: 'ERROR',
-                            message: 'cannot enrol in one\'s own class'
+                            message: 'cannot unenrol in one\'s own class'
                         }, res);
                     }
                     else {
@@ -366,7 +366,7 @@ exports.unenrollHandler = function (req, res) {
                                     // add notifications, but don't worry about the result
 
                                     // *** notify of removal from course ? *** //
-                                    
+
                                     common.sendBackJSON({status: 'SUCCESS'}, res);
                                 })
                                 .catch(function(err) {
