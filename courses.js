@@ -352,7 +352,7 @@ exports.unenrollHandler = function (req, res) {
     else {
         // check if the class actually exists
         doesClassExist(classId, function(err, exists) {
-            if (err) {
+            if (err || !exists) {
                 console.log(err);
                 common.sendBadRequestResponse({
                     status: 'ERROR',
@@ -436,7 +436,7 @@ exports.enrollHandler = function (req, res) {
     else {
         // check if the class actually exists
         doesClassExist(classId, function(err, exists) {
-            if (err) {
+            if (err || !exists) {
                 console.log(err);
                 common.sendBadRequestResponse({
                     status: 'ERROR',
