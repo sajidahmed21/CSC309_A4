@@ -17,6 +17,10 @@
     display: none;
 }
 
+.profile_error{
+    display: none;
+}
+
 .profile_error {
     position: absolute;
     width: 100%;

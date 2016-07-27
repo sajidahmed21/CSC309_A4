@@ -126,6 +126,7 @@ var loginPage = function () {
         type: 'text',
         placeholder: 'Username',
         required: 'required',
+        pattern: '^[a-zA-Z0-9]{8,20}',
         class: 'standard-red-input'
     });
 
@@ -137,6 +138,7 @@ var loginPage = function () {
         type: 'password',
         placeholder: 'Password',
         required: 'required',
+        pattern: '^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&\-])[A-Za-z\d$@$!%*#?&\-]{8,20}$',
         class: 'standard-red-input'
     });
 
@@ -186,9 +188,10 @@ var loginPage = function () {
         hidePopup();
         window.location = "./profile";
     });
-
+    
+    
     $input.appendTo($form);
-
+    
     $form.appendTo($container);
     $container.appendTo($middle);
     $middle.appendTo($outer);
@@ -249,6 +252,7 @@ var signupPage = function () {
         type: 'text',
         placeholder: 'Username',
         required: 'required',
+        pattern: '^[a-zA-Z0-9]{8,20}$',
         class: 'standard-input'
     });
 
@@ -260,6 +264,7 @@ var signupPage = function () {
         type: 'password',
         placeholder: 'Password',
         required: 'required',
+        pattern: '^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&\-])[A-Za-z\d$@$!%*#?&\-]{8,20}$',
         class: 'standard-input'
     });
 
@@ -271,6 +276,7 @@ var signupPage = function () {
         type: 'password',
         placeholder: 'Password Comfirmation',
         required: 'required',
+        pattern: '^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&\-])[A-Za-z\d$@$!%*#?&\-]{8,20}$',
         class: 'standard-input'
     });
 
@@ -341,8 +347,6 @@ var signupPage = function () {
     
     $form.submit(function(e){
         e.preventDefault();
-        console.log($('#name').val());
-        console.log($('#userPassword').val());
         var body = {
             "signupName": $('#signupName').val(),
             "signupUsername": $('#signupUsername').val(),
