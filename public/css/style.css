@@ -27,6 +27,10 @@
     display: none;
 }
 
+.empty-class-list{
+    font-size: 140%;
+}
+
 .standard-link:link {
     color: #757575;
     background-color: transparent;

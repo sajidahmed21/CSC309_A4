@@ -190,7 +190,7 @@ exports.test.verifyUserPassword = verifyUserPassword;
 var changeProfilePicHandler = function (req, res) {
     var changeProfilepic = req.body.changeProfilepic;
     var user_id = getLoggedInUserId(req);
-    db.query("UPDATE USERS SET profile_picture_path = '" + changeProfilepic + "' WHERE id=" + user_id).spread(function (results, metadata) {
+    db.query("UPDATE USERS SET profile_color = '" + changeProfilepic + "' WHERE id=" + user_id).spread(function (results, metadata) {
         var returnJSON = {
             "status": "success",
             "message": "Change Profile Pic Success"
@@ -283,11 +283,11 @@ exports.test.unenrollHandler = exports.unenrollHandler;
 var getProfileHandler = function (req, res, profileUserId) {
     console.log("GETPROFILE" + profileUserId);
     console.log(common.getLoggedInUserId(req));
-    db.query("SELECT name, profile_picture_path FROM USERS WHERE id = $1", {
+    db.query("SELECT name, profile_color FROM USERS WHERE id = $1", {
         bind: [profileUserId]
     }).spread(function (results, metadata) {
         var name = results[0].name;
-        var background_color = results[0].profile_picture_path;
+        var background_color = results[0].profile_color;
         if (color.indexOf(background_color) < 0)
             background_color = 'grey_background';
         var firstLetterProfile = name.charAt(0);
@@ -507,7 +507,7 @@ exports.createUser = function (name, username, password, passwordConfirmation, c
 
     db.transaction(function (transactionObject) {
         // Insert into USERS table
-        return db.query("INSERT INTO USERS (name, profile_picture_path) VALUES ( $1 , $2 )", {
+        return db.query("INSERT INTO USERS (name, profile_color) VALUES ( $1 , $2 )", {
                 transaction: transactionObject,
                 bind: [name, signupProfilePicture]
             })

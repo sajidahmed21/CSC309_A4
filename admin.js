@@ -175,7 +175,7 @@ function getUserProfileData(profileUserId, callback) {
         return;
     }
     
-    db.query("SELECT name, profile_picture_path FROM USERS WHERE id = $1", {
+    db.query("SELECT name, profile_color FROM USERS WHERE id = $1", {
         bind: [profileUserId]
     }).spread(function (results) {
         if (results === undefined || results.length !== 1) {
@@ -184,7 +184,7 @@ function getUserProfileData(profileUserId, callback) {
         }
         var name = results[0].name;
         var firstLetterProfile = user.getFirstLetterForProfile(name);
-        var backgroundColor = user.getProfilePictureColor(results[0].profile_picture_path);
+        var backgroundColor = user.getProfilePictureColor(results[0].profile_color);
 
         db.query("SELECT CLASSES.id AS id, CLASSES.class_name AS class_name, USERS.name AS instructor FROM ENROLMENT, CLASSES, USERS WHERE USERS.id=CLASSES.instructor AND CLASSES.id=ENROLMENT.class_id AND ENROLMENT.user_id = $1", {
             bind: [profileUserId]

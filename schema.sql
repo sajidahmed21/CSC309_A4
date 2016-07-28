@@ -4,7 +4,7 @@ PRAGMA foreign_keys = ON;
 CREATE TABLE IF NOT EXISTS USERS (
   id INTEGER PRIMARY KEY,
   name TEXT NOT NULL,
-  profile_picture_path TEXT,
+  profile_color TEXT,
   banner_path TEXT
 );
 
