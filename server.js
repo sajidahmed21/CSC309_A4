@@ -305,15 +305,12 @@ app.get('/auth/google/',
 //   login page.  Otherwise, the primary route function function will be called,
 //   which, in this example, will redirect the user to the home page.
 app.get('/auth/google/callback',
-    passport.authenticate('google', {
-        // todo: redirect to home with an error message
-        failureRedirect: '/'
-    }), function(req, res) {
+    passport.authenticate('google'), function(req, res) {
         console.log('google user authenticated');
         
         googleLogin.fetchUser(req.user.id, function(err, userId) {
             if (err) {
-                // redirect to home with error
+                renderHome(req, res, '<p><strong>Oh no!</strong> It doesn\' look like you succesfully logged in.</p>');
             }
             else {
                 common.setLoggedInUserId(req, userId);
