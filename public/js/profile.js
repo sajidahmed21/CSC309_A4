@@ -83,6 +83,7 @@ var stopTeaching = function (stopteachingCourse_id) {
     });
 
     $input.click(function () {
+        console.log("TSTOP TECH" + stopteachingCourse_id);
         var body = {
             "stopteachingCourse_id": stopteachingCourse_id
         }
@@ -462,6 +463,8 @@ var changePassword = function () {
         placeholder: 'Current Password',
         required: 'required',
         pattern: '^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&\-])[A-Za-z\d$@$!%*#?&\-]{8,20}$',
+        title: 'Password must contain at least 1 letter, 1 number, 1 special character, ' +
+            ' and must be between 8 and 20 characters long. Special characters include $@!%*#?&-',
         class: 'standard-green-input'
     });
 
@@ -474,6 +477,8 @@ var changePassword = function () {
         placeholder: 'New Password',
         required: 'required',
         pattern: '^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&\-])[A-Za-z\d$@$!%*#?&\-]{8,20}$',
+        title: 'Password must contain at least 1 letter, 1 number, 1 special character, ' +
+            ' and must be between 8 and 20 characters long. Special characters include $@!%*#?&-',
         class: 'standard-green-input'
     });
 
@@ -486,6 +491,8 @@ var changePassword = function () {
         placeholder: 'New Password Confirm',
         required: 'required',
         pattern: '^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&\-])[A-Za-z\d$@$!%*#?&\-]{8,20}$',
+        title: 'Password must contain at least 1 letter, 1 number, 1 special character, ' +
+            ' and must be between 8 and 20 characters long. Special characters include $@!%*#?&-',
         class: 'standard-green-input'
     });
 
