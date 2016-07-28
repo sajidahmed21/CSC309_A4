@@ -24,6 +24,7 @@
     <script src="/js/enroll.js" defer></script>
     <script src="/js/tab.js" defer> </script>
      <script src="/js/post.js" defer> </script>
+     <script src="/js/edit.js" defer> </script>
 	<!-- include files necessary for the searchbar -->
 	{{> searchbar_head }}
 
@@ -90,12 +91,18 @@
                 </div>
                 <div class="tab-content">
                 <div id="course-desc" class="tab-container tab-pane fade in active">
+                    {{#if isInstructor}}
+                    <button id="edit-course-desc" class="edit-btn standard-green-button"> Edit </button>
+                    {{/if}}
                     <!-- <h1 class="standard-font"> Course Description </h1> -->
                     <p class="standard-font"> 
                     	{{courseDesc}}
                     </p>
                 </div>
                 <div id="requirements" class="tab-container tab-pane fade">
+                    {{#if isInstructor}}
+                    <button id="edit-requirements" class="edit-btn standard-green-button"> Edit </button>
+                    {{/if}}
                     <!-- <h1 class="standard-font"> Requirements </h1> -->
                     <p class="standard-font">
                         {{courseRequirements}}
