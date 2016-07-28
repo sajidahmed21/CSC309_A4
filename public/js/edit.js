@@ -28,7 +28,7 @@ $(document).ready(function() {
                                  var class_id = url.slice(url.lastIndexOf('/')+1);
                                   var data = {coursedesc: input, class_id: class_id};
                                   $.ajax({
-                                      url: '/editcoursedesc',
+                                      url: '/edit_course_desc',
                                       type: 'POST',
                                       contentType:'application/json',
                                       data: JSON.stringify(data),
@@ -66,9 +66,9 @@ $(document).ready(function() {
                                  } 
                                  var url = window.location.pathname;
                                  var class_id = url.slice(url.lastIndexOf('/')+1);
-                                  var data = {coursedesc: input, class_id: class_id};
+                                  var data = {course_reqs: input, class_id: class_id};
                                   $.ajax({
-                                      url: '/editcoursereqs',
+                                      url: '/edit_course_reqs',
                                       type: 'POST',
                                       contentType:'application/json',
                                       data: JSON.stringify(data),
