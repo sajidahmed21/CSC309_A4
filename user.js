@@ -494,51 +494,57 @@ var logoutHandler = function (req, res) {
 exports.logoutHandler = logoutHandler;
 exports.test.logoutHandler = logoutHandler;
 
-exports.deleteUserHelper = function (user_id, callback) {
-        db.query("DELETE FROM LOGIN_CREDENTIALS WHERE user_id= $1", {
-            bind: [user_id]
+exports.deleteUser = function (userId, callback) {
+    if (userId === undefined || userId < 1 || userId === '') {
+        callback('Invalid user id');
+        return;
+    }
+    db.query("DELETE FROM LOGIN_CREDENTIALS WHERE user_id= $1", {
+        bind: [userId]
+    }).spread(function (results, metadata) {
+        db.query("DELETE FROM USERS WHERE id= $1", {
+            bind: [userId]
         }).spread(function (results, metadata) {
-            db.query("DELETE FROM USERS WHERE id= $1", {
-                bind: [user_id]
-            }).spread(function (results, metadata) {
-                callback('success');
-            }).catch(function (err) {
-                callback('errorinner')
-            });
+            callback('Success');
         }).catch(function (err) {
-            callback('errorouter')
+            callback('Error deleting user');
         });
+    }).catch(function (err) {
+        callback('Error deleting login credentials');
+    });
 };
 
 //CASCADE ALL USERS and CLASSES
 exports.deleteUserHandler = function (req, res) {
-    var user_id = getLoggedInUserId(req);
-    // always set the user_id to logged out
+    var userId = getLoggedInUserId(req);
+    // always set the userId to logged out since we are deleting the user
     setLoggedInUserId(req, 0);
 
-    exports.deleteUserHelper(user_id, function (result) {
-        if (result == 'success') {
-            var returnJSON = {
+    exports.deleteUser(userId, function (result) {
+        var responseBody = {};
+        if (result == 'Success') {
+            responseBody = {
                 "status": "success",
                 "message": "Delete Success"
-            }
-            sendBackJSON(returnJSON, res);
-        } else if (result == 'errorinner') {
+            };
+            
+        } else if (result == 'Error deleting user') {
             console.log("Err in deleting user");
-            var returnJSON = {
+            responseBody = {
                 "status": "error",
                 "message": "Err in delete inner"
-            }
-            sendBackJSON(returnJSON, res);
-        } else if (result == 'errorouter') {
-            console.log("Err in delete course");
-            var returnJSON = {
+            };
+
+        } else if (result == 'Error deleting login credentials') {
+            console.log("Err in deleting login credentials");
+            responseBody = {
                 "status": "error",
                 "message": "Err in delete user outer"
-            }
-            sendBackJSON(returnJSON, res);
+            };
+
         }
-    })
+        sendBackJSON(responseBody, res);
+    });
 };
 
 exports.test.deleteUserHandler = exports.deleteUserHandler;

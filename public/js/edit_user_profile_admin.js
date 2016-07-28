@@ -8,6 +8,9 @@ $(document).ready(function () {
     
     // Attach click listener for change password button
     $('#changepassword_btn').click(changePassword);
+    
+    // Attach click listener for delete user button
+    $('#deleteuser_btn').click(deleteUser);
 });
 
 var changeName = function () {
@@ -172,6 +175,68 @@ var changePassword = function () {
     $submitButton.click(validateChangePasswordInput);
     $submitButton.appendTo($form);
     
+    $form.appendTo($container);
+    $container.appendTo($middle);
+    $middle.appendTo($outer);
+    $outer.appendTo($popup);
+};
+
+var deleteUser = function () {
+    var $popup = $('#popup');
+    $popup.empty();
+
+    $outer = $('<div/>', {
+        id: 'userlogin_form'
+    });
+
+    $middle = $('<div/>', {
+        class: 'col-md-6'
+    });
+
+    $container = $('<div/>', {
+        class: 'standard-container'
+    });
+
+    $cancelwrapper = $('<div/>');
+
+    $cancelicon = $('<span/>', {
+        class: 'glyphicon glyphicon-remove cancel_icon'
+    });
+    $cancelicon.click(function () {
+        hidePopup();
+    });
+    $cancelwrapper.append($cancelicon);
+
+    $container.append($cancelwrapper);
+
+    var userId = this.value;
+    
+    $form = $('<form/>', {
+        action: '/admin/delete_user/' + userId,
+        method: 'POST'
+    });
+
+    $title = $('<h1/>', {
+        class: 'standard-title'
+    });
+    $title.text('Delete Account').appendTo($form);
+
+    $paragraph = $('<p/>', {
+        class: 'standard-body'
+    });
+
+    $paragraph.text('Are you sure you want to delete this account?');
+
+    $paragraph.appendTo($form);
+
+    $submitButton = $('<input/>', {
+        type: 'submit',
+        value: 'Delete',
+        class: 'btn btn-danger standard-red-button block_btn'
+    });
+
+    $submitButton.appendTo($form);
+
     $form.appendTo($container);
     $container.appendTo($middle);
     $middle.appendTo($outer);

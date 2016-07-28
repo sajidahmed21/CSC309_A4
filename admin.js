@@ -35,12 +35,13 @@ exports.checkAuthentication = function(request, response, next) {
 exports.handleAdminHomeRequest = function (request, response) {
     response.render('admin_home', {
         adminUsername: request.session.adminId,
+        message: request.session.message,
         errorContent: request.session.errorContent
     });
     
     // Reset the error content and message once it has been displayed to the admin
-    request.session.errorContent = undefined;
     request.session.message = undefined;
+    request.session.errorContent = undefined; 
 };
 
 
@@ -218,6 +219,23 @@ exports.handleChangePasswordRequest = function (request, response) {
         
         /* Redirect to the user profile page */
         common.redirectToPage('/admin/edit_user_profile/' + userId, response);
+    });
+};
+
+exports.handleDeleteUserRequest = function(request, response) {
+    
+    user.deleteUser(request.params.id, function (result) {
+        switch (result) {
+            case 'Success':
+                request.session.message = '<p>User has been deleted</p>';
+                break;
+            default:
+                request.session.errorContent = '<p><strong>Opps!</strong> Something went wrong. Please try later!</p>';
+                break;
+        }
+        
+        /* Redirect to the home page */
+        common.redirectToPage('/admin', response);
     });
 };
 

@@ -228,6 +228,8 @@ app.post('/admin/edit_user/name/:id', admin.checkAuthentication, admin.handleEdi
 
 app.post('/admin/edit_user/change_password/:id', admin.checkAuthentication, admin.handleChangePasswordRequest);
 
+app.post('/admin/delete_user/:id', admin.checkAuthentication, admin.handleDeleteUserRequest);
+
 app.get('/admin/edit_course/:id', admin.checkAuthentication, admin.handleEditCourseRequest);
 
 
