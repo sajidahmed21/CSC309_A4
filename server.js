@@ -189,8 +189,7 @@ app.post('/createcourse', checkAuthentication, function (req, res, next) {
             if (!req.file) // undefined, use default path 
                 res.bannerpath = "/img/study.jpg";
             else {
-                res.bannerpath = req.file.path;
-                res.bannerpath = res.bannerpath.slice(6);
+                res.bannerpath = "/img/"+req.file.filename;
             }
             // replace 1 with id of logged in user
             console.log("res.bannerpath in server: " + res.bannerpath);
