@@ -226,6 +226,8 @@ app.get('/admin/edit_user_profile/:id', admin.checkAuthentication, admin.handleE
 
 app.post('/admin/edit_user/name/:id', admin.checkAuthentication, admin.handleEditNameRequest);
 
+app.post('/admin/edit_user/change_password/:id', admin.checkAuthentication, admin.handleChangePasswordRequest);
+
 app.get('/admin/edit_course/:id', admin.checkAuthentication, admin.handleEditCourseRequest);
 
 

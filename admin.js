@@ -165,13 +165,16 @@ exports.handleEditProfileRequest = function (request, response) {
     });
 };
 
+/* Handles name change requests by updating the name of the user in the database and providing
+ * appropriate feedback on the front-end.
+*/
 exports.handleEditNameRequest = function (request, response) {
     var userId = request.params.id;
     
     user.changeName(request.params.id, request.body.newName, function (result) {
         switch (result) {
             case 'Success':
-                request.session.message = '<p>Name successfully changed</p>';
+                request.session.message = '<p>Name updated</p>';
                 break;
             case 'Invalid name':
                 request.session.errorMessage = '<p>Oops! The name cannot be empty</p>';
@@ -181,6 +184,35 @@ exports.handleEditNameRequest = function (request, response) {
                 break;
             default:
                 request.session.errorMessage = '<p>Oops! Something went wrong. Please try again later!</p>';
+                break;
+        }
+        
+        /* Redirect to the user profile page */
+        common.redirectToPage('/admin/edit_user_profile/' + userId, response);
+    });
+};
+
+exports.handleChangePasswordRequest = function (request, response) {
+    var userId = request.params.id;
+    
+    // (userId, currentPassword, newPassword, newPasswordConfirm, isAdminChanging, callback)
+    // We don't need to provided currentPassword since isAdminChanging = true
+    user.changePassword(userId, undefined, request.body.newPassword, request.body.newPasswordConfirm, true, function (result) {
+        
+        switch (result) {
+            case 'Success':
+                request.session.message = '<p>Password changed</p>';
+                break;
+            
+            // We should not get into the following error scenarios since we have client side validation as well
+            case 'Invalid user id':
+                request.session.errorMessage = '<p>Oops! Something went wrong. Please try again later!</p>';
+                break;
+            case 'Invalid new password':
+                request.session.errorMessage = '<p>Oops! The new password you provided is invalid.</p>';
+                break;
+            case 'Passwords do not match':
+                request.session.errorMessage = '<p>Oops! The new passwords do not match.</p>';
                 break;
         }
         
