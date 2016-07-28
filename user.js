@@ -91,7 +91,7 @@ exports.changePassword = function (userId, currentPassword, newPassword, newPass
 
     if (newPassword != newPasswordConfirm) {
         callback('Passwords do not match');
-        return
+        return;
     }
 
     if (isAdminChanging) {
@@ -194,7 +194,7 @@ var changeProfilePicHandler = function (req, res) {
         var returnJSON = {
             "status": "success",
             "message": "Change Profile Pic Success"
-        }
+        };
         sendBackJSON(returnJSON, res);
     }).catch(function (err) {
         console.log("Err in change profile pic");
@@ -218,7 +218,7 @@ exports.stopTeachingHelper = function (user_id, class_id, callback) {
     }).catch(function (err) {
         callback('error');
     });
-}
+};
 
 
 //function for unenroll class
@@ -230,14 +230,14 @@ exports.stopTeachingHandler = function (req, res) {
             var returnJSON = {
                 "status": "success",
                 "message": "Delete Success"
-            }
+            };
             sendBackJSON(returnJSON, res);
         } else if (result == 'error') {
             console.log("Err in delete course");
             var returnJSON = {
                 "status": "error",
                 "message": "Err in delete course"
-            }
+            };
             sendBackJSON(returnJSON, res);
         }
     });
@@ -264,14 +264,14 @@ exports.unenrollHandler = function (req, res) {
             var returnJSON = {
                 "status": "success",
                 "message": "Delete Success"
-            }
+            };
             sendBackJSON(returnJSON, res);
         } else if (result == 'error') {
             console.log("Err in delete course");
             var returnJSON = {
                 "status": "error",
                 "message": "Err in delete course"
-            }
+            };
             sendBackJSON(returnJSON, res);
         }
     });
@@ -355,7 +355,7 @@ var signinHandler = function (req, res, testing) {
     }
     if (signinUsername.length < 8 || signinUsername.length > 20 || signinPassword.length < 8 || signinPassword.length > 20) {
         if (testing != undefined)
-            return 'Too long / Too Short Username or Password'
+            return 'Too long / Too Short Username or Password';
         else {
             res.status(401);
             return res.render('home', {
@@ -391,7 +391,7 @@ var signinHandler = function (req, res, testing) {
                 var returnJSON = {
                     "status": "success",
                     "message": "Success"
-                }
+                };
                 sendBackJSON(returnJSON, res);
             }
         })
@@ -430,7 +430,7 @@ exports.signupHandler = function (request, response) {
             var returnJSON = {
                 "status": "success",
                 "message": "Success"
-            }
+            };
             sendBackJSON(returnJSON, response);
             return;
         }
@@ -545,7 +545,7 @@ var logoutHandler = function (req, res) {
         var returnJSON = {
             "status": "success",
             "message": "Logout Success"
-        }
+        };
         sendBackJSON(returnJSON, res);
     }
     // otherwise return an error
@@ -554,7 +554,7 @@ var logoutHandler = function (req, res) {
         var returnJSON = {
             "status": "error",
             "message": "Logout Error"
-        }
+        };
         sendBackJSON(returnJSON, res);
     }
 };

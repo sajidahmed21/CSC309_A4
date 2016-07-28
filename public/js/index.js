@@ -296,7 +296,7 @@ var signupPage = function () {
     $div = $('<div/>', {
         id: 'signup-error-message',
         class: 'invis'
-    })
+    });
 
     $div.text('Your passwords do not match')
     $div.appendTo($form);
@@ -341,7 +341,7 @@ var signupPage = function () {
                 "signupPassword": $('#signupPassword').val(),
                 "userPasswordConfirm": $('#userPasswordConfirm').val(),
                 "signupProfilePicture": "sfkjsdn"
-            }
+            };
 
             $.ajax({
                 type: "POST",
@@ -363,7 +363,7 @@ var signupPage = function () {
             return false;
         }
         return false;
-    })
+    });
 
     $form.appendTo($container);
     $container.appendTo($middle);
