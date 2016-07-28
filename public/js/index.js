@@ -271,7 +271,7 @@ var signupPage = function () {
         type: 'password',
         placeholder: 'Password',
         required: 'required',
-        pattern: '^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&\\-])[A-Za-z\\d$@$!%*#?&\\-]{6,20}$',
+        pattern: '^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&\\-])[A-Za-z\\d$@$!%*#?&\\-]{8,20}$',
         title: 'Password must contain at least 1 letter, 1 number, 1 special character, ' +
             ' and must be between 8 and 20 characters long. Special characters include $@!%*#?&-',
         class: 'standard-input'
@@ -285,7 +285,7 @@ var signupPage = function () {
         type: 'password',
         placeholder: 'Password Comfirmation',
         required: 'required',
-        pattern: '^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&\\-])[A-Za-z\\d$@$!%*#?&\\-]{6,20}$',
+        pattern: '^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&\\-])[A-Za-z\\d$@$!%*#?&\\-]{8,20}$',
         title: 'Password must contain at least 1 letter, 1 number, 1 special character, ' +
             ' and must be between 8 and 20 characters long. Special characters include $@!%*#?&-',
         class: 'standard-input'
