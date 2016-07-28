@@ -22,22 +22,16 @@ var googleLogin = require('./googleLogin');
 var passport = require('passport');
 var googleStrategy = require('passport-google-oauth20').Strategy;
 
-// Passport session setup.
-//
-//   For persistent logins with sessions, Passport needs to serialize users into
-//   and deserialize users out of the session. Typically, this is as simple as
-//   storing the user ID when serializing, and finding the user by ID when
-//   deserializing.
+/* serialising and deserialising are used to store information, but since
+ * we are transfering the data to internal columns, we don't need to do anything */
 passport.serializeUser(function(user, done) {
     console.log('serialising');
-    // done(null, user.id);
     done(null, user);
 });
 
 
 passport.deserializeUser(function(obj, done) {
-    console.log('deserialiseing');
-    // Users.findById(obj, done);
+    console.log('deserialising');
     done(null, obj);
 });
 
