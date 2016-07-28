@@ -17,6 +17,52 @@ var bcrypt = require('bcryptjs');
 // other modules
 var fs = require('fs');
 
+// google authentication
+var googleLogin = require('./googleLogin');
+var passport = require('passport');
+var googleStrategy = require('passport-google-oauth20').Strategy;
+
+// Passport session setup.
+//
+//   For persistent logins with sessions, Passport needs to serialize users into
+//   and deserialize users out of the session. Typically, this is as simple as
+//   storing the user ID when serializing, and finding the user by ID when
+//   deserializing.
+passport.serializeUser(function(user, done) {
+    console.log('serialising');
+    // done(null, user.id);
+    done(null, user);
+});
+
+
+passport.deserializeUser(function(obj, done) {
+    console.log('deserialiseing');
+    // Users.findById(obj, done);
+    done(null, obj);
+});
+
+passport.use(new googleStrategy({
+    clientID: '640017624415-meb3upiuuvfktulov25iuo26gjgejti2.apps.googleusercontent.com',
+    clientSecret: 'APx9gK5DrCyjPqS3M4aI8fJV',
+    callbackURL: "https://csc309-learnr.herokuapp.com/auth/google/callback"
+  },
+  function(accessToken, refreshToken, profile, callback) {
+        console.log('fetching user');
+        googleLogin.findOrCreateUser(profile, function(err, userId) {
+            if (err) {
+                console.log('error in findOrCreateUser()');
+                return callback(err, profile);
+            }
+            else {
+                console.log('findOrCreateUser() returned successfully');
+                return callback(null, profile);
+            }
+        });
+    })
+);
+
+app.use(passport.initialize());
+
 // socket.io for messaging
 var server = require('http').Server(app);
 var socketIO = require('socket.io')(server);
@@ -33,6 +79,7 @@ var session = require('express-session')({
 var sharedSession = require("express-socket.io-session");
 
 app.use(session);
+app.use(passport.session());
 
 
 socketIO.use(sharedSession(session, {
@@ -241,6 +288,42 @@ app.get('/search', searchEngine.handleSearch);
 /* socket io --------------------------------------------------------*/
 
 socketIO.on('connection', messaging.onConnection);
+
+
+/* google authentication --------------------------------------------*/
+
+//   Use passport.authenticate() as route middleware to authenticate the
+//   request.  The first step in Google authentication will involve
+//   redirecting the user to google.com.  After authorization, Google
+//   will redirect the user back to this application at /auth/google/callback
+app.get('/auth/google/',
+  passport.authenticate('google', { scope: ['openid profile'] }));
+
+// GET /auth/google/callback
+//   Use passport.authenticate() as route middleware to authenticate the
+//   request.  If authentication fails, the user will be redirected back to the
+//   login page.  Otherwise, the primary route function function will be called,
+//   which, in this example, will redirect the user to the home page.
+app.get('/auth/google/callback',
+    passport.authenticate('google', {
+        // todo: redirect to home with an error message
+        failureRedirect: '/'
+    }), function(req, res) {
+        console.log('google user authenticated');
+        
+        googleLogin.fetchUser(req.user.id, function(err, userId) {
+            if (err) {
+                // redirect to home with error
+            }
+            else {
+                common.setLoggedInUserId(req, userId);
+                console.log('logged in and redirected google user');
+                // authenticated successfully and now logged in
+                res.redirect('/user/profile');
+            }
+        })
+    }
+);
 
 
 /* server start up --------------------------------------------------*/
