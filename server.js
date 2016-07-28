@@ -190,6 +190,7 @@ app.post('/createcourse', checkAuthentication, function (req, res, next) {
                 res.bannerpath = "/img/study.jpg";
             else {
                 res.bannerpath = req.file.path;
+                res.bannerpath = res.bannerpath.slice(6);
             }
             // replace 1 with id of logged in user
             console.log("res.bannerpath in server: " + res.bannerpath);

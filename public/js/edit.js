@@ -15,7 +15,7 @@ $(document).ready(function() {
                        $("#edit-course-desc").replaceWith(btn);
                        var content = $("#course-desc").find("p");
                        alert(content);
-                       content.replaceWith("<textarea maxlength = \"1000\" id=\"input-coursedesc\" style=\"height: 300px; width: 80%; padding: 20px;\" class=\"form-control standard-font\">" + content.html().trim() + "</textarea>");
+                       content.replaceWith("<textarea maxlength = \"1000\" id=\"input-coursedesc\" style=\"height: 300px; width: 80%; padding: 20px;\" class=\"tab-container form-control standard-font\">" + content.html().trim() + "</textarea>");
         });
                   
                   $(document).on('click',  '#save-course-desc',  function()  {
@@ -56,7 +56,7 @@ $(document).ready(function() {
                                  $("#edit-requirements").replaceWith(btn);
                                  var content = $("#requirements").find("p");
                                  
-                                 content.replaceWith("<textarea maxlength = \"1000\" id=\"input-requirements\" style=\"height: 300px; width: 80%; padding: 20px; \" class=\"form-control standard-font\">" + content.html().trim() + "</textarea>");
+                                 content.replaceWith("<textarea maxlength = \"1000\" id=\"input-requirements\" style=\"height: 300px; width: 80%; padding: 20px; \" class=\"tab-container form-control standard-font\">" + content.html().trim() + "</textarea>");
                                  });
                   $(document).on('click',  '#save-requirements',  function()  {
                                  var input = $("#input-requirements").val();
