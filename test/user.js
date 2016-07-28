@@ -290,6 +290,168 @@ describe('user', function () {
             });
         });
     });
+    describe('changeName()', function () {
+        describe('change-name-unsuccessful', function () {
+            it('invalid id', function () {
+                test.changeName(0, 'testingnewname', function (result) {
+                    assert(result, 'Invalid user id');
+                });
+            });
+            it('undefined name', function () {
+                test.changeName(1, undefined, function (result) {
+                    assert(result, 'Invalid name');
+                });
+            });
+            it('null name', function () {
+                test.changeName(1, null, function (result) {
+                    assert(result, 'Invalid name');
+                });
+            });
+            it('empty name', function () {
+                test.changeName(1, '', function (result) {
+                    assert(result, 'Invalid name');
+                });
+            });
+        });
+        describe('change-name-successful', function () {
+            it('valid name and id', function () {
+                test.changeName(1, 'testingNewName', function (result) {
+                    assert(result, 'Success');
+                });
+            });
+        });
+    });
+    describe('changePassword()', function () {
+        describe('change-password-unsuccessful', function () {
+            it('invalid id', function () {
+                test.changePassword(0, 'testpurpose1.', 'testpurpose2.', 'testpurpose2.', false, function (result) {
+                    assert(result, 'Invalid user id');
+                });
+            });
+            describe('undefined password', function () {
+                it('undefined current password', function () {
+                    test.changePassword(1, undefined, 'testpurpose2.', 'testpurpose2.', false, function (result) {
+                        assert(result, 'Incorrect password');
+                    });
+                });
+                it('undefined new password', function () {
+                    test.changePassword(1, 'testpurpose1', undefined, 'testpurpose2.', false, function (result) {
+                        assert(result, 'Invalid new password');
+                    });
+                });
+                it('undefined new password confirm', function () {
+                    test.changePassword(1, 'testpurpose1', 'testpurpose2.', undefined, false, function (result) {
+                        assert(result, 'Invalid old password');
+                    });
+                });
+            });
+            describe('null password', function () {
+                it('null current password', function () {
+                    test.changePassword(1, null, 'testpurpose2.', 'testpurpose2.', false, function (result) {
+                        assert(result, 'Incorrect password');
+                    });
+                });
+                it('null new password', function () {
+                    test.changePassword(1, 'testpurpose1', null, 'testpurpose2.', false, function (result) {
+                        assert(result, 'Invalid new password');
+                    });
+                });
+                it('null new password confirm', function () {
+                    test.changePassword(1, 'testpurpose1', 'testpurpose2.', null, false, function (result) {
+                        assert(result, 'Invalid old password');
+                    });
+                });
+            });
+            describe('empty password', function () {
+                it('empty current password', function () {
+                    test.changePassword(1, '', 'testpurpose2.', 'testpurpose2.', false, function (result) {
+                        assert(result, 'Incorrect password');
+                    });
+                });
+                it('empty new password', function () {
+                    test.changePassword(1, 'testpurpose1', '', 'testpurpose2.', false, function (result) {
+                        assert(result, 'Invalid new password');
+                    });
+                });
+                it('empty new password confirm', function () {
+                    test.changePassword(1, 'testpurpose1', 'testpurpose2.', '', false, function (result) {
+                        assert(result, 'Invalid old password');
+                    });
+                });
+            });
+            describe('short password', function () {
+                it('short current password', function () {
+                    test.changePassword(1, 'short', 'testpurpose2.', 'testpurpose2.', false, function (result) {
+                        assert(result, 'Incorrect password');
+                    });
+                });
+                it('short new password', function () {
+                    test.changePassword(1, 'testpurpose1', 'short', 'testpurpose2.', false, function (result) {
+                        assert(result, 'Invalid new password');
+                    });
+                });
+                it('short new password confirm', function () {
+                    test.changePassword(1, 'testpurpose1', 'testpurpose2.', 'short', false, function (result) {
+                        assert(result, 'Invalid old password');
+                    });
+                });
+            });
+            describe('long password', function () {
+                it('short current password', function () {
+                    test.changePassword(1, 'longlonglonglonglonglonglong', 'testpurpose2.', 'testpurpose2.', false, function (result) {
+                        assert(result, 'Incorrect password');
+                    });
+                });
+                it('long new password', function () {
+                    test.changePassword(1, 'testpurpose1', 'longlonglonglonglonglonglong', 'testpurpose2.', false, function (result) {
+                        assert(result, 'Invalid new password');
+                    });
+                });
+                it('long new password confirm', function () {
+                    test.changePassword(1, 'testpurpose1', 'testpurpose2.', 'longlonglonglonglonglonglong', false, function (result) {
+                        assert(result, 'Invalid old password');
+                    });
+                });
+            });
+            describe('passwords do not match', function () {
+                it('password do not match', function () {
+                    test.changePassword(1, 'testpurpose1', 'testpurpose2.', 'randompass1.', false, function (result) {
+                        assert(result, 'Passwords do not match');
+                    });
+                });
+            });
+            describe('incorrect old password', function () {
+                it('incorrect old password', function () {
+                    test.verifyUserPassword(1, 'randomwrongpass1.', function (result) {
+                        assert(result, 'Error');
+                    });
+                });
+            });
+        });
+        describe('change-password-successful', function () {
+            describe('verify correct password', function () {
+                it('verify correct password', function () {
+                    test.verifyUserPassword(1, 'testingpurpose1.', function (result) {
+                        assert(result, 'Valid');
+                    });
+                });
+            });
+            describe('change password successful', function () {
+                it('verify correct password', function () {
+                    test.updatePassword(1, 'testingpurpose2.', function (result) {
+                        assert(result, 'Success');
+                    });
+                });
+            });
+        });
+    });
+    describe('delete-user-successful', function () {
+        it('delete-user-successful', function () {
+            test.deleteUserHelper(1, function (result) {
+                assert(result, 'success');
+            });
+        });
+    });
 });
 
 //describe('user', function () {

@@ -19,7 +19,7 @@ exports.changeName = function (userId, newName, callback) {
         callback('Invalid user id');
         return;
     }
-    if (newName === undefined || newName.length === 0) {
+    if (newName === undefined || newName == null || newName == '' || newName.length === 0) {
         callback('Invalid name');
         return;
     }
@@ -35,6 +35,7 @@ exports.changeName = function (userId, newName, callback) {
     });
 };
 
+exports.test.changeName = exports.changeName;
 
 /* Handles name change requests from users by updating their name in the database
  * and responding with success / failure response.
@@ -74,14 +75,20 @@ exports.changePassword = function (userId, currentPassword, newPassword, newPass
         callback('Invalid user id');
         return;
     }
-    if ((currentPassword === undefined || currentPassword.length === 0) && !isAdminChanging) {
+    if ((currentPassword === undefined || currentPassword == null || currentPassword == '' || currentPassword.length < 8 || currentPassword.length > 20 ||currentPassword.length === 0) && !isAdminChanging) {
         callback('Incorrect password');
         return;
     }
-    if (newPassword === undefined || newPassword.length === 0) {
+    if (newPassword === undefined || newPassword == null || newPassword == '' || newPassword.length < 8 || newPassword > 20 || newPassword.length === 0) {
         callback('Invalid new password');
         return;
     }
+    
+    if (newPasswordConfirm === undefined || newPasswordConfirm == null || newPasswordConfirm == '' || newPasswordConfirm.length < 8 || newPasswordConfirm > 20 || newPasswordConfirm.length === 0) {
+        callback('Invalid old password');
+        return;
+    }
+    
     if (newPassword != newPasswordConfirm) {
         callback('Passwords do not match');
         return
@@ -102,7 +109,7 @@ exports.changePassword = function (userId, currentPassword, newPassword, newPass
         });
     }
 };
-
+exports.test.changePassword = exports.changePassword;
 
 /* Handles change password requests from users by verifying and then updating their password. */
 exports.changePasswordHandler = function (request, response) {
@@ -154,6 +161,8 @@ function updatePassword(userId, newPassword, callback) {
     });
 }
 
+exports.test.updatePassword = updatePassword;
+
 /* Verifies passwrod for the user specified by `userId`.
  * Notifies the result through the given callback function.
  */
@@ -174,6 +183,8 @@ function verifyUserPassword(userId, password, callback) {
         }
     });
 }
+
+exports.test.verifyUserPassword = verifyUserPassword;
 
 //function for change profile picture
 var changeProfilePicHandler = function (req, res) {
@@ -591,7 +602,7 @@ exports.deleteUserHandler = function (req, res) {
         }
     })
 };
-
+exports.test.deleteUserHelper = exports.deleteUserHelper;
 exports.test.deleteUserHandler = exports.deleteUserHandler;
 
 /* Checks for error and returns the profile picture color for a user */
