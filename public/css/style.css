@@ -17,7 +17,7 @@
     display: none;
 }
 
-.profile_error{
+.profile_error {
     display: none;
 }
 
@@ -25,6 +25,30 @@
     position: absolute;
     width: 100%;
     display: none;
+}
+
+.standard-link:link {
+    color: #757575;
+    background-color: transparent;
+    text-decoration: none
+}
+
+.standard-link:visited {
+    color: #34495e;
+    background-color: transparent;
+    text-decoration: none
+}
+
+.standard-link:hover {
+    color: #bdc3c7;
+    background-color: transparent;
+    text-decoration: none
+}
+
+.standard-link:active {
+    color: #f1c40f;
+    background-color: transparent;
+    text-decoration: none
 }
 
 .standard-clear-button {
@@ -348,7 +372,8 @@ p.class-name {
     right: 0;
     top: 24%;
     bottom: 0;
-    margin: auto;    max-height: 100%;
+    margin: auto;
+    max-height: 100%;
     max-width: 100%;
 }
 
@@ -394,7 +419,8 @@ p.class-name {
 
 
 /* home page style starts*/
-#signup-error-message{
+
+#signup-error-message {
     text-align: center;
     margin-bottom: 13px;
     color: #e74c3c;
@@ -462,13 +488,16 @@ p#no-recommended-courses {
     margin-top: 20px;
 }
 
+
 /* ensure that the notifications well has no upper padding */
+
 aside#notifications-feed .well {
     padding-top: 0px;
 }
 
 
 /* add a border between notifications, and some padding */
+
 aside#notifications-feed article.notification:not(:last-child) {
     border-bottom: 1px solid gray;
 }
@@ -480,6 +509,7 @@ aside#notifications-feed article.notification {
 
 
 /* don't let there be space between the message and the timestamp */
+
 aside#notifications-feed article.notification p {
     margin-bottom: 0px;
 }

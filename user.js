@@ -75,7 +75,7 @@ exports.changePassword = function (userId, currentPassword, newPassword, newPass
         callback('Invalid user id');
         return;
     }
-    if ((currentPassword === undefined || currentPassword == null || currentPassword == '' || currentPassword.length < 8 || currentPassword.length > 20 ||currentPassword.length === 0) && !isAdminChanging) {
+    if ((currentPassword === undefined || currentPassword == null || currentPassword == '' || currentPassword.length < 8 || currentPassword.length > 20 || currentPassword.length === 0) && !isAdminChanging) {
         callback('Incorrect password');
         return;
     }
@@ -83,12 +83,12 @@ exports.changePassword = function (userId, currentPassword, newPassword, newPass
         callback('Invalid new password');
         return;
     }
-    
+
     if (newPasswordConfirm === undefined || newPasswordConfirm == null || newPasswordConfirm == '' || newPasswordConfirm.length < 8 || newPasswordConfirm > 20 || newPasswordConfirm.length === 0) {
         callback('Invalid old password');
         return;
     }
-    
+
     if (newPassword != newPasswordConfirm) {
         callback('Passwords do not match');
         return
@@ -386,7 +386,13 @@ var signinHandler = function (req, res, testing) {
                     return testing('true');
                 console.log("signinHandler " + results[0].user_id);
                 setLoggedInUserId(req, results[0].user_id);
-                exports.getProfileHandler(req, res, results[0].user_id);
+                //                exports.getProfileHandler(req, res, results[0].user_id);
+                res.status(200);
+                var returnJSON = {
+                    "status": "success",
+                    "message": "Success"
+                }
+                sendBackJSON(returnJSON, res);
             }
         })
     }).catch(function (err) {
