@@ -54,6 +54,7 @@ passport.use(new googleStrategy({
                 return callback(err, profile);
             }
             else {
+                // we should have a valid userId now available
                 console.log('findOrCreateUser() returned successfully');
                 return callback(null, profile);
             }
@@ -292,22 +293,16 @@ socketIO.on('connection', messaging.onConnection);
 
 /* google authentication --------------------------------------------*/
 
-//   Use passport.authenticate() as route middleware to authenticate the
-//   request.  The first step in Google authentication will involve
-//   redirecting the user to google.com.  After authorization, Google
-//   will redirect the user back to this application at /auth/google/callback
+/* The request made to redirect to Google for authentication. */
 app.get('/auth/google/',
   passport.authenticate('google', { scope: ['openid profile'] }));
 
-// GET /auth/google/callback
-//   Use passport.authenticate() as route middleware to authenticate the
-//   request.  If authentication fails, the user will be redirected back to the
-//   login page.  Otherwise, the primary route function function will be called,
-//   which, in this example, will redirect the user to the home page.
+/* The request users are redirected to by Google after they have authenticated. */
 app.get('/auth/google/callback',
     passport.authenticate('google'), function(req, res) {
         console.log('google user authenticated');
         
+        // since we only have the googleId, convert it to an internal userId
         googleLogin.fetchUser(req.user.id, function(err, userId) {
             if (err) {
                 renderHome(req, res, '<p><strong>Oh no!</strong> It doesn\' look like you succesfully logged in.</p>');
