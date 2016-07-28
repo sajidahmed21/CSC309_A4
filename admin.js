@@ -38,8 +38,9 @@ exports.handleAdminHomeRequest = function (request, response) {
         errorContent: request.session.errorContent
     });
     
-    // Reset the error content once it has been displayed to the admin
+    // Reset the error content and message once it has been displayed to the admin
     request.session.errorContent = undefined;
+    request.session.message = undefined;
 };
 
 
@@ -139,9 +140,12 @@ exports.handleCreateUserRequest = function (request, response) {
 exports.handleEditProfileRequest = function (request, response) {
     
     getUserProfileData(request.params.id, function (status, profileData) {
+        
         if (status == 'Success') {
+            
             response.render('edit_user_profile_admin', {
                 message: request.session.message,
+                errorMessage: request.session.errorMessage,
                 adminUsername: request.session.adminId,
                 profile_name: profileData.profile_name,
                 background_color: profileData.background_color,
@@ -149,14 +153,39 @@ exports.handleEditProfileRequest = function (request, response) {
                 classes: profileData.classes,
                 userId: request.params.id /* May be I need this in case I need the user id in the html page */
             });
-            // Reset message after it has been rendered
+            // Reset messages after they have been rendered
             request.session.message = undefined;
+            request.session.errorMessage = undefined;
         }
         else {
             // Show error message if the user could not be succssfully retrieve from the database.
             request.session.errorContent = '<p><strong>Opps!</strong> Something went wrong. Please try again later!</p>';
             common.redirectToPage('/admin', response);
         }
+    });
+};
+
+exports.handleEditNameRequest = function (request, response) {
+    var userId = request.params.id;
+    
+    user.changeName(request.params.id, request.body.newName, function (result) {
+        switch (result) {
+            case 'Success':
+                request.session.message = '<p>Name successfully changed</p>';
+                break;
+            case 'Invalid name':
+                request.session.errorMessage = '<p>Oops! The name cannot be empty</p>';
+                break;
+            case 'Invalid user id':
+                request.session.errorMessage = '<p>Oops! The user you are trying to edit does not exist!</p>';
+                break;
+            default:
+                request.session.errorMessage = '<p>Oops! Something went wrong. Please try again later!</p>';
+                break;
+        }
+        
+        /* Redirect to the user profile page */
+        common.redirectToPage('/admin/edit_user_profile/' + userId, response);
     });
 };
 

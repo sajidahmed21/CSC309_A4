@@ -33,7 +33,7 @@ $(document).ready(function () {
 var unfollow = function (followee_id) {
     var body = {
         "followee": followee_id
-    }
+    };
     console.log('send');
     $.ajax({
         type: "POST",
@@ -51,12 +51,12 @@ var unfollow = function (followee_id) {
             window.location.href = "/?errorMessage=Your%20session%20has%20expired";
         }
     });
-}
+};
 
 var follow = function (followee_id) {
     var body = {
         "followee": followee_id
-    }
+    };
 
     $.ajax({
         type: "POST",
@@ -74,7 +74,7 @@ var follow = function (followee_id) {
             window.location.href = "/?errorMessage=Your%20session%20has%20expired";
         }
     });
-}
+};
 
 var dropCourse = function (dropCourse_id) {
     var $popup = $('#popup');
@@ -127,7 +127,7 @@ var dropCourse = function (dropCourse_id) {
     $input.click(function () {
         var body = {
             "dropCourse_id": dropCourse_id
-        }
+        };
 
         $.ajax({
             type: "POST",
@@ -382,7 +382,7 @@ var changePassword = function () {
         class: 'standard-green-input'
     });
 
-    $input.appendTo($form)
+    $input.appendTo($form);
 
     $input = $('<input/>', {
         id: 'changePassword',
@@ -475,7 +475,7 @@ var changePassword = function () {
                 "currentPassword": $('#currentPassword').val(),
                 "changePassword": $('#changePassword').val(),
                 "newPasswordConfirm": $('#newPasswordConfirm').val()
-            }
+            };
 
             $.ajax({
                 type: "POST",
@@ -494,7 +494,7 @@ var changePassword = function () {
                 }
             });
         }
-    })
+    });
     $form.appendTo($container);
     $container.appendTo($middle);
     $middle.appendTo($outer);
@@ -596,7 +596,7 @@ var changeName = function () {
         } else {
             var body = {
                 "changeName": $('#changeName').val()
-            }
+            };
 
             $.ajax({
                 type: "POST",
@@ -610,15 +610,12 @@ var changeName = function () {
                     window.location.href = "/user/profile";
                 },
                 error: function (data) {
-                    var errormsg = {
-                        errorMessage: "Your session has expired"
-                    }
                     console.log('ERRORFAIL');
                     window.location.href = "/?errorMessage=Your%20session%20has%20expired";
                 }
             });
         }
-    })
+    });
 
     $form.appendTo($container);
     $container.appendTo($middle);

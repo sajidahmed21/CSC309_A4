@@ -84,7 +84,7 @@ exports.changePassword = function (userId, currentPassword, newPassword, newPass
     }
     if (newPassword != newPasswordConfirm) {
         callback('Passwords do not match');
-        return
+        return;
     }
 
     if (isAdminChanging) {
@@ -494,7 +494,6 @@ var logoutHandler = function (req, res) {
 exports.logoutHandler = logoutHandler;
 exports.test.logoutHandler = logoutHandler;
 
-
 exports.deleteUserHelper = function (user_id, callback) {
         db.query("DELETE FROM LOGIN_CREDENTIALS WHERE user_id= $1", {
             bind: [user_id]
@@ -509,8 +508,9 @@ exports.deleteUserHelper = function (user_id, callback) {
         }).catch(function (err) {
             callback('errorouter')
         });
-    }
-    //CASCADE ALL USERS and CLASSES
+};
+
+//CASCADE ALL USERS and CLASSES
 exports.deleteUserHandler = function (req, res) {
     var user_id = getLoggedInUserId(req);
     // always set the user_id to logged out

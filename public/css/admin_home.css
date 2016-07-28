@@ -90,6 +90,13 @@ p {
     font-size: 1.8rem;
 }
 
+#top-notification-message p {
+    color: white;
+    padding: 5px 15px;
+    margin: 10px 0px;
+    background-color: #1abc9c;
+}
+
 #users-section, #analytics-section, #edit-class-section {
     width: 97%;
     margin: auto;

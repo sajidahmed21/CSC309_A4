@@ -224,6 +224,8 @@ app.post('/admin/create_user', admin.checkAuthentication, admin.handleCreateUser
 
 app.get('/admin/edit_user_profile/:id', admin.checkAuthentication, admin.handleEditProfileRequest);
 
+app.post('/admin/edit_user/name/:id', admin.checkAuthentication, admin.handleEditNameRequest);
+
 app.get('/admin/edit_course/:id', admin.checkAuthentication, admin.handleEditCourseRequest);
 
 
