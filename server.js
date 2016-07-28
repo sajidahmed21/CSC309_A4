@@ -230,6 +230,8 @@ app.post('/admin/edit_user/change_password/:id', admin.checkAuthentication, admi
 
 app.post('/admin/delete_user/:id', admin.checkAuthentication, admin.handleDeleteUserRequest);
 
+app.post('/admin/remove_user_from_course/:id', admin.checkAuthentication, admin.handleUnenrolUserRequest);
+
 app.get('/admin/edit_course/:id', admin.checkAuthentication, admin.handleEditCourseRequest);
 
 

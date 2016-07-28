@@ -11,6 +11,9 @@ $(document).ready(function () {
     
     // Attach click listener for delete user button
     $('#deleteuser_btn').click(deleteUser);
+    
+    // Attach click listeners for all 'remove from course' buttons
+    $('.drop_course_btn').click(removeUserFromCourse);
 });
 
 var changeName = function () {
@@ -243,6 +246,80 @@ var deleteUser = function () {
     $outer.appendTo($popup);
 };
 
+var removeUserFromCourse = function () {
+    var $popup = $('#popup');
+    $popup.empty();
+
+    $outer = $('<div/>', {
+        id: 'unenroll_form'
+    });
+
+    $middle = $('<div/>', {
+        class: 'col-md-6'
+    });
+
+    $container = $('<div/>', {
+        class: 'standard-container'
+    });
+
+    $cancelwrapper = $('<div/>');
+
+    $cancelicon = $('<span/>', {
+        class: 'glyphicon glyphicon-remove cancel_icon'
+    });
+    $cancelicon.click(function () {
+        hidePopup();
+    });
+    $cancelwrapper.append($cancelicon);
+
+    $container.append($cancelwrapper);
+
+    var userId = $('#deleteuser_btn').val();
+    var courseId = this.value;
+    
+    $form = $('<form/>', {
+        action: '/admin/remove_user_from_course/' + userId,
+        method: 'POST'
+    });
+    
+    // Pass in the course id along with POST request.
+    $courseId = $('<input/>', {
+        type: 'hidden',
+        name: 'courseId',
+        value: courseId
+    });
+    
+    $courseId.appendTo($form);
+
+    $title = $('<h1/>', {
+        class: 'standard-title'
+    });
+    $title.text('Unenroll').appendTo($form);
+
+    $input = $('<p/>', {
+        class: 'standard-body'
+    });
+    $input.text('Remove user from this course?');
+
+    $input.appendTo($form);
+
+    $removeButton = $('<input/>', {
+        type: 'submit',
+        value: 'Remove',
+        class: 'btn btn-danger standard-red-button block_btn'
+    });
+
+    $removeButton.appendTo($form);
+
+    $form.appendTo($container);
+    $container.appendTo($middle);
+    $middle.appendTo($outer);
+    $outer.appendTo($popup);
+};
+
+/* Checks if the the new password and its confirmation match or not.
+ * Other validations are handled by thr browser.
+*/
 var validateChangePasswordInput = function() {
     $newPasswordField = $('#new_password_field');
     $confirmPasswordField = $('#confirm_new_password_field');

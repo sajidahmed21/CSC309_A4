@@ -1,7 +1,6 @@
 $(document).ready(function () {
     initialize();
     $('.drop_course_btn').click(function () {
-        console.log(this.value);
         dropCourse(this.value);
     });
     $('#changepassword_btn').click(function () {

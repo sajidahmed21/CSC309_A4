@@ -239,6 +239,27 @@ exports.handleDeleteUserRequest = function(request, response) {
     });
 };
 
+exports.handleUnenrolUserRequest = function (request, response) {
+    var userId = request.params.id;
+    
+    user.unenrollUser(userId, request.body.courseId, function (result) {
+        
+        switch (result) {
+            case 'Success':
+                request.session.message = '<p>User has been removed from the selected course</p>';
+                break;
+            
+            // We should not get here since we have validation on the client side
+            default:
+                request.session.errorMessage = '<p>Oops! Something went wrong. Please try again later!</p>';
+                break;
+        }
+        
+        /* Redirect to the user profile page */
+        common.redirectToPage('/admin/edit_user_profile/' + userId, response);
+    });
+};
+
 /* Handles edit course requests by rendering the edit course page for admins */
 exports.handleEditCourseRequest = function (request, response) {
     response.render('edit_course_admin');

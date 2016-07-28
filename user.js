@@ -198,36 +198,42 @@ var changeProfilePicHandler = function (req, res) {
 exports.changeProfilePicHandler = changeProfilePicHandler;
 exports.test.changeProfilePicHandler = changeProfilePicHandler;
 
-exports.unenrollHelper = function (user_id, class_id, callback) {
+exports.unenrollUser = function (userId, classId, callback) {
+    if (userId == undefined || userId < 1 || classId == undefined || classId < 1) {
+        callback('Invalid input');
+        return;
+    }
     db.query("DELETE FROM ENROLMENT WHERE user_id= $1 AND class_id = $2", {
-        bind: [user_id, class_id]
+        bind: [userId, classId]
     }).spread(function (results, metadata) {
-        callback('success');
+        callback('Success');
     }).catch(function (err) {
-        callback('error');
+        callback('Error');
     });
-}
+};
 
 
 //function for unenroll class
 exports.unenrollHandler = function (req, res) {
-    var user_id = getLoggedInUserId(req);
-    var class_id = req.body.dropCourse_id;
-    exports.unenrollHelper(user_id, class_id, function (result) {
-        if (result == 'success') {
-            var returnJSON = {
+    var userId = getLoggedInUserId(req);
+    var classId = req.body.dropCourse_id;
+    
+    exports.unenrollUser(userId, classId, function (result) {
+        var responseBody = {};
+        
+        if (result == 'Success') {
+            responseBody = {
                 "status": "success",
                 "message": "Delete Success"
-            }
-            sendBackJSON(returnJSON, res);
-        } else if (result == 'error') {
+            };
+        } else if (result == 'Error') {
             console.log("Err in delete course");
-            var returnJSON = {
+            responseBody = {
                 "status": "error",
                 "message": "Err in delete course"
-            }
-            sendBackJSON(returnJSON, res);
+            };
         }
+        sendBackJSON(responseBody, res);
     });
 };
 
