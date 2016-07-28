@@ -3,6 +3,7 @@
 
 var common = require('./common');
 var user = require('./user');
+var analytics = require('./analytics');
 
 /* Function for sending JSON response with 400 `Bad Request` status code */
 var sendBadRequestResponse = common.sendBadRequestResponse;
@@ -329,40 +330,15 @@ function onSuccessfulLogin(adminId, request, response) {
 /* Handles analytics data requests by providing analytics data about users and classes */
 exports.handleAnalyticsDataRequest = function (request, response) {
     
-    /* --- SQL Queries --- */
-    
-    /* Total number of users */
-    var totalUsers = '(SELECT COUNT(*) AS totalUsers FROM USERS)';
-    
-    /* Number of unique users who have enrolled for at least one class */
-    var usersEnrolledInClass = '(SELECT COUNT(DISTINCT user_id) AS numUsersEnrolledInClass FROM ENROLMENT)';
-    
-    /* Avg num of unique users per day */
-    var avgLogins = '(SELECT COALESCE(AVG(numLogins), \'-\') AS avgUniqueLoginsPerDay ' +
-                     'FROM (SELECT COUNT(DISTINCT user_id) AS numLogins FROM LOGIN_HISTORY GROUP BY date(login_timestamp)))';
-    
-    /* Total number of classes */
-    var numClasses = '(SELECT COUNT(*) AS numClasses FROM CLASSES)';
-    
-    /* Avg num of users per class */
-    var avgUsersPerClass = '(SELECT COALESCE((SELECT COUNT(*) FROM ENROLMENT) / (SELECT COUNT(*) FROM CLASSES), \'-\') ' +
-                            'AS avgUsersPerClass)';
-    
-    /* Avg rating over all classes */
-    var avgClassRating = '(SELECT (COALESCE(AVG(rating), \'-\')) AS avgClassRating FROM REVIEWS)';
-    
-    /* The final query to be passed in for execution */
-    var finalQuery = 'SELECT * FROM ' + totalUsers + ', ' + usersEnrolledInClass + ', ' + avgLogins + ', ' +
-                      numClasses + ', ' + avgUsersPerClass + ', ' + avgClassRating;
-    
-    db.query(finalQuery).spread(function (results) {
-        if (results === undefined || results.length !== 1) {
-            // We shouldn't get here
+    analytics.getAnalyticsDataForAdminDashboard(db, function (status, data) {
+        if (status == 'Success') {
+            // Send JSON response back to the client
+            common.sendBackJSON(data, response);
+        }
+        else {
+            // We shouldn't get here uless something goes terribly wrong
             common.sendInternalServerErrorResponse(response);
-            return;
         }
         
-        // Send the JSON response back to the client
-        common.sendBackJSON(results[0], response);
     });
 };
