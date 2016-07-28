@@ -152,36 +152,12 @@ var loginPage = function () {
         text: 'Login',
         class: 'btn btn-danger standard-red-button block_btn',
     });
-    
-//    $input.click(function () {
-//        var body = {
-//            "signinUsername": $('#userName').val(),
-//            "signinPassword": $('#userPassword').val(),
-//        }
-//
-//        $.ajax({
-//            type: "POST",
-//            url: "/user/signin",
-//            data: JSON.stringify(body),
-//            contentType: "application/json; charset=utf-8",
-//            dataType: "json",
-//            success: function (data) {
-//                hidePopup();
-//                console.log(data);
-//                window.location.href = "/user/profile";
-//            },
-//            error: function (data) {
-//                hidePopup();
-//                $("body").html(data.responseText);
-//            }
-//        });
-//    });
 
     $input.appendTo($form);
     
     $input = $('<input/>', {
         type: 'button',
-        value: 'Facebook Login',
+        value: 'Google Login',
         class: 'btn btn-danger standard-red-button block_btn'
     });
 
@@ -189,7 +165,7 @@ var loginPage = function () {
 
     $input.click(function () {
         hidePopup();
-        window.location = "./profile";
+        window.location = "/auth/google";
     });
     
     
@@ -295,17 +271,6 @@ var signupPage = function () {
     
     $div.text('Your passwords do not match')
     $div.appendTo($form);
-
-    /*$input = $('<input/>', {
-        id: 'userEmail',
-        name: 'userEmail',
-        type: 'email',
-        placeholder: 'Email',
-        required: 'required',
-        class: 'standard-input'
-    });
-
-    $input.appendTo($form);*/
     
     $input = $('<button/>', {
         type: 'submit',
@@ -317,15 +282,15 @@ var signupPage = function () {
 
     $input = $('<input/>', {
         type: 'button',
-        value: 'Facebook Sign Up',
-        'class': 'standard-blue-button block_btn'
+        value: 'Google Sign Up',
+        class: 'standard-blue-button block_btn',
     });
 
     $input.css('margin-top', '10px');
 
     $input.click(function () {
         hidePopup();
-        window.location = "./profile.html";
+        window.location = "/auth/google";
     });
 
     $input.appendTo($form);
@@ -377,9 +342,6 @@ var signupPage = function () {
 };
 
 
-//var initialize = function(){
-//    hidePopup();
-//};
 var hidePopup = function () {
     console.log("hide");
     var $popup = $('#popup');
