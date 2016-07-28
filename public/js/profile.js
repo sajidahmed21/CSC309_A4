@@ -4,6 +4,10 @@ $(document).ready(function () {
         console.log(this.value);
         dropCourse(this.value);
     });
+    $('.stop_teaching_btn').click(function () {
+        console.log(this.value);
+        stopTeaching(this.value);
+    });
     $('#changepassword_btn').click(function () {
         changePassword();
     });
@@ -29,6 +33,85 @@ $(document).ready(function () {
         follow(this.value);
     });
 });
+
+var stopTeaching = function (stopteachingCourse_id) {
+    var $popup = $('#popup');
+    $popup.empty();
+
+    $outer = $('<div/>', {
+        id: 'unenroll_form'
+    });
+
+    $middle = $('<div/>', {
+        class: 'col-md-6'
+    });
+
+    $container = $('<div/>', {
+        class: 'standard-container'
+    });
+
+    $cancelwrapper = $('<div/>');
+
+    $cancelicon = $('<span/>', {
+        class: 'glyphicon glyphicon-remove cancel_icon'
+    });
+    $cancelicon.click(function () {
+        hidePopup();
+    });
+    $cancelwrapper.append($cancelicon);
+
+    $container.append($cancelwrapper);
+
+    $form = $('<form/>');
+
+    $title = $('<h1/>', {
+        class: 'standard-title'
+    });
+    $title.text('Stop Teaching').appendTo($form);
+
+    $input = $('<p/>', {
+        class: 'standard-body'
+    });
+    $input.text('Are you sure you want to stop teaching this course?');
+
+    $input.appendTo($form);
+
+    $input = $('<input/>', {
+        type: 'button',
+        value: 'Stop Teaching',
+        class: 'btn btn-danger standard-red-button block_btn'
+    });
+
+    $input.click(function () {
+        var body = {
+            "stopteachingCourse_id": stopteachingCourse_id
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/user/stopTeaching",
+            data: JSON.stringify(body),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                hidePopup();
+                console.log(data);
+                window.location.href = "/user/profile";
+            },
+            error: function (data) {
+                hidePopup();
+                window.location.href = "/?errorMessage=Your%20session%20has%20expired";
+            }
+        });
+    });
+
+    $input.appendTo($form);
+
+    $form.appendTo($container);
+    $container.appendTo($middle);
+    $middle.appendTo($outer);
+    $outer.appendTo($popup);
+};
 
 var unfollow = function (followee_id) {
     var body = {

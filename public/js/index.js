@@ -141,7 +141,7 @@ var loginPage = function () {
         required: 'required',
         pattern: '^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&\\-])[A-Za-z\\d$@$!%*#?&\\-]{6,20}$',
         title: 'Password must contain at least 1 letter, 1 number, 1 special character, ' +
-               ' and must be between 6 and 20 characters long. Special characters include $@!%*#?&-',
+            ' and must be between 6 and 20 characters long. Special characters include $@!%*#?&-',
         class: 'standard-red-input'
     });
 
@@ -154,7 +154,7 @@ var loginPage = function () {
     });
 
     $input.appendTo($form);
-    
+
     $input = $('<input/>', {
         type: 'button',
         value: 'Google Login',
@@ -167,15 +167,42 @@ var loginPage = function () {
         hidePopup();
         window.location = "/auth/google";
     });
-    
-    
+
+
     $input.appendTo($form);
-    
+
+    $form.submit(function (e) {
+        e.preventDefault();
+        console.log('HEY');
+        var body = {
+            "signinUsername": $('#signinUsername').val(),
+            "signinPassword": $('#signinPassword').val(),
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/user/signin",
+            data: JSON.stringify(body),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                hidePopup();
+                console.log("INDEX LOGIN");                console.log(data);
+                window.location.href = "/user/profile";
+            },
+            error: function (data) {
+                hidePopup();
+                $("body").html(data.responseText);
+            }
+        });
+        return false;
+    });
+
     $form.appendTo($container);
     $container.appendTo($middle);
     $middle.appendTo($outer);
     $outer.appendTo($popup);
-    
+
     $('input#signinUsername').focus();
 };
 
@@ -237,7 +264,7 @@ var signupPage = function () {
     });
 
     $input.appendTo($form);
-    
+
     $input = $('<input/>', {
         id: 'signupPassword',
         name: 'signupPassword',
@@ -246,7 +273,7 @@ var signupPage = function () {
         required: 'required',
         pattern: '^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&\\-])[A-Za-z\\d$@$!%*#?&\\-]{6,20}$',
         title: 'Password must contain at least 1 letter, 1 number, 1 special character, ' +
-               ' and must be between 6 and 20 characters long. Special characters include $@!%*#?&-',
+            ' and must be between 6 and 20 characters long. Special characters include $@!%*#?&-',
         class: 'standard-input'
     });
 
@@ -263,15 +290,15 @@ var signupPage = function () {
     });
 
     $input.appendTo($form);
-    
-    $div = $('<div/>',{
+
+    $div = $('<div/>', {
         id: 'signup-error-message',
         class: 'invis'
     })
-    
+
     $div.text('Your passwords do not match')
     $div.appendTo($form);
-    
+
     $input = $('<button/>', {
         type: 'submit',
         text: 'Join Now!',
@@ -294,18 +321,18 @@ var signupPage = function () {
     });
 
     $input.appendTo($form);
-    
-    $form.submit(function(e){
+
+    $form.submit(function (e) {
         e.preventDefault();
         console.log($('#signupName').val());
         console.log($('#signupUsername').val());
         console.log($('#signupPassword').val());
         console.log($('#userPasswordConfirm').val());
-        
-        if($('#signupPassword').val() != $('#userPasswordConfirm').val()){
+
+        if ($('#signupPassword').val() != $('#userPasswordConfirm').val()) {
             $('#signup-error-message').css('display', 'block');
-        }
-        else{
+            return false;
+        } else {
             var body = {
                 "signupName": $('#signupName').val(),
                 "signupUsername": $('#signupUsername').val(),
@@ -322,6 +349,7 @@ var signupPage = function () {
                 dataType: "json",
                 success: function (data) {
                     hidePopup();
+                    console.log('SUCCESS');
                     console.log(data);
                     window.location.href = "/user/profile";
                 },
@@ -330,14 +358,16 @@ var signupPage = function () {
                     $("body").html(data.responseText);
                 }
             });
+            return false;
         }
+        return false;
     })
-    
+
     $form.appendTo($container);
     $container.appendTo($middle);
     $middle.appendTo($outer);
     $outer.appendTo($popup);
-    
+
     $('input#signupName').focus();
 };
 
