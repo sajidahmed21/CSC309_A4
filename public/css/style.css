@@ -429,7 +429,7 @@ form#signin-popup {
 
 div#references-popup {
     width: 400px;
-    height: 320px;
+    height: 450px;
     position: absolute;
     left: 0;
     right: 0;
@@ -474,7 +474,18 @@ div#popups .cancel_icon {
     border-color: #3498db !important;
     border-width: 1px;
     margin-right: 10px;
+    background-color: #ffffff !important;
     color: #3498db !important;
+}
+
+#userlogin_btn:hover {
+    padding: 14px 15px;
+    border-style: solid;
+    border-color: #265a88 !important;
+    border-width: 1px;
+    margin-right: 10px;
+    background-color: #ffffff !important;
+    color: #265a88 !important;
 }
 
 
