@@ -1,48 +1,61 @@
-<div id="popup"><!-- to be filled in through javascript with the popup --></div>
+<div id="popup">
+    <!-- to be filled in through javascript with the popup -->
+</div>
 
 <!-- standard popups which we load in HTML -->
 <div id="popups">
-	<form id="signin-popup" method="post" action="/user/signin">
-		<h1 class="standard-title">Login</h1><span class="cancel_icon glypyicon glypyicon-cancel"></span>
-		
-		<input id="signinUsername" name="signinUsername" type="text" placeholder="Username" required="required" pattern="^[a-zA-Z0-9]{8,20}$" title="Username must be between 8 and 20 characters, and must only consist of letters and numbers." class="standard-red-input"></input>
-		<input id="signinPassword" name="signinPassword" type="password" placeholder="Password" required="required" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&amp;\-])[A-Za-z\d$@$!%*#?&amp;\-]{8,20}$" title="Password must contain at least 1 letter, 1 number, 1 special character,  and must be between 8 and 20 characters long. Special characters include $@!%*#?&amp;-" class="standard-red-input"></input>
-		<button type="submit" class="btn btn-danger standard-red-button block_btn">Login</button>
-		
-		<button id="google-login" type="button" class="btn btn-danger standard-red-button block_btn">Google Login</button>
-	</form>
-	
-	<form id="signup-popup" method="post" action="/user/signup">
-		<h1 class="standard-title">Sign Up</h1><span class="cancel_icon glypyicon glypyicon-cancel"></span>
-		
-		<input id="signupName" name="signupName" type="text" placeholder="Your Name" required="required" class="standard-input" maxlength="20"></input>
-		<input id="signupUsername" name="signupUsername" type="text" placeholder="Username" required="required" pattern="^[a-zA-Z0-9]{8,20}$" title="Username must be between 8 and 20 characters, and must only consist of letters and numbers." class="standard-input"></input>
-		<input id="signupPassword" name="signupPassword" type="password" placeholder="Password" required="required" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&amp;\-])[A-Za-z\d$@$!%*#?&amp;\-]{8,20}$" title="Password must contain at least 1 letter, 1 number, 1 special character,  and must be between 8 and 20 characters long. Special characters include $@!%*#?&amp;-" class="standard-input"></input>
-		<input id="userPasswordConfirm" name="userPasswordConfirm" type="password" placeholder="Password Comfirmation" required="required" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&amp;\-])[A-Za-z\d$@$!%*#?&amp;\-]{8,20}$" title="Password must contain at least 1 letter, 1 number, 1 special character,  and must be between 8 and 20 characters long. Special characters include $@!%*#?&amp;-" class="standard-input"></input>
-		
-		<div id="signup-error-message"><!-- to be filled in through javascript on error --></div>
-		
-		<button type="submit" class="standard-blue-button block_btn">Join Now!</button>
-	</form>
-	
-	<div id="references-popup">
-		<h1 class="standard-title">References</h1><span class="cancel_icon glypyicon glypyicon-cancel"></span>
-		
-		<ul style="list-style-type: none; margin: 0px; padding: 0px; text-align: center;">
+    <form id="signin-popup" method="post" action="/user/signin">
+        <h1 class="standard-title">Login</h1>
+        <div style="display:block;">
+            <span class="glyphicon glyphicon-remove cancel_icon">
+            </span>
+        </div>
+        <input id="signinUsername" name="signinUsername" type="text" placeholder="Username" required="required" pattern="^[a-zA-Z0-9]{8,20}$" title="Username must be between 8 and 20 characters, and must only consist of letters and numbers." class="standard-red-input"></input>
+        <input id="signinPassword" name="signinPassword" type="password" placeholder="Password" required="required" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&amp;\-])[A-Za-z\d$@$!%*#?&amp;\-]{8,20}$" title="Password must contain at least 1 letter, 1 number, 1 special character,  and must be between 8 and 20 characters long. Special characters include $@!%*#?&amp;-" class="standard-red-input"></input>
+        <button type="submit" class="btn btn-danger standard-red-button block_btn">Login</button>
+
+        <button id="google-login" type="button" class="btn btn-danger standard-red-button block_btn">Google Login</button>
+    </form>
+
+    <form id="signup-popup" method="post" action="/user/signup">
+        <h1 class="standard-title">Sign Up</h1>
+        <div>
+            <span class="glyphicon glyphicon-remove cancel_icon"></span>
+        </div>
+
+        <input id="signupName" name="signupName" type="text" placeholder="Your Name" required="required" class="standard-input" maxlength="20"></input>
+        <input id="signupUsername" name="signupUsername" type="text" placeholder="Username" required="required" pattern="^[a-zA-Z0-9]{8,20}$" title="Username must be between 8 and 20 characters, and must only consist of letters and numbers." class="standard-input"></input>
+        <input id="signupPassword" name="signupPassword" type="password" placeholder="Password" required="required" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&amp;\-])[A-Za-z\d$@$!%*#?&amp;\-]{8,20}$" title="Password must contain at least 1 letter, 1 number, 1 special character,  and must be between 8 and 20 characters long. Special characters include $@!%*#?&amp;-" class="standard-input"></input>
+        <input id="userPasswordConfirm" name="userPasswordConfirm" type="password" placeholder="Password Comfirmation" required="required" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&amp;\-])[A-Za-z\d$@$!%*#?&amp;\-]{8,20}$" title="Password must contain at least 1 letter, 1 number, 1 special character,  and must be between 8 and 20 characters long. Special characters include $@!%*#?&amp;-" class="standard-input"></input>
+
+        <div id="signup-error-message">
+            <!-- to be filled in through javascript on error -->
+        </div>
+
+        <button type="submit" class="standard-blue-button block_btn">Join Now!</button>
+    </form>
+
+    <div id="references-popup">
+        <h1 class="standard-title">References</h1>
+        <div>
+            <span class="glyphicon glyphicon-remove cancel_icon"></span>
+        </div>
+
+        <ul style="list-style-type: none; margin: 0px; padding: 0px; text-align: center;">
             <li class="standard_ref_list">
-				verywell. (Website). (2016). college-student-laptop-homework-Blend-Images-Mike-Kemp-56a905c33df78cf772a2e70b. [Digital image]. Retrieved from https://www.verywell.com/reduce-student-stress-and-excel-in-school-3145175
-			</li>
-			<li class="standard_ref_list">
-				Youtube. (Company). (2005). maxresdefault. [Digital image]. Retrieved from https://i.ytimg.com/vi/MWOdIIGOHGU/maxresdefault.jpg
-			</li>
-			<li class="standard_ref_list">
-				Youtube. (Company). (2005). maxresdefault. [Digital image]. Retrieved from https://i.ytimg.com/vi/LrGPkzy6mFo/maxresdefault.jpg
-			</li>
-			<li class="standard_ref_list">
-				boredpanda. (Website). origami-crane-paper-art-fb. [Digital image]. Retrieved from http://static.boredpanda.com/blog/wp-content/uploads/2015/10/origami-crane-paper-art-fb.jpg
-			</li>
-		</ul>
-	</div>
+                verywell. (Website). (2016). college-student-laptop-homework-Blend-Images-Mike-Kemp-56a905c33df78cf772a2e70b. [Digital image]. Retrieved from https://www.verywell.com/reduce-student-stress-and-excel-in-school-3145175
+            </li>
+            <li class="standard_ref_list">
+                Youtube. (Company). (2005). maxresdefault. [Digital image]. Retrieved from https://i.ytimg.com/vi/MWOdIIGOHGU/maxresdefault.jpg
+            </li>
+            <li class="standard_ref_list">
+                Youtube. (Company). (2005). maxresdefault. [Digital image]. Retrieved from https://i.ytimg.com/vi/LrGPkzy6mFo/maxresdefault.jpg
+            </li>
+            <li class="standard_ref_list">
+                boredpanda. (Website). origami-crane-paper-art-fb. [Digital image]. Retrieved from http://static.boredpanda.com/blog/wp-content/uploads/2015/10/origami-crane-paper-art-fb.jpg
+            </li>
+        </ul>
+    </div>
 </div>
 
 <footer>
