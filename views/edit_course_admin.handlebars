@@ -6,7 +6,11 @@
     <title>LearnR</title>
 
     <script src="/js/jquery-2.0.0.min.js" defer></script>
+
     <script src="/js/footer.js" defer></script>
+
+	<script src="/js/popups.js" defer></script>
+	
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
@@ -44,24 +48,13 @@
 	
 	<div id="course-profile">
             <div class="course-banner">
-                <!--{{#if loggedIn}}-->
-                <!--   {{#unless isInstructor}}-->
-                <!--            {{#if enrolled}}-->
-                <!--                 <button id="unenroll" class="unenroll-btn">Un-Enroll </button> -->
-                <!--            {{else}}-->
-                <!--                <button id="enroll" class="enroll-btn">Enroll </button>-->
-                <!--            {{/if}}-->
-                <!--    {{/unless}}-->
-                <!--{{/if}}-->
                 <img alt="course img" src="{{imgPath}}">
                  <div class="banner-container">
                     
                 <div id="course-title-box" class="standard-container">
                     <h1 class="standard-font course-title" style="font-size: {{titlefont}};">
-                            
                         {{courseTitle}}
-                        </h1>
-
+                    </h1>
                 </div>
 
            
@@ -84,10 +77,10 @@
     </div>
 
 
-            <div id="desc-content">
+    <div id="desc-content">
 
-                <div id="course-nav" class="standard-font">
-                      <ul class="nav nav-tabs">
+        <div id="course-nav" class="standard-font">
+                <ul class="nav nav-tabs">
                         <li class="active"> <a href="#course-desc"> Course Description </a> </li>
                         <li> <a href="#requirements"> Requirements </a> </li>
                         <li> <a href="#course-enrollment"> Current Course Enrollment </a> </li>
@@ -95,8 +88,8 @@
                              <li> <a href="#course-posts"> Course Posts </a> </li>
                         {{/if}}
                     </ul>
-                </div>
-                <div class="tab-content">
+        </div>
+        <div class="tab-content">
                 <div id="course-desc" class="tab-container tab-pane fade in active">
                     {{#if adminUsername}}
                     <button id="edit-course-desc" class="edit-btn standard-green-button"> Edit </button>
@@ -160,7 +153,7 @@
                 
                 {{#if adminUsername}}
 
-                        <div id="course-posts" class="tab-pane fade">
+                    <div id="course-posts" class="tab-pane fade">
                         <div class="post-container">
                             <!--<h3 class="standard-font" style="text-align: center; margin: 40px;"> Make a Post</h3>-->
                             <!--<textarea id="post-input" class="form-control" maxlength = "1000" rows="3" placeholder="Type here... (1000 char limit)" autocomplete="off"></textarea>-->
@@ -230,20 +223,10 @@
 						</div> 
                     {{/if}}
                 </div>
-
             </div>
         </div>
-        <div id="popup">
-        </div>
-        <footer>
-            <ul>
-                <li>
-                    <a id="reference" class="no-underline" href="#"> Image References </a>
-                </li>
-            </ul>
-            <div class="footer-logo">
-            </div>
-            <hr class="footer-line">
-        </footer>
+    </div>
+    
+	{{> footer }}
 </body>
 </html>

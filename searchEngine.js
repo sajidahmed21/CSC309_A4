@@ -326,6 +326,11 @@ exports.handleSearch = function(req, res) {
         sendBadRequestResponse({'status': 'search type not allowed'}, res);
     }
     else {
+        // trim the search string if it is too long
+        if (searchString.length > 20) {
+            searchString = searchString.substring(0, 20);
+        }
+        
         switch(searchType) {
             // default: all allowed types
             case '':

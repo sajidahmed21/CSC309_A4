@@ -323,13 +323,11 @@ function updateUnconfirmedMessageStatus(messageId, wasSuccessful) {
 function addUser(userId, name, lastMessage) {
     // generate HTML
     var $userRow = $('<div>', {
-        class: 'user row',
+        class: 'user',
         'data-user-id': userId
     });
     
-    var $userInfo = $('<div>', {
-        class: 'col-sm-12'
-    });
+    var $userInfo = $('<div>');
     
     $userInfo.append($('<i>', {
         class: 'offline-icon glyphicon glyphicon-remove-sign'
@@ -343,7 +341,7 @@ function addUser(userId, name, lastMessage) {
     $userRow.append($userInfo);
     
     $userRow.append($('<p>', {
-        class: 'last-message text-muted col-sm-12',
+        class: 'last-message text-muted',
         text: lastMessage
     }));
     
