@@ -393,13 +393,8 @@ var signinHandler = function (req, res, testing) {
                     return testing('true');
                 console.log("signinHandler " + results[0].user_id);
                 setLoggedInUserId(req, results[0].user_id);
-                //                exports.getProfileHandler(req, res, results[0].user_id);
-                res.status(200);
-                var returnJSON = {
-                    "status": "success",
-                    "message": "Success"
-                };
-                sendBackJSON(returnJSON, res);
+                common.redirectToPage('/user/profile', res);
+                return;
             }
         });
     }).catch(function (err) {
@@ -432,13 +427,7 @@ exports.signupHandler = function (request, response) {
         if (errorType === undefined) { // Success
             // Automatically log the user in
             setLoggedInUserId(request, userId);
-            //exports.getProfileHandler(request, response, userId);
-            response.status(200);
-            var returnJSON = {
-                "status": "success",
-                "message": "Success"
-            };
-            sendBackJSON(returnJSON, response);
+            common.redirectToPage('/user/profile', res);
             return;
         }
 

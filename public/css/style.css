@@ -13,7 +13,7 @@
     padding: 0px !important;
 }
 
-.invis {
+.invis, .invisible {
     display: none;
 }
 
@@ -355,54 +355,6 @@ p.class-name {
     border-bottom-color: #1abc9c;
 }
 
-#signup_form {
-    width: 350px;
-    z-index: 20;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 16%;
-    bottom: 0;
-    margin: auto;
-    max-height: 100%;
-    max-width: 100%;
-}
-
-#userlogin_form {
-    width: 350px;
-    z-index: 20;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 24%;
-    bottom: 0;
-    margin: auto;
-    max-height: 100%;
-    max-width: 100%;
-}
-
-#reference_form {
-    width: 400px;
-    z-index: 20;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 24%;
-    bottom: 0;
-    margin: auto;
-    max-height: 100%;
-    max-width: 100%;
-}
-
-.cancel_icon {
-    margin-left: 95%;
-    font-family: 'Glyphicons Halflings';
-}
-
-.cancel_icon:before {
-    content: '\e014';
-}
-
 .standard-body {
     text-align: center;
     font-size: 150%;
@@ -416,20 +368,73 @@ p.class-name {
     background-color: #ffffff;
 }
 
-.dropdown-menu ul {}
+/* pop ups */
+form#signup-popup {
+    width: 350px;
+    height: 390px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    -webkit-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+    -moz-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+    box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+}
+
+form#signin-popup {
+    width: 350px;
+    height: 320px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    -webkit-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+    -moz-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+    box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+}
+
+div#references-popup {
+    width: 400px;
+    z-index: 20;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 24%;
+    bottom: 0;
+    margin: auto;
+    max-height: 100%;
+    max-width: 100%;
+}
+
+button#google-login {
+    margin-top: 10px;
+}
+
+div#signup-error-message {
+    text-align: center;
+    margin-bottom: 13px;
+    color: #e74c3c;
+    font-size: 105%;
+}
+
+.cancel_icon {
+    margin-left: 95%;
+    font-family: 'Glyphicons Halflings';
+}
+
+.cancel_icon:before {
+    content: '\e014';
+}
 
 
 /* global style ends*/
 
 
 /* home page style starts*/
-
-#signup-error-message {
-    text-align: center;
-    margin-bottom: 13px;
-    color: #e74c3c;
-    font-size: 105%;
-}
 
 .homepage_img {
     width: 100%;
