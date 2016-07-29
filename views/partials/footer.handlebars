@@ -15,7 +15,7 @@
 	<form id="signup-popup" method="post" action="/user/signup">
 		<h1 class="standard-title">Sign Up</h1><span class="cancel_icon glypyicon glypyicon-cancel"></span>
 		
-		<input id="signupName" name="signupName" type="text" placeholder="Your Name" required="required" class="standard-input"></input>
+		<input id="signupName" name="signupName" type="text" placeholder="Your Name" required="required" class="standard-input" maxlength="20"></input>
 		<input id="signupUsername" name="signupUsername" type="text" placeholder="Username" required="required" pattern="^[a-zA-Z0-9]{8,20}$" title="Username must be between 8 and 20 characters, and must only consist of letters and numbers." class="standard-input"></input>
 		<input id="signupPassword" name="signupPassword" type="password" placeholder="Password" required="required" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&amp;\-])[A-Za-z\d$@$!%*#?&amp;\-]{8,20}$" title="Password must contain at least 1 letter, 1 number, 1 special character,  and must be between 8 and 20 characters long. Special characters include $@!%*#?&amp;-" class="standard-input"></input>
 		<input id="userPasswordConfirm" name="userPasswordConfirm" type="password" placeholder="Password Comfirmation" required="required" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&amp;\-])[A-Za-z\d$@$!%*#?&amp;\-]{8,20}$" title="Password must contain at least 1 letter, 1 number, 1 special character,  and must be between 8 and 20 characters long. Special characters include $@!%*#?&amp;-" class="standard-input"></input>

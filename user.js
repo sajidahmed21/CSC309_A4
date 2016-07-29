@@ -439,6 +439,12 @@ exports.signupHandler = function (request, response) {
                 errorContent: '<p><strong>Opps!</strong> Your username and password must be at least 8 characters long and max 20 characters!</p>',
                 loggedIn: false
             });
+        case 'Incorrect Name Length':
+            response.status(401);
+            return response.render('home', {
+                errorContent: '<p><strong>Opps!</strong> Your name can be a maximum of 20 characters!</p>',
+                loggedIn: false
+            });
         case 'Incorrect Password Length':
             response.status(401);
             return response.render('home', {
@@ -461,6 +467,12 @@ exports.signupHandler = function (request, response) {
             response.status(401);
             return response.render('home', {
                 errorContent: '<p><strong>Opps!</strong> You have missed some required fields!</p>',
+                loggedIn: false
+            });
+        default:
+            response.status(401);
+            return response.render('home', {
+                errorContent: '<p><strong>Opps!</strong> Something went wrong. Contact the system administrator for help.</p>',
                 loggedIn: false
             });
         }
@@ -489,6 +501,11 @@ exports.createUser = function (name, username, password, passwordConfirmation, c
 
     if (username.length < 8 || username.length > 20) {
         callback('Incorrect Username Length');
+        return;
+    }
+    
+    if (name.length > 24) {
+        callback('Incorrect Name Length');
         return;
     }
 
