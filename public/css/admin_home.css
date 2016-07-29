@@ -175,23 +175,30 @@ p {
     font-size: 2.1rem;
 }
 
-/*.admin-page-button {
-    width: 300px;
-    height: 35px;
-    color: white;
-    font-size: 0.9rem;
-    background-color: #337ab7;
-    border: 0px;
-}*/
-
 #create-account-button {
     margin-top: 10px;
     width: 300px;
 }
 
+/* Custom styles for danger zone */
 .admin-page-button:hover {
     background-color: #265a88;
 }
+
+.danger-zone {
+    color: #ff5a5f !important;
+}
+
+.danger-zone h3 {
+    color: #ff5a5f !important;
+    border-bottom: 1px solid #ff5a5f !important;
+}
+
+#delete-all-users-button {
+    margin-top: 10px;
+    width: 150px;
+}
+
 
 /* Custom properties for auto-complete dropdown */
 .autocomplete-suggestions {

@@ -133,7 +133,7 @@ function showUsersTab(deleteErrorMessage) {
     $searchBox = $('<input/>', {type: 'text', placeholder: 'Search by user name    (e.g. type "Jeff")'});
     // Bind input changed listener to text box
     $searchBox.bind('input', function() {
-       console.log($(this).val()); 
+       console.log($(this).val());
     });
     
     /* Autocomplete attributes for search box */
@@ -156,7 +156,40 @@ function showUsersTab(deleteErrorMessage) {
     
     $usersTab.append($currentUsersSection);
     
-    $mainContent.append($usersTab);    
+    // Danger zone section that allows to delete all users
+    $dangerZone = getDangerZoneSection('Delete All Users', function () {
+        showDeleteAllWarning('Are you sure you want to delete users? This cannot be reversed.');
+    });
+    
+    $usersTab.append($dangerZone);
+    
+    $mainContent.append($usersTab);
+}
+
+function showDeleteAllWarning(message) {
+    
+}
+
+/* Creates a danger zone section element */
+function getDangerZoneSection(buttonTitle, clickListener) {
+    $dangerZone = $('<section/>', {'class': 'danger-zone'});
+    
+    $('<h3/>').text('Danger Zone').appendTo($dangerZone);
+    var warningMessage = 'Be careful! This should ideally never be used apart from testing purposes ' +
+                         'unless there is some serious emergency.';
+    $('<p/>').text(warningMessage).appendTo($dangerZone);
+    
+    $deleteButton = $('<button/>', {
+        id: 'delete-all-users-button',
+        'class': 'standard-red-button btn-danger',
+        type: 'button'
+    });
+    $deleteButton.text(buttonTitle);
+    $deleteButton.click(clickListener);
+    
+    $deleteButton.appendTo($dangerZone);
+    
+    return $dangerZone;
 }
 
 /* Shows class tab */
