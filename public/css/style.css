@@ -173,6 +173,28 @@
     margin: auto;
 }
 
+.standard-container {
+    background-color: #ffffff;
+    padding: 15px;
+    margin: auto;
+    margin-top: 40px;
+    width: 350px;
+    -webkit-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+    -moz-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+     box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+}
+
+.standard-ref-container {
+    background-color: #ffffff;
+    padding: 30px;
+    margin: auto;
+    margin-top: 40px;
+    width: 400px;
+    -webkit-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+    -moz-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+    box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+}
+
 p.password-mismatch-message {
     font-weight: 300;
     text-align: center;
@@ -333,6 +355,29 @@ p.class-name {
     border-bottom-color: #1abc9c;
 }
 
+.cancel_icon {
+    margin-left: 95%;
+    font-family: 'Glyphicons Halflings';
+}
+
+.cancel_icon:hover {
+    cursor: pointer;
+}
+
+/* actually used by the popups on the profile page... */
+#userlogin_form {
+    width: 350px;
+    z-index: 20;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 24%;
+    bottom: 0;
+    margin: auto;
+    max-height: 100%;
+    max-width: 100%;
+}
+
 .standard-body {
     text-align: center;
     font-size: 150%;
@@ -406,20 +451,12 @@ div#signup-error-message {
     font-size: 105%;
 }
 
-.cancel_icon {
+div#popups .cancel_icon {
     font-family: 'Glyphicons Halflings';
     
     position: absolute;
     top: 10px;
     right: 10px;
-}
-
-.cancel_icon:before {
-    content: '\e014';
-}
-
-.cancel_icon:hover {
-    cursor: pointer;
 }
 
 /* global style ends*/
