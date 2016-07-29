@@ -2,6 +2,8 @@ var sequelize = require('sequelize');
 var bcrypt = require('bcryptjs');
 exports.bcrypt = bcrypt;
 
+var analytics = require('./analytics');
+
 exports.currentUser = [];
 
 exports.db = new sequelize('learnrDB', null, null, {
@@ -49,6 +51,10 @@ exports.userIsLoggedIn = userIsLoggedIn;
 /* Sets the given userId as the logged in user. */
 exports.setLoggedInUserId = function(req, userId) {
     req.session.userId = userId;
+    
+    if (userId !== undefined && userId != 0) {
+        analytics.trackUserLogin(userId, exports.db);
+    }
 };
 
 /* To be called as a part of a chain in the routing.

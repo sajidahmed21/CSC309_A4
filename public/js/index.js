@@ -139,9 +139,9 @@ var loginPage = function () {
         type: 'password',
         placeholder: 'Password',
         required: 'required',
-        pattern: '^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&\\-])[A-Za-z\\d$@$!%*#?&\\-]{6,20}$',
+        pattern: '^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&\\-])[A-Za-z\\d$@$!%*#?&\\-]{8,20}$',
         title: 'Password must contain at least 1 letter, 1 number, 1 special character, ' +
-            ' and must be between 6 and 20 characters long. Special characters include $@!%*#?&-',
+            ' and must be between 8 and 20 characters long. Special characters include $@!%*#?&-',
         class: 'standard-red-input'
     });
 
@@ -271,9 +271,9 @@ var signupPage = function () {
         type: 'password',
         placeholder: 'Password',
         required: 'required',
-        pattern: '^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&\\-])[A-Za-z\\d$@$!%*#?&\\-]{6,20}$',
+        pattern: '^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&\\-])[A-Za-z\\d$@$!%*#?&\\-]{8,20}$',
         title: 'Password must contain at least 1 letter, 1 number, 1 special character, ' +
-            ' and must be between 6 and 20 characters long. Special characters include $@!%*#?&-',
+            ' and must be between 8 and 20 characters long. Special characters include $@!%*#?&-',
         class: 'standard-input'
     });
 
@@ -285,7 +285,9 @@ var signupPage = function () {
         type: 'password',
         placeholder: 'Password Comfirmation',
         required: 'required',
-        pattern: '^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&\\-])[A-Za-z\\d$@$!%*#?&\\-]{6,20}$',
+        pattern: '^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&\\-])[A-Za-z\\d$@$!%*#?&\\-]{8,20}$',
+        title: 'Password must contain at least 1 letter, 1 number, 1 special character, ' +
+            ' and must be between 8 and 20 characters long. Special characters include $@!%*#?&-',
         class: 'standard-input'
     });
 
@@ -294,7 +296,7 @@ var signupPage = function () {
     $div = $('<div/>', {
         id: 'signup-error-message',
         class: 'invis'
-    })
+    });
 
     $div.text('Your passwords do not match')
     $div.appendTo($form);
@@ -339,7 +341,7 @@ var signupPage = function () {
                 "signupPassword": $('#signupPassword').val(),
                 "userPasswordConfirm": $('#userPasswordConfirm').val(),
                 "signupProfilePicture": "sfkjsdn"
-            }
+            };
 
             $.ajax({
                 type: "POST",
@@ -361,7 +363,7 @@ var signupPage = function () {
             return false;
         }
         return false;
-    })
+    });
 
     $form.appendTo($container);
     $container.appendTo($middle);

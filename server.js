@@ -189,7 +189,7 @@ app.post('/createcourse', checkAuthentication, function (req, res, next) {
             if (!req.file) // undefined, use default path 
                 res.bannerpath = "/img/study.jpg";
             else {
-                res.bannerpath = req.file.path;
+                res.bannerpath = "/img/"+req.file.filename;
             }
             // replace 1 with id of logged in user
             console.log("res.bannerpath in server: " + res.bannerpath);
@@ -271,6 +271,14 @@ app.get('/admin/analytics', admin.checkAuthentication, admin.handleAnalyticsData
 app.post('/admin/create_user', admin.checkAuthentication, admin.handleCreateUserRequest);
 
 app.get('/admin/edit_user_profile/:id', admin.checkAuthentication, admin.handleEditProfileRequest);
+
+app.post('/admin/edit_user/name/:id', admin.checkAuthentication, admin.handleEditNameRequest);
+
+app.post('/admin/edit_user/change_password/:id', admin.checkAuthentication, admin.handleChangePasswordRequest);
+
+app.post('/admin/delete_user/:id', admin.checkAuthentication, admin.handleDeleteUserRequest);
+
+app.post('/admin/remove_user_from_course/:id', admin.checkAuthentication, admin.handleUnenrolUserRequest);
 
 app.get('/admin/edit_course/:id', admin.checkAuthentication, admin.handleEditCourseRequest);
 

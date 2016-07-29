@@ -1,7 +1,11 @@
 $(document).ready(function() {
     
-    if ($('#error-message').length > 0) {
-        // Show users tab if there are error messages
+    // Remove any notification messages after 5 seconds
+    var fiveSecondsInMillis = 5000;
+    setTimeout(removeNotificationMessage, fiveSecondsInMillis);
+    
+    if ($('#top-notification-message').length > 0 || $('#error-message').length > 0) {
+        // Show users tab if there are any messages
         showUsersTab(false);
     }
     else {
@@ -205,8 +209,8 @@ function showClassTab() {
 
 /* Shows Create User form */
 function showCreateUserForm() {
-    /* Remove any existng error message while trying to create a user */
-   removeErrorMessage();
+    /* Remove any existng notification messages while trying to create a user */
+   removeNotificationMessage();
     
    var $popup = $('<article/>', {id: 'popup'});
     
@@ -373,11 +377,12 @@ function unSelectAllTabs(deleteErrorMessage) {
     $('#class-tab').removeClass('selected-tab');
     
     if (deleteErrorMessage) {
-        removeErrorMessage();
+        removeNotificationMessage();
     }
 }
 
-/* Removes any error message displayed at the top of the page */
-function removeErrorMessage() {
+/* Removes any messages displayed at the top of the page */
+function removeNotificationMessage() {
+    $('#top-notification-message').remove();
     $('#error-message').remove();
 }

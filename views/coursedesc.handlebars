@@ -24,6 +24,7 @@
     <script src="/js/enroll.js" defer></script>
     <script src="/js/tab.js" defer> </script>
      <script src="/js/post.js" defer> </script>
+     <script src="/js/edit.js" defer> </script>
 	<!-- include files necessary for the searchbar -->
 	{{> searchbar_head }}
 
@@ -90,12 +91,18 @@
                 </div>
                 <div class="tab-content">
                 <div id="course-desc" class="tab-container tab-pane fade in active">
+                    {{#if isInstructor}}
+                    <button id="edit-course-desc" class="edit-btn standard-green-button"> Edit </button>
+                    {{/if}}
                     <!-- <h1 class="standard-font"> Course Description </h1> -->
                     <p class="standard-font"> 
                     	{{courseDesc}}
                     </p>
                 </div>
                 <div id="requirements" class="tab-container tab-pane fade">
+                    {{#if isInstructor}}
+                    <button id="edit-requirements" class="edit-btn standard-green-button"> Edit </button>
+                    {{/if}}
                     <!-- <h1 class="standard-font"> Requirements </h1> -->
                     <p class="standard-font">
                         {{courseRequirements}}
@@ -152,7 +159,7 @@
 
                         <div id="course-posts" class="tab-pane fade">
                         <div class="post-container">
-                            <h3 class="standard-font" style="text-align: center;"> Make a Post</h3>
+                            <h3 class="standard-font" style="text-align: center; margin: 40px;"> Make a Post</h3>
                             <textarea id="post-input" class="form-control" maxlength = "1000" rows="3" placeholder="Type here... (1000 char limit)" autocomplete="off"></textarea>
                             <div id="post-msg" style="display: inline;"> </div>
                             <button id="post-btn" class="standard-blue-button post-btn"> Post </button>
