@@ -192,7 +192,7 @@ exports.getLoggedInUserAvatar = function(req, res, next) {
 				).spread(function(results, metadata) {
 					var username = results[0].username;
 					res.LIfirstLetter = username.charAt(0).toUpperCase();
-					res.LIbackgroundColor = colors[username.charCodeAt(0) % colors.length];
+					res.LIbackgroundColor = colors[(username.charCodeAt(0) + username.length) % colors.length];
 					res.LIname = username;
 					next();
 			})
