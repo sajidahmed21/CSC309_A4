@@ -173,28 +173,6 @@
     margin: auto;
 }
 
-.standard-container {
-    background-color: #ffffff;
-    padding: 15px;
-    margin: auto;
-    margin-top: 40px;
-    width: 350px;
-    -webkit-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
-    -moz-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
-    box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
-}
-
-.standard-ref-container {
-    background-color: #ffffff;
-    padding: 30px;
-    margin: auto;
-    margin-top: 40px;
-    width: 400px;
-    -webkit-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
-    -moz-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
-    box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
-}
-
 p.password-mismatch-message {
     font-weight: 300;
     text-align: center;
@@ -378,6 +356,8 @@ form#signup-popup {
     top: 0;
     bottom: 0;
     margin: auto;
+    
+    background-color: white;
     -webkit-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
     -moz-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
     box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
@@ -392,6 +372,8 @@ form#signin-popup {
     top: 0;
     bottom: 0;
     margin: auto;
+    
+    background-color: white;
     -webkit-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
     -moz-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
     box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
@@ -399,15 +381,18 @@ form#signin-popup {
 
 div#references-popup {
     width: 400px;
-    z-index: 20;
+    height: 320px;
     position: absolute;
     left: 0;
     right: 0;
-    top: 24%;
+    top: 0;
     bottom: 0;
     margin: auto;
-    max-height: 100%;
-    max-width: 100%;
+    
+    background-color: white;
+    -webkit-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+    -moz-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+    box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
 }
 
 button#google-login {

@@ -427,7 +427,7 @@ exports.signupHandler = function (request, response) {
         if (errorType === undefined) { // Success
             // Automatically log the user in
             setLoggedInUserId(request, userId);
-            common.redirectToPage('/user/profile', res);
+            common.redirectToPage('/user/profile', response);
             return;
         }
 
