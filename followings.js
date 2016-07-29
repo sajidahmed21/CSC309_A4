@@ -11,14 +11,14 @@ exports.followHandler = function (req, res){
         var returnJSON = {
             "status": "success",
             "message": "Success in following"
-        }
+        };
         sendBackJSON(returnJSON, res);
     }).catch(function(err){
         console.log("Err in follow");
         var returnJSON = {
             "status": "error",
             "message": "Err in follow"
-        }
+        };
         sendBackJSON(returnJSON, res);
     });
 };
@@ -34,14 +34,14 @@ exports.unfollowHandler = function (req, res){
         var returnJSON = {
             "status": "success",
             "message": "Success in unfollowing"
-        }
+        };
         sendBackJSON(returnJSON, res);
     }).catch(function(err){
         console.log("Err in unfollow");
         var returnJSON = {
             "status": "success",
             "message": "Err in unfollow"
-        }
+        };
         sendBackJSON(returnJSON, res);
     });
-}
+};

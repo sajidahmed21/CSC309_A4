@@ -12,9 +12,10 @@ var notifications = require('./notifications');
 // NEED TO SUPPORT BASIC INFO ABOUT COURSE LIKE COURSE DESCRIPTION AND REQUIREMENTS
 // NEED TO SUPPORT RATING FUNCTIONALITY (STARS LIGHTING UP ETC)
 // USERNAMES MUST BE UNIQUE, NOT CURRENTLY THE CASE IN DATABASE
-var colors = ['#b6cde3',  '#b6e2e3', '#b6e3d2', '#b6e3c6',  '#bbe3b6',  '#c9e3b6' ,  '#dae3b6',  '#e3d7b6',  '#e3c5b6',  '#e3b6d6',  '#dab6e3',  '#c0b6e3'];
+var colors = ['#b6cde3',  '#b6e2e3', '#b6e3d2', '#b6e3c6',  '#bbe3b6',  '#c9e3b6' ,  '#dae3b6',  
+                '#e3d7b6',  '#e3c5b6',  '#e3b6d6',  '#dab6e3',  '#c0b6e3'];
 exports.get_class_info = function(req, res, next) {
-		db.query('SELECT C.id, U.name as instructor, C.class_name, C.banner_picture_path, C.created_timestamp'
+		db.query('SELECT C.id, U.name as instructor, C.class_name, C.banner_picture_path, C.coursedesc, C.coursereqs, C.created_timestamp'
 		+' FROM CLASSES C, USERS U  WHERE C.id= $1 AND U.id = C.instructor',
 	 	{ bind: [req.params.id], type: sequelize.QueryTypes.SELECT }
 	 	).then(function(class_info) {
@@ -69,7 +70,7 @@ exports.get_enrolled_students = function(req, res, next) {
 
 exports.get_reviews = function(req, res, next) {
 	db.query('SELECT' 
-			+' U.name as username, U.profile_picture_path as dp, R.content as review, R.rating as rating, R.created_timestamp as postdate' 
+			+' U.name as username, U.profile_color as dp, R.content as review, R.rating as rating, R.created_timestamp as postdate' 
 			+ ' FROM REVIEWS R, USERS U WHERE R.class_id = $1 AND U.id = R.user_id ORDER BY R.created_timestamp ASC;', 
 			{ bind: [res.class_info[0].id]}
 			).spread(function(results, metadata) {
@@ -87,6 +88,28 @@ exports.get_reviews = function(req, res, next) {
 	 		common.sendInternalServerErrorResponse(res);
 	 	})
 } 
+
+exports.get_posts = function(req, res, next) {
+    db.query('SELECT content as post, created_timestamp as timestamp FROM INSTRUCTOR_POSTS WHERE class_id = $1 ORDER BY timestamp ASC', 
+            { bind: [req.params.id]}
+            ).spread(function(results, metadata) {
+                // circular avatars
+                res.posts = []
+                if (results.length == 0) {
+                    res.anyposts = false;
+                } else {
+                    res.anyposts = true;
+                    res.posts = results;
+                }
+                next();
+            })
+            .catch(function(err) {
+            console.log("query failed");
+            common.sendInternalServerErrorResponse(res);
+        })
+}
+
+
 // get info about logged in user
 exports.hasLoggedInUserReviewed = function(req, res, next) {
 	// is there a user logged in? 
@@ -198,6 +221,8 @@ exports.render_course_page = function(req, res, next) {
 		titlefont = "5vw";
 	}
 		res.render('coursedesc', {
+            anyposts: res.anyposts,
+            posts: res.posts,
 			enrolled: res.enrolled,
 			Reviewed: res.reviewed,
 			LIname: res.LIname,
@@ -211,13 +236,15 @@ exports.render_course_page = function(req, res, next) {
 			instructor: res.class_info[0].instructor,
 			rating: res.rating,
 			enrollment: res.enrolled_students.length,
-			courseDesc: "this is course description", // need this in database
-			courseRequirements: "this is course requirements", // need this in database
+			courseDesc: res.class_info[0].coursedesc, // need this in database
+			courseRequirements: res.class_info[0].coursereqs, // need this in database
 			students: res.enrolled_students,
 			reviews: res.reviews
 		}); 
 		return;
 }
+
+
 
 /* Fetches the instructor for a class and calls the callback.
  *
@@ -327,7 +354,7 @@ exports.unenrollHandler = function (req, res) {
     else {
         // check if the class actually exists
         doesClassExist(classId, function(err, exists) {
-            if (err) {
+            if (err || !exists) {
                 console.log(err);
                 common.sendBadRequestResponse({
                     status: 'ERROR',
@@ -372,7 +399,7 @@ exports.unenrollHandler = function (req, res) {
                                 .catch(function(err) {
                                     console.log(err);
                                     common.sendInternalServerErrorResponse(res);
-                                });
+                                })
                             }
                         });
                     }
@@ -411,7 +438,7 @@ exports.enrollHandler = function (req, res) {
     else {
         // check if the class actually exists
         doesClassExist(classId, function(err, exists) {
-            if (err) {
+            if (err || !exists) {
                 console.log(err);
                 common.sendBadRequestResponse({
                     status: 'ERROR',
@@ -471,3 +498,68 @@ exports.enrollHandler = function (req, res) {
         });
     }
 };
+exports.checkLoggedIn = function(req, res, next) {
+    var class_id = req.body.class_id;
+    var user_id= common.getLoggedInUserId(req);
+    var post = req.body.post;
+    if (!common.userIsLoggedIn(req)) {
+        common.sendUnauthorizedResponse({
+            status: 'ERROR', 
+            message: 'not logged in'
+        }, res);
+    } else {
+        next();
+    }
+}
+exports.classExists = function(req, res, next) {
+    var class_id = req.body.class_id;
+    var user_id= common.getLoggedInUserId(req);
+    var post = req.body.post;
+    db.query('SELECT * FROM CLASSES WHERE id = $1', 
+                    { bind: [class_id] }
+                    ).spread(function(results, metadata) {
+                        if (results.length == 1) {
+                            next();
+                        } else {
+                            //shouldn't happen
+                            common.sendInternalServerErrorResponse(res);
+                        }
+            })
+            .catch(function(err) {
+            console.log("query failed");
+            common.sendInternalServerErrorResponse(res);
+            }) 
+}
+exports.isInstructor = function(req, res, next) {
+    var class_id = req.body.class_id;
+    var user_id= common.getLoggedInUserId(req);
+    var post = req.body.post;
+   fetchInstructor(class_id, function(err, instructorId) {
+                // there should always be an instructor
+                if (err) {
+                    console.log(err);
+                    common.sendInternalServerErrorResponse(res);
+                }
+                else if (instructorId != user_id) {
+                    common.sendBadRequestResponse({
+                        status: 'ERROR',
+                        message: 'Only instructor can make a post'
+                    }, res);
+                } else if (!post) {
+                    common.sendBadRequestResponse({
+                        status: 'ERROR',
+                        message: 'Post cannot be null'
+                    }, res);
+                } else { // everything is good
+                    db.query('INSERT INTO INSTRUCTOR_POSTS (class_id, content) VALUES ($1, $2)', 
+                    { bind: [class_id, post] }
+                     ).spread(function(results, metadata) {
+                        common.sendBackJSON({status: 'SUCCESS'}, res);
+                     })
+                    .catch(function(err) {
+                    console.log("query failed");
+                    common.sendInternalServerErrorResponse(res);
+                })  
+            }
+            });
+}

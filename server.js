@@ -17,6 +17,47 @@ var bcrypt = require('bcryptjs');
 // other modules
 var fs = require('fs');
 
+// google authentication
+var googleLogin = require('./googleLogin');
+var passport = require('passport');
+var googleStrategy = require('passport-google-oauth20').Strategy;
+
+/* serialising and deserialising are used to store information, but since
+ * we are transfering the data to internal columns, we don't need to do anything */
+passport.serializeUser(function(user, done) {
+    console.log('serialising');
+    done(null, user);
+});
+
+
+passport.deserializeUser(function(obj, done) {
+    console.log('deserialising');
+    done(null, obj);
+});
+
+passport.use(new googleStrategy({
+    clientID: '640017624415-meb3upiuuvfktulov25iuo26gjgejti2.apps.googleusercontent.com',
+    clientSecret: 'APx9gK5DrCyjPqS3M4aI8fJV',
+    callbackURL: "https://csc309-learnr.herokuapp.com/auth/google/callback"
+  },
+  function(accessToken, refreshToken, profile, callback) {
+        console.log('fetching user');
+        googleLogin.findOrCreateUser(profile, function(err, userId) {
+            if (err) {
+                console.log('error in findOrCreateUser()');
+                return callback(err, profile);
+            }
+            else {
+                // we should have a valid userId now available
+                console.log('findOrCreateUser() returned successfully');
+                return callback(null, profile);
+            }
+        });
+    })
+);
+
+app.use(passport.initialize());
+
 // socket.io for messaging
 var server = require('http').Server(app);
 var socketIO = require('socket.io')(server);
@@ -33,6 +74,7 @@ var session = require('express-session')({
 var sharedSession = require("express-socket.io-session");
 
 app.use(session);
+app.use(passport.session());
 
 
 socketIO.use(sharedSession(session, {
@@ -104,12 +146,13 @@ app.get('/', renderHome);
 
 app.post('/course/enroll', courses.enrollHandler);
 app.delete('/course/unenroll', courses.unenrollHandler);
-
+app.post('/submitpost', courses.checkLoggedIn, courses.classExists, courses.isInstructor);
 app.get('/course/:id',
     courses.get_class_info,
     courses.get_course_rating,
     courses.get_enrolled_students,
     courses.get_reviews, 
+    courses.get_posts,
     courses.hasLoggedInUserReviewed, 
     courses.isLoggedInUserInstructor,
     courses.isLoggedInUserEnrolled,
@@ -131,7 +174,10 @@ app.get('/createcourse', checkAuthentication, function (req, res) {
 var upload = multer({
     dest: __dirname + '/public/img/'
 }).single('courseBanner');
-app.post('/createcourse', function (req, res, next) {
+app.post('/createcourse', checkAuthentication, function (req, res, next) {
+    console.log(req);
+    console.log("FILE" + req.file);
+    console.log("FILES" + req.files);
     upload(req, res, function (err) {
         res.courseBannerErr = '';
         res.courseTitleErr = '';
@@ -143,7 +189,7 @@ app.post('/createcourse', function (req, res, next) {
             if (!req.file) // undefined, use default path 
                 res.bannerpath = "/img/study.jpg";
             else {
-                res.bannerpath = req.file.path;
+                res.bannerpath = "/img/"+req.file.filename;
             }
             // replace 1 with id of logged in user
             console.log("res.bannerpath in server: " + res.bannerpath);
@@ -151,7 +197,7 @@ app.post('/createcourse', function (req, res, next) {
 
         }
     })
-}, createcourse.validate, createcourse.addClassInfoAndRedirect);
+}, createcourse.validate, checkAuthentication, createcourse.addClassInfoAndRedirect);
 
 app.post('/submitreview', checkAuthentication, function(req, res, next) {
         // do some validation
@@ -209,6 +255,8 @@ app.post('/user/unenrollClasses', checkAuthentication, user.unenrollHandler);
 
 app.post('/user/deleteuser', checkAuthentication, user.deleteUserHandler);
 
+app.post('/user/stopTeaching', checkAuthentication, user.stopTeachingHandler);
+
 
 /* Admins  ----------------------------------------------------------*/
 
@@ -248,6 +296,33 @@ app.get('/search', searchEngine.handleSearch);
 /* socket io --------------------------------------------------------*/
 
 socketIO.on('connection', messaging.onConnection);
+
+
+/* google authentication --------------------------------------------*/
+
+/* The request made to redirect to Google for authentication. */
+app.get('/auth/google/',
+  passport.authenticate('google', { scope: ['openid profile'] }));
+
+/* The request users are redirected to by Google after they have authenticated. */
+app.get('/auth/google/callback',
+    passport.authenticate('google'), function(req, res) {
+        console.log('google user authenticated');
+        
+        // since we only have the googleId, convert it to an internal userId
+        googleLogin.fetchUser(req.user.id, function(err, userId) {
+            if (err) {
+                renderHome(req, res, '<p><strong>Oh no!</strong> It doesn\' look like you succesfully logged in.</p>');
+            }
+            else {
+                common.setLoggedInUserId(req, userId);
+                console.log('logged in and redirected google user');
+                // authenticated successfully and now logged in
+                res.redirect('/user/profile');
+            }
+        })
+    }
+);
 
 
 /* server start up --------------------------------------------------*/

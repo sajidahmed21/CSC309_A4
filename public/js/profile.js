@@ -3,6 +3,9 @@ $(document).ready(function () {
     $('.drop_course_btn').click(function () {
         dropCourse(this.value);
     });
+    $('.stop_teaching_btn').click(function () {
+        stopTeaching(this.value);
+    });
     $('#changepassword_btn').click(function () {
         changePassword();
     });
@@ -28,6 +31,86 @@ $(document).ready(function () {
         follow(this.value);
     });
 });
+
+var stopTeaching = function (stopteachingCourse_id) {
+    var $popup = $('#popup');
+    $popup.empty();
+
+    $outer = $('<div/>', {
+        id: 'unenroll_form'
+    });
+
+    $middle = $('<div/>', {
+        class: 'col-md-6'
+    });
+
+    $container = $('<div/>', {
+        class: 'standard-container'
+    });
+
+    $cancelwrapper = $('<div/>');
+
+    $cancelicon = $('<span/>', {
+        class: 'glyphicon glyphicon-remove cancel_icon'
+    });
+    $cancelicon.click(function () {
+        hidePopup();
+    });
+    $cancelwrapper.append($cancelicon);
+
+    $container.append($cancelwrapper);
+
+    $form = $('<form/>');
+
+    $title = $('<h1/>', {
+        class: 'standard-title'
+    });
+    $title.text('Stop Teaching').appendTo($form);
+
+    $input = $('<p/>', {
+        class: 'standard-body'
+    });
+    $input.text('Are you sure you want to stop teaching this course?');
+
+    $input.appendTo($form);
+
+    $input = $('<input/>', {
+        type: 'button',
+        value: 'Stop Teaching',
+        class: 'btn btn-danger standard-red-button block_btn'
+    });
+
+    $input.click(function () {
+        console.log("TSTOP TECH" + stopteachingCourse_id);
+        var body = {
+            "stopteachingCourse_id": stopteachingCourse_id
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/user/stopTeaching",
+            data: JSON.stringify(body),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                hidePopup();
+                console.log(data);
+                window.location.href = "/user/profile";
+            },
+            error: function (data) {
+                hidePopup();
+                window.location.href = "/?errorMessage=Your%20session%20has%20expired";
+            }
+        });
+    });
+
+    $input.appendTo($form);
+
+    $form.appendTo($container);
+    $container.appendTo($middle);
+    $middle.appendTo($outer);
+    $outer.appendTo($popup);
+};
 
 var unfollow = function (followee_id) {
     var body = {
@@ -417,42 +500,6 @@ var changePassword = function () {
         class: 'btn standard-green-button block_btn'
     });
 
-    //    $input.click(function () {
-    //        if ($('#userPassword').val() != $('#userPasswordConfirm').val()) {
-    //            $popup.empty();
-    //            $('#error-message').empty();
-    //            $('#error-message').css('display', 'block');
-    //            $('#error-message').text('Your password do not match');
-    //        } else if ($('#userPassword').val().length < 8) {
-    //            $popup.empty();
-    //            $('#error-message').empty();
-    //
-    //            $('#error-message').css('display', 'block');
-    //            $('#error-message').text('Your password must be at least length of 8!');
-    //        } else {
-    //            var body = {
-    //                "changePassword": $('#userPassword').val()
-    //            }
-    //
-    //            $.ajax({
-    //                type: "POST",
-    //                url: "/user/changepassword",
-    //                data: JSON.stringify(body),
-    //                contentType: "application/json; charset=utf-8",
-    //                dataType: "json",
-    //                success: function (data) {
-    //                    hidePopup();
-    //                    console.log(data);
-    //                    window.location.href = "/user/profile";
-    //                },
-    //                error: function (data) {
-    //                    hidePopup();
-    //                    window.location.href = "/?errorMessage=Your%20session%20has%20expired";
-    //                }
-    //            });
-    //        }
-    //    });
-
     $input.appendTo($form);
     $form.submit(function (e) {
         e.preventDefault();
@@ -555,38 +602,6 @@ var changeName = function () {
         value: 'Edit Now!',
         class: 'btn standard-green-button block_btn'
     });
-
-    //    $input.click(function () {
-    //        if ($('#changeName').val().length < 1) {
-    //            $popup.empty();
-    //            $('#error-message').css('display', 'block');
-    //            $('#error-message').text('Your name cannot be Empty!');
-    //        } else {
-    //            var body = {
-    //                "changeName": $('#changeName').val()
-    //            }
-    //
-    //            $.ajax({
-    //                type: "POST",
-    //                url: "/user/changename",
-    //                data: JSON.stringify(body),
-    //                contentType: "application/json; charset=utf-8",
-    //                dataType: "json",
-    //                success: function (data) {
-    //                    hidePopup();
-    //                    console.log(data);
-    //                    window.location.href = "/user/profile";
-    //                },
-    //                error: function (data) {
-    //                    var errormsg = {
-    //                        errorMessage: "Your session has expired"
-    //                    }
-    //                    console.log('ERRORFAIL');
-    //                    window.location.href = "/?errorMessage=Your%20session%20has%20expired";
-    //                }
-    //            });
-    //        }
-    //    });
 
     $input.appendTo($form);
 

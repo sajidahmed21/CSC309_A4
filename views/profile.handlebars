@@ -57,28 +57,77 @@
             {{/if}} {{/if}}
         </div>
     </div>
+    
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-4">
-            <h2 class="standard-font">Enrolled Classes</h2></div>
+            <h2 class="standard-font">Currently Teaching</h2></div>
         <div class="col-md-5"></div>
     </div>
-    {{#each classes}}
+    {{#if classteaching.length}}
+    {{#each classteaching}}
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-9">
             <div class="class_container">
                 <div class="row">
-                    <div class="col-md-10">
+                    <div class="col-md-9">
                         <div>
-                            <h1 class="standard-title class_title">{{this.class_name}}</h1>
+                            <h1 class="standard-title class_title"><a href="/course/{{this.id}}" class="no_margin standard-link">{{this.class_name}}</a></h1>
                         </div>
                         <div>
                             <h1 class="standard-title professor_title">{{this.instructor}}</h1>
                         </div>
                     </div>
                     {{#if ../userIsOwner }}
-                    <div class="col-md-2">
+                    <div class="col-md-3">
+                        <a href="#">
+                            <button value="{{this.id}}" type="button" class="btn btn-danger standard-red-button stop_teaching_btn">Stop Teaching</button>
+                        </a>
+                    </div>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+    {{else}}
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-9">
+            <h3 class="standard-font empty-class-list">You have not yet taught in any class</h3></div>
+    </div>
+    {{/if}}
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-8">
+            <hr>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-4">
+            <h2 class="standard-font">Enrolled Classes</h2></div>
+        <div class="col-md-5"></div>
+    </div>
+    {{#if classes.length}}
+    {{#each classes}}
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-9">
+            <div class="class_container">
+                <div class="row">
+                    <div class="col-md-9">
+                        <div>
+                            <h1 class="standard-title class_title"><a href="/course/{{this.id}}" class="no_margin standard-link">{{this.class_name}}</a></h1>
+                        </div>
+                        <div>
+                            <h1 class="standard-title professor_title">{{this.instructor}}</h1>
+                        </div>
+                    </div>
+                    {{#if ../userIsOwner }}
+                    <div class="col-md-3">
                         <a href="#">
                             <button value="{{this.id}}" type="button" class="btn btn-danger standard-red-button drop_course_btn">Drop Course</button>
                         </a>
@@ -89,6 +138,13 @@
         </div>
     </div>
     {{/each}}
+    {{else}}
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-9">
+            <h3 class="standard-font empty-class-list">You have not yet enrolled in any class</h3></div>
+    </div>
+    {{/if}}
     <div id="popup">
     </div>
     <footer>
