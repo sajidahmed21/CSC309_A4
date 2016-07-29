@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS LOGIN_HISTORY (
   user_id INTEGER NOT NULL,
   login_timestamp INTEGER DEFAULT (datetime('now')),
 
-  PRIMARY KEY(user_id, login_timestamp)
+  PRIMARY KEY(user_id, login_timestamp) ON DELETE CASCADE
 );
 
 

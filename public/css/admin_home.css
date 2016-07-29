@@ -190,6 +190,10 @@ p {
     background-color: #265a88;
 }
 
+section.danger-zone {
+    margin-bottom: 60px !important;
+}
+
 .danger-zone {
     color: #ff5a5f !important;
 }
