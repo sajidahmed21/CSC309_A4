@@ -407,14 +407,20 @@ div#signup-error-message {
 }
 
 .cancel_icon {
-    margin-left: 95%;
     font-family: 'Glyphicons Halflings';
+    
+    position: absolute;
+    top: 10px;
+    right: 10px;
 }
 
 .cancel_icon:before {
     content: '\e014';
 }
 
+.cancel_icon:hover {
+    cursor: pointer;
+}
 
 /* global style ends*/
 
