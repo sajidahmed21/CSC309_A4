@@ -8,7 +8,6 @@
 
 	<!-- libraries -->
     <script src="/js/jquery-3.0.0.min.js" defer></script>
-	<script src="/js/popups.js" defer></script>
 
 	<!-- socket.io code for messaging -->
 	<script src="/js/socket.io.js" defer></script>
@@ -27,7 +26,7 @@
 	
 	<!-- custom files -->
 	<script src="/js/messaging.js" defer></script>
-    <script src="/js/footer.js" defer></script>
+    <script src="/js/popups.js" defer></script>
     <script src="/js/logout.js" defer></script>
 
     <link rel="stylesheet" type="text/css" href="/css/style.css">
@@ -42,13 +41,16 @@
     <main id="messaging" class="container">
         <!-- divide the screen into two columns: one for the user list and one for the chat area -->
         <div class="row">
-            <section id="user-list" class="hidden-xs col-sm-5 col-md-4 col-lg-3">
-				<div id="user-search">
+			<aside id="user-sidebar" class="hidden-xs col-sm-5 col-md-4 col-lg-3">
+            	<div id="user-search">
 					<input id="user-search-text" class="form-control" type="text" placeholder="Search online users..."></input>
 					<div id="user-search-dropdown"><!-- to be filled in through javascript with the search suggestions --></div>
 				</div>
-				<!-- user rows will be added in here through javascript -->
-            </section>
+				
+				<section id="user-list">
+					<!-- user rows will be added in here through javascript -->
+	            </section>
+			</aside>
 
             <!-- chat area -->
             <section id="chat-area" class="col-xs-12 col-sm-7 col-md-8 col-lg-9">
