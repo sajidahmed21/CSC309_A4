@@ -4,7 +4,7 @@ PRAGMA foreign_keys = ON;
 CREATE TABLE IF NOT EXISTS USERS (
   id INTEGER PRIMARY KEY,
   name TEXT NOT NULL,
-  profile_picture_path TEXT,
+  profile_color TEXT,
   banner_path TEXT
 );
 
@@ -19,14 +19,6 @@ CREATE TABLE IF NOT EXISTS LOGIN_CREDENTIALS (
   user_id INTEGER PRIMARY KEY,
   username varchar(32) UNIQUE NOT NULL,
   password varchar(128) NOT NULL,
-
-  FOREIGN KEY(user_id) REFERENCES USERS(id) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS THIRD_PARTY_LOGIN (
-  user_id INTEGER PRIMARY KEY,
-  login_token varchar(512) UNIQUE NOT NULL,
-  third_party_name varchar(32) NOT NULL,
 
   FOREIGN KEY(user_id) REFERENCES USERS(id) ON DELETE CASCADE
 );

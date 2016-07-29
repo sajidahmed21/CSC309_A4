@@ -49,6 +49,12 @@
 			</nav>
 		</header>
 		
+		{{#if message }}
+		<div id="top-notification-message" role="alert">
+			{{{message}}}
+		</div>
+		{{/if}}
+		
 		{{#if errorContent}}
 		    <div id="error-message" class="alert alert-danger nomargin" role="alert">
 			    {{{errorContent}}}

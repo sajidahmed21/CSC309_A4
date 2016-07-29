@@ -3,6 +3,7 @@
 
 var common = require('./common');
 var user = require('./user');
+var analytics = require('./analytics');
 
 /* Function for sending JSON response with 400 `Bad Request` status code */
 var sendBadRequestResponse = common.sendBadRequestResponse;
@@ -35,11 +36,13 @@ exports.checkAuthentication = function(request, response, next) {
 exports.handleAdminHomeRequest = function (request, response) {
     response.render('admin_home', {
         adminUsername: request.session.adminId,
+        message: request.session.message,
         errorContent: request.session.errorContent
     });
     
-    // Reset the error content once it has been displayed to the admin
-    request.session.errorContent = undefined;
+    // Reset the error content and message once it has been displayed to the admin
+    request.session.message = undefined;
+    request.session.errorContent = undefined; 
 };
 
 
@@ -139,9 +142,12 @@ exports.handleCreateUserRequest = function (request, response) {
 exports.handleEditProfileRequest = function (request, response) {
     
     getUserProfileData(request.params.id, function (status, profileData) {
+        
         if (status == 'Success') {
+            
             response.render('edit_user_profile_admin', {
                 message: request.session.message,
+                errorMessage: request.session.errorMessage,
                 adminUsername: request.session.adminId,
                 profile_name: profileData.profile_name,
                 background_color: profileData.background_color,
@@ -149,14 +155,109 @@ exports.handleEditProfileRequest = function (request, response) {
                 classes: profileData.classes,
                 userId: request.params.id /* May be I need this in case I need the user id in the html page */
             });
-            // Reset message after it has been rendered
+            // Reset messages after they have been rendered
             request.session.message = undefined;
+            request.session.errorMessage = undefined;
         }
         else {
             // Show error message if the user could not be succssfully retrieve from the database.
             request.session.errorContent = '<p><strong>Opps!</strong> Something went wrong. Please try again later!</p>';
             common.redirectToPage('/admin', response);
         }
+    });
+};
+
+/* Handles name change requests by updating the name of the user in the database and providing
+ * appropriate feedback on the front-end.
+*/
+exports.handleEditNameRequest = function (request, response) {
+    var userId = request.params.id;
+    
+    user.changeName(request.params.id, request.body.newName, function (result) {
+        switch (result) {
+            case 'Success':
+                request.session.message = '<p>Name updated</p>';
+                break;
+            case 'Invalid name':
+                request.session.errorMessage = '<p>Oops! The name cannot be empty</p>';
+                break;
+            case 'Invalid user id':
+                request.session.errorMessage = '<p>Oops! The user you are trying to edit does not exist!</p>';
+                break;
+            default:
+                request.session.errorMessage = '<p>Oops! Something went wrong. Please try again later!</p>';
+                break;
+        }
+        
+        /* Redirect to the user profile page */
+        common.redirectToPage('/admin/edit_user_profile/' + userId, response);
+    });
+};
+
+exports.handleChangePasswordRequest = function (request, response) {
+    var userId = request.params.id;
+    
+    // (userId, currentPassword, newPassword, newPasswordConfirm, isAdminChanging, callback)
+    // We don't need to provided currentPassword since isAdminChanging = true
+    user.changePassword(userId, undefined, request.body.newPassword, request.body.newPasswordConfirm, true, function (result) {
+        
+        switch (result) {
+            case 'Success':
+                request.session.message = '<p>Password changed</p>';
+                break;
+            
+            // We should not get into the following error scenarios since we have client side validation as well
+            case 'Invalid user id':
+                request.session.errorMessage = '<p>Oops! Something went wrong. Please try again later!</p>';
+                break;
+            case 'Invalid new password':
+                request.session.errorMessage = '<p>Oops! The new password you provided is invalid.</p>';
+                break;
+            case 'Passwords do not match':
+                request.session.errorMessage = '<p>Oops! The new passwords do not match.</p>';
+                break;
+        }
+        
+        /* Redirect to the user profile page */
+        common.redirectToPage('/admin/edit_user_profile/' + userId, response);
+    });
+};
+
+exports.handleDeleteUserRequest = function(request, response) {
+    
+    user.deleteUser(request.params.id, function (result) {
+        switch (result) {
+            case 'Success':
+                request.session.message = '<p>User has been deleted</p>';
+                break;
+            default:
+                request.session.errorContent = '<p><strong>Opps!</strong> Something went wrong. Please try later!</p>';
+                break;
+        }
+        
+        /* Redirect to the home page */
+        common.redirectToPage('/admin', response);
+    });
+};
+
+exports.handleUnenrolUserRequest = function (request, response) {
+    var userId = request.params.id;
+    
+    user.unenrollUser(userId, request.body.courseId, function (result) {
+        
+        switch (result) {
+            case 'Success':
+                request.session.message = '<p>User has been removed from the selected course</p>';
+                break;
+            
+            // We should not get here since we have validation on the client side
+            default:
+                request.session.errorMessage = '<p>Oops! Something went wrong. Please try again later!</p>';
+                break;
+        }
+        
+        /* Redirect to the user profile page */
+        common.redirectToPage('/admin/edit_user_profile/' + userId, response);
     });
 };
 
@@ -175,7 +276,7 @@ function getUserProfileData(profileUserId, callback) {
         return;
     }
     
-    db.query("SELECT name, profile_picture_path FROM USERS WHERE id = $1", {
+    db.query("SELECT name, profile_color FROM USERS WHERE id = $1", {
         bind: [profileUserId]
     }).spread(function (results) {
         if (results === undefined || results.length !== 1) {
@@ -184,7 +285,7 @@ function getUserProfileData(profileUserId, callback) {
         }
         var name = results[0].name;
         var firstLetterProfile = user.getFirstLetterForProfile(name);
-        var backgroundColor = user.getProfilePictureColor(results[0].profile_picture_path);
+        var backgroundColor = user.getProfilePictureColor(results[0].profile_color);
 
         db.query("SELECT CLASSES.id AS id, CLASSES.class_name AS class_name, USERS.name AS instructor FROM ENROLMENT, CLASSES, USERS WHERE USERS.id=CLASSES.instructor AND CLASSES.id=ENROLMENT.class_id AND ENROLMENT.user_id = $1", {
             bind: [profileUserId]
@@ -229,40 +330,15 @@ function onSuccessfulLogin(adminId, request, response) {
 /* Handles analytics data requests by providing analytics data about users and classes */
 exports.handleAnalyticsDataRequest = function (request, response) {
     
-    /* --- SQL Queries --- */
-    
-    /* Total number of users */
-    var totalUsers = '(SELECT COUNT(*) AS totalUsers FROM USERS)';
-    
-    /* Number of unique users who have enrolled for at least one class */
-    var usersEnrolledInClass = '(SELECT COUNT(DISTINCT user_id) AS numUsersEnrolledInClass FROM ENROLMENT)';
-    
-    /* Avg num of unique users per day */
-    var avgLogins = '(SELECT COALESCE(AVG(numLogins), \'-\') AS avgUniqueLoginsPerDay ' +
-                     'FROM (SELECT COUNT(DISTINCT user_id) AS numLogins FROM LOGIN_HISTORY GROUP BY date(login_timestamp)))';
-    
-    /* Total number of classes */
-    var numClasses = '(SELECT COUNT(*) AS numClasses FROM CLASSES)';
-    
-    /* Avg num of users per class */
-    var avgUsersPerClass = '(SELECT COALESCE((SELECT COUNT(*) FROM ENROLMENT) / (SELECT COUNT(*) FROM CLASSES), \'-\') ' +
-                            'AS avgUsersPerClass)';
-    
-    /* Avg rating over all classes */
-    var avgClassRating = '(SELECT (COALESCE(AVG(rating), \'-\')) AS avgClassRating FROM REVIEWS)';
-    
-    /* The final query to be passed in for execution */
-    var finalQuery = 'SELECT * FROM ' + totalUsers + ', ' + usersEnrolledInClass + ', ' + avgLogins + ', ' +
-                      numClasses + ', ' + avgUsersPerClass + ', ' + avgClassRating;
-    
-    db.query(finalQuery).spread(function (results) {
-        if (results === undefined || results.length !== 1) {
-            // We shouldn't get here
+    analytics.getAnalyticsDataForAdminDashboard(db, function (status, data) {
+        if (status == 'Success') {
+            // Send JSON response back to the client
+            common.sendBackJSON(data, response);
+        }
+        else {
+            // We shouldn't get here uless something goes terribly wrong
             common.sendInternalServerErrorResponse(response);
-            return;
         }
         
-        // Send the JSON response back to the client
-        common.sendBackJSON(results[0], response);
     });
 };

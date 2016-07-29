@@ -7,7 +7,7 @@
     <title>LearnR</title>
 
     <script src="/js/jquery-2.0.0.min.js" defer></script>
-    <script src="/js/index.js" defer></script>
+    <script src="/js/popups.js" defer></script>
 
     <!-- include files necessary for the searchbar -->
     {{> searchbar_head }}
@@ -30,11 +30,15 @@
 <!-- Body Start here, where content is. -->
 
 <body class="global_font container-fluid">
-    {{> nav }} {{#if errorContent}}
+    {{> nav }}
+	
+	{{#if errorContent}}
     <div id="error-message" class="alert alert-danger nomargin" role="alert">
         {{{errorContent}}}
     </div>
     {{/if}}
+    
+    <img class="homepage_img" src="/img/college-background.jpg" >
 
     <main class="row">
         <!-- if the user is logged in, show a feed of notifications -->
@@ -142,18 +146,7 @@
             <!-- end of popular courses -->
     </main>
 
-    <div id="popup">
-    </div>
-    <footer>
-        <ul>
-            <li>
-                <a id="reference" class="no-underline" href="#"> Image References </a>
-            </li>
-        </ul>
-        <div class="footer-logo">
-        </div>
-        <hr class="footer-line">
-    </footer>
+    {{> footer }}
 </body>
 
 </html>

@@ -8,6 +8,8 @@
     <title>LearnR</title>
 
     <script src="/js/jquery-2.0.0.min.js" defer></script>
+	<script src="/js/popups.js" defer></script>
+
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
@@ -21,7 +23,7 @@
     <link rel="stylesheet" type="text/css" href="/css/style.css">
     <link rel="stylesheet" type="text/css" href="/css/admin_home.css">
     <link rel="stylesheet" type="text/css" href="/css/edit_user_profile_admin.css">
-    <!--<script src="/js/profile.js" defer></script>-->
+    <script src="/js/edit_user_profile_admin.js" defer></script>
 
 </head>
 
@@ -36,13 +38,19 @@
         <img src="/img/profile.png" alt="Profile" height="40" width="45" class="profile_icon">
         <h3 id="admin-username">{{adminUsername}}</h3>
     </header>
-
-    <!--<form name="course-form" class='form-horizontal' enctype="multipart/form-data" action="/createcourse" onsubmit="return validateForm()" method="post">
-        <input name="profileBanner" class="col-md-10" type="file" accept='image/*' onchange="updateImg(event)">
-    </form>-->
-
-    <div id="error-message" class="alert alert-danger nomargin profile_error" role="alert">
+    
+    {{#if message }}
+    <div id="top-notification-message" role="alert">
+        {{{message}}}
     </div>
+    {{/if}}
+
+    
+    {{#if errorMessage }}
+    <div id="error-message" class="alert alert-danger nomargin" role="alert">
+        {{{errorMessage}}}
+    </div>
+    {{/if}}
 
     <img class="profilepage_img" src="/img/profile_background.jpg">
     <div id="{{background_color}}" class="img-circle profile_pic" height="150" width="150">
@@ -54,9 +62,9 @@
             <h2 class="standard-font"> {{name}} </h2>
         </div>
         <div class="col-md-5">
-            <button id="changename_btn" type="button" class="btn standard-green-button">Change Name</button>
-            <button id="changepassword_btn" type="button" class="btn standard-green-button">Change Password</button>
-            <button id="deleteuser_btn" type="button" class="btn btn-danger standard-red-button">Delete Account</button>
+            <button id="changename_btn" type="button" value="{{userId}}" class="btn standard-green-button">Change Name</button>
+            <button id="changepassword_btn" type="button" value="{{userId}}" class="btn standard-green-button">Change Password</button>
+            <button id="deleteuser_btn" type="button" value="{{userId}}" class="btn btn-danger standard-red-button">Delete Account</button>
         </div>
     </div>
     <div class="row">
@@ -81,7 +89,7 @@
                     </div>
                     <div class="col-md-2">
                         <a href="#">
-                            <button value="{{this.id}}" type="button" class="btn btn-danger standard-red-button drop_course_btn">Drop Course</button>
+                            <button value="{{this.id}}" type="button" class="btn btn-danger standard-red-button drop_course_btn">Remove</button>
                         </a>
                     </div>
                 </div>
@@ -89,18 +97,8 @@
         </div>
     </div>
     {{/each}}
-    <div id="popup">
-    </div>
-    <footer>
-        <ul>
-            <li>
-                <a id="reference" class="no-underline" href="#"> Image References </a>
-            </li>
-        </ul>
-        <div class="footer-logo">
-        </div>
-        <hr class="footer-line">
-    </footer>
+    
+	{{> footer }}
 </body>
 
 </html>

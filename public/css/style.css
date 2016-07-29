@@ -13,7 +13,8 @@
     padding: 0px !important;
 }
 
-.invis {
+.invis,
+.invisible {
     display: none;
 }
 
@@ -25,6 +26,10 @@
     position: absolute;
     width: 100%;
     display: none;
+}
+
+.empty-class-list {
+    font-size: 140%;
 }
 
 .standard-link:link {
@@ -351,18 +356,17 @@ p.class-name {
     border-bottom-color: #1abc9c;
 }
 
-#signup_form {
-    width: 350px;
-    z-index: 20;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 16%;
-    bottom: 0;
-    margin: auto;
-    max-height: 100%;
-    max-width: 100%;
+.cancel_icon {
+    margin-left: 95%;
+    font-family: 'Glyphicons Halflings';
 }
+
+.cancel_icon:hover {
+    cursor: pointer;
+}
+
+
+/* actually used by the popups on the profile page... */
 
 #userlogin_form {
     width: 350px;
@@ -375,28 +379,6 @@ p.class-name {
     margin: auto;
     max-height: 100%;
     max-width: 100%;
-}
-
-#reference_form {
-    width: 400px;
-    z-index: 20;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 24%;
-    bottom: 0;
-    margin: auto;
-    max-height: 100%;
-    max-width: 100%;
-}
-
-.cancel_icon {
-    margin-left: 95%;
-    font-family: 'Glyphicons Halflings';
-}
-
-.cancel_icon:before {
-    content: '\e014';
 }
 
 .standard-body {
@@ -412,20 +394,105 @@ p.class-name {
     background-color: #ffffff;
 }
 
-.dropdown-menu ul {}
+
+/* pop ups */
+
+form#signup-popup {
+    width: 350px;
+    height: 410px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    background-color: white;
+    -webkit-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+    -moz-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+    box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+}
+
+form#signin-popup {
+    width: 350px;
+    height: 320px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    background-color: white;
+    -webkit-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+    -moz-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+    box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+}
+
+div#references-popup {
+    width: 400px;
+    height: 420px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    background-color: white;
+    -webkit-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+    -moz-box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+    box-shadow: 0 2px 7px 0 rgba(0, 0, 0, 0.23);
+}
+
+button#google-login {
+    margin-top: 10px;
+}
+
+div#signup-error-message {
+    text-align: center;
+    margin-bottom: 13px;
+    color: #e74c3c;
+    font-size: 105%;
+}
+
+div#popups .cancel_icon {
+    font-family: 'Glyphicons Halflings';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+#search-text {
+    margin-top: 3px;
+    border-radius: 0;
+    height: 43px;
+    width: 550px;
+    padding: 12px 15px;
+}
+
+#userlogin_btn {
+    padding: 14px 15px;
+    border-style: solid;
+    border-color: #3498db !important;
+    border-width: 1px;
+    margin-right: 10px;
+    background-color: #ffffff !important;
+    color: #3498db !important;
+}
+
+#userlogin_btn:hover {
+    padding: 14px 15px;
+    border-style: solid;
+    border-color: #265a88 !important;
+    border-width: 1px;
+    margin-right: 10px;
+    background-color: #ffffff !important;
+    color: #265a88 !important;
+}
 
 
 /* global style ends*/
 
 
 /* home page style starts*/
-
-#signup-error-message {
-    text-align: center;
-    margin-bottom: 13px;
-    color: #e74c3c;
-    font-size: 105%;
-}
 
 .homepage_img {
     width: 100%;
@@ -608,6 +675,12 @@ aside#notifications-feed article.notification p {
 .stop_teaching_btn {
     padding: 24px 15px;
     margin-top: 4px;
+}
+
+.homepage_img {
+    width: 100%;
+    height: 500px;
+    margin-bottom: 30px;
 }
 
 

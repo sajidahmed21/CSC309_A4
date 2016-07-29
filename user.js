@@ -19,11 +19,11 @@ exports.changeName = function (userId, newName, callback) {
         callback('Invalid user id');
         return;
     }
-    if (newName === undefined || newName == null || newName == '' || newName.length === 0) {
+    if (newName === undefined || newName.length === 0) {
         callback('Invalid name');
         return;
     }
-
+    //update user name query
     var updateQuery = 'UPDATE USERS SET name = $1 WHERE id = $2';
     db.query(updateQuery, {
         bind: [newName, userId]
@@ -46,8 +46,10 @@ exports.changeNameHandler = function (request, response) {
 
     exports.changeName(userId, newName, function (result) {
         var responseBody = {};
-
+        
         console.log(result);
+        
+        //if success return success JSON else return error
         if (result == 'Success') {
             responseBody = {
                 "status": "success",
@@ -71,31 +73,38 @@ exports.test.changeNameHandler = exports.changeNameHandler;
  **/
 exports.changePassword = function (userId, currentPassword, newPassword, newPasswordConfirm, isAdminChanging, callback) {
     // Error checking
+    //no user id
     if (userId === undefined || userId === 0) {
         callback('Invalid user id');
         return;
     }
-    if ((currentPassword === undefined || currentPassword == null || currentPassword == '' || currentPassword.length < 8 || currentPassword.length > 20 || currentPassword.length === 0) && !isAdminChanging) {
+    
+    //invalid current password
+    if ((currentPassword === undefined || currentPassword.length < 8 || currentPassword.length > 20) && !isAdminChanging) {
         callback('Incorrect password');
         return;
     }
-    if (newPassword === undefined || newPassword == null || newPassword == '' || newPassword.length < 8 || newPassword > 20 || newPassword.length === 0) {
+    
+    //invalid new password
+    if (newPassword === undefined || newPassword.length < 8 || newPassword > 20) {
         callback('Invalid new password');
         return;
     }
 
-    if (newPasswordConfirm === undefined || newPasswordConfirm == null || newPasswordConfirm == '' || newPasswordConfirm.length < 8 || newPasswordConfirm > 20 || newPasswordConfirm.length === 0) {
+    //invalid new password confirm
+    if (newPasswordConfirm === undefined || newPasswordConfirm.length < 8 || newPasswordConfirm > 20) {
         callback('Invalid old password');
         return;
     }
 
+    //password and confrim password does not match
     if (newPassword != newPasswordConfirm) {
         callback('Passwords do not match');
-        return
+        return;
     }
 
     if (isAdminChanging) {
-        // No need to verify current password if admin is changing the users password
+        // No need to verify current password if admin is changing the user's password
         updatePassword(userId, newPassword, callback);
     } else {
         // Otherwise first verify current password if user is themeselves changing their password
@@ -118,10 +127,11 @@ exports.changePasswordHandler = function (request, response) {
     var newPassword = request.body.changePassword;
     var newPasswordConfirm = request.body.newPasswordConfirm;
 
-
+    
     exports.changePassword(userId, currentPassword, newPassword, newPasswordConfirm, false, function (result) {
         var responseBody = {};
-
+        
+        //if success return success JSON else return error JSON with error msg
         console.log(result);
         if (result == 'Success') {
             responseBody = {
@@ -149,7 +159,8 @@ exports.test.changePasswordHandler = exports.changePasswordHandler;
 /* Updates the password in the database for the user specified by `userId` */
 function updatePassword(userId, newPassword, callback) {
     var hashedPassword = common.generatePasswordHash(newPassword);
-
+    
+    //update password query
     db.query("UPDATE LOGIN_CREDENTIALS SET password = $1 WHERE user_id= $2", {
         bind: [hashedPassword, userId]
 
@@ -167,7 +178,8 @@ exports.test.updatePassword = updatePassword;
  * Notifies the result through the given callback function.
  */
 function verifyUserPassword(userId, password, callback) {
-    //db.query('SELECT * FROM USERS U, LOGIN_CREDENTIALS L WHERE U.id = L.userId AND U.id = $1', {
+    
+    //select all from login credentials
     db.query('SELECT * FROM LOGIN_CREDENTIALS WHERE user_id = $1', {
         bind: [userId]
     }).spread(function (results) {
@@ -175,6 +187,8 @@ function verifyUserPassword(userId, password, callback) {
             callback('Error');
             return;
         }
+        
+        // check if password input match with database password
         var currentPasswordHash = results[0].password;
         if (common.comparePassword(password, currentPasswordHash)) {
             callback('Valid');
@@ -190,18 +204,21 @@ exports.test.verifyUserPassword = verifyUserPassword;
 var changeProfilePicHandler = function (req, res) {
     var changeProfilepic = req.body.changeProfilepic;
     var user_id = getLoggedInUserId(req);
-    db.query("UPDATE USERS SET profile_picture_path = '" + changeProfilepic + "' WHERE id=" + user_id).spread(function (results, metadata) {
+    
+    //profile color change
+    db.query("UPDATE USERS SET profile_color = '" + changeProfilepic + "' WHERE id=" + user_id).spread(function (results, metadata) {
+        //if success return change success
         var returnJSON = {
             "status": "success",
             "message": "Change Profile Pic Success"
-        }
+        };
         sendBackJSON(returnJSON, res);
     }).catch(function (err) {
         console.log("Err in change profile pic");
         var returnJSON = {
             "status": "error",
             "message": "Err in change profile pic"
-        }
+        };
         sendBackJSON(returnJSON, res);
     });
 };
@@ -209,7 +226,10 @@ var changeProfilePicHandler = function (req, res) {
 exports.changeProfilePicHandler = changeProfilePicHandler;
 exports.test.changeProfilePicHandler = changeProfilePicHandler;
 
+//helper for stop teaching course
 exports.stopTeachingHelper = function (user_id, class_id, callback) {
+    
+    //delete the class from CLASSES table
     console.log("execute STOP TECHING");
     db.query("DELETE FROM CLASSES WHERE instructor= $1 AND id = $2", {
         bind: [user_id, class_id]
@@ -218,62 +238,75 @@ exports.stopTeachingHelper = function (user_id, class_id, callback) {
     }).catch(function (err) {
         callback('error');
     });
-}
+};
 
 
 //function for unenroll class
 exports.stopTeachingHandler = function (req, res) {
     var user_id = getLoggedInUserId(req);
     var class_id = req.body.stopteachingCourse_id;
+    
+    //execute stopteaching helper. Return success if deleted, else return error
     exports.stopTeachingHelper(user_id, class_id, function (result) {
         if (result == 'success') {
             var returnJSON = {
                 "status": "success",
                 "message": "Delete Success"
-            }
+            };
             sendBackJSON(returnJSON, res);
         } else if (result == 'error') {
             console.log("Err in delete course");
             var returnJSON = {
                 "status": "error",
                 "message": "Err in delete course"
-            }
+            };
             sendBackJSON(returnJSON, res);
         }
     });
 };
 
-
-exports.unenrollHelper = function (user_id, class_id, callback) {
+//Unenroll helper for unenroll a user in a course
+exports.unenrollUser = function (userId, classId, callback) {
+    
+    //check for invalid 
+    if (userId === undefined || userId < 1 || classId === undefined || classId < 1) {
+        callback('Invalid input');
+        return;
+    }
+    
+    //delete the enrollment of the user
     db.query("DELETE FROM ENROLMENT WHERE user_id= $1 AND class_id = $2", {
-        bind: [user_id, class_id]
-    }).spread(function (results, metadata) {
-        callback('success');
-    }).catch(function (err) {
-        callback('error');
+        bind: [userId, classId]
+    }).spread(function () {
+        callback('Success');
+    }).catch(function () {
+        callback('Error');
     });
-}
+};
 
-
-//function for unenroll class
+//Handler for unenroll
 exports.unenrollHandler = function (req, res) {
-    var user_id = getLoggedInUserId(req);
-    var class_id = req.body.dropCourse_id;
-    exports.unenrollHelper(user_id, class_id, function (result) {
-        if (result == 'success') {
-            var returnJSON = {
+    var userId = getLoggedInUserId(req);
+    var classId = req.body.dropCourse_id;
+    
+    //call the unenroll helper to check whether the unenroll is successful or fail
+    exports.unenrollUser(userId, classId, function (result) {
+        var responseBody = {};
+        
+        //return success JSOn if success, else return error in unenroll process
+        if (result == 'Success') {
+            responseBody = {
                 "status": "success",
                 "message": "Delete Success"
-            }
-            sendBackJSON(returnJSON, res);
-        } else if (result == 'error') {
+            };
+        } else if (result == 'Error') {
             console.log("Err in delete course");
-            var returnJSON = {
+            responseBody = {
                 "status": "error",
                 "message": "Err in delete course"
-            }
-            sendBackJSON(returnJSON, res);
+            };
         }
+        sendBackJSON(responseBody, res);
     });
 };
 
@@ -283,20 +316,30 @@ exports.test.unenrollHandler = exports.unenrollHandler;
 var getProfileHandler = function (req, res, profileUserId) {
     console.log("GETPROFILE" + profileUserId);
     console.log(common.getLoggedInUserId(req));
-    db.query("SELECT name, profile_picture_path FROM USERS WHERE id = $1", {
+    
+    //select name and profile_color from USERS table
+    db.query("SELECT name, profile_color FROM USERS WHERE id = $1", {
         bind: [profileUserId]
     }).spread(function (results, metadata) {
         var name = results[0].name;
-        var background_color = results[0].profile_picture_path;
+        
+        //check if the color exist
+        var background_color = results[0].profile_color;
         if (color.indexOf(background_color) < 0)
             background_color = 'grey_background';
+        
+        //capital the first character if a-z
         var firstLetterProfile = name.charAt(0);
         if (firstLetterProfile >= 'a' && firstLetterProfile <= 'z')
             firstLetterProfile = firstLetterProfile.toUpperCase();
         console.log('HERREEEEEE');
+        
+        //select the class enrolled in
         db.query("SELECT CLASSES.id AS id, CLASSES.class_name AS class_name, USERS.name AS instructor FROM ENROLMENT, CLASSES, USERS WHERE USERS.id=CLASSES.instructor AND CLASSES.id=ENROLMENT.class_id AND ENROLMENT.user_id = $1", {
             bind: [profileUserId]
         }).spread(function (result, meta) {
+            
+            //select whether it is followed
             db.query("SELECT EXISTS(SELECT 1 FROM FOLLOWINGS WHERE follower = $1 AND followee= $2 ) AS checkfollow", {
                 bind: [getLoggedInUserId(req), profileUserId]
             }).spread(function (resultInner, metaInner) {
@@ -305,11 +348,15 @@ var getProfileHandler = function (req, res, profileUserId) {
                     boolFollow = true;
                 var classenroll = result;
                 console.log(result);
+                
+                //select the class teaching for this user
                 db.query("SELECT class_name, name AS instructor, CLASSES.id AS id FROM USERS, CLASSES WHERE USERS.id = $1 AND USERS.id = instructor", {
                     bind: [profileUserId]
                 }).spread(function (classtaught, metadata) {
                     var classteaching = classtaught;
                     console.log(classteaching);
+                    
+                    //if all success render page
                     res.render('profile', {
                         profile_name: firstLetterProfile,
                         background_color: background_color,
@@ -326,11 +373,12 @@ var getProfileHandler = function (req, res, profileUserId) {
         });
 
     }).catch(function (err) {
+        //if fail return error msg
         console.log("Err in getting user profile");
         var returnJSON = {
             "status": "error",
             "message": "Err in getting user profile"
-        }
+        };
         sendBackJSON(returnJSON, res);
     });
 };
@@ -342,6 +390,8 @@ exports.test.getProfileHandler = getProfileHandler;
 var signinHandler = function (req, res, testing) {
     var signinUsername = req.body.signinUsername;
     var signinPassword = req.body.signinPassword;
+    
+    //check for invalid input and return accordingly
     if (signinUsername == null || signinUsername == undefined || signinUsername == '' || signinPassword == null || signinPassword == undefined || signinPassword == '') {
         if (testing != undefined)
             return 'Missing Required Field!';
@@ -353,9 +403,11 @@ var signinHandler = function (req, res, testing) {
             });
         }
     }
+    
+    //check for invalid input and return accordingly
     if (signinUsername.length < 8 || signinUsername.length > 20 || signinPassword.length < 8 || signinPassword.length > 20) {
         if (testing != undefined)
-            return 'Too long / Too Short Username or Password'
+            return 'Too long / Too Short Username or Password';
         else {
             res.status(401);
             return res.render('home', {
@@ -364,6 +416,8 @@ var signinHandler = function (req, res, testing) {
             });
         }
     }
+    
+    //get the password and user_id. check if  password match
     db.query("SELECT user_id, password FROM LOGIN_CREDENTIALS WHERE username = $1", {
         bind: [signinUsername]
     }).spread(function (results, metadata) {
@@ -371,6 +425,8 @@ var signinHandler = function (req, res, testing) {
         console.log(thisid);
         bcrypt.compare(signinPassword, results[0].password, function (err, result) {
             if (err || result === false) {
+                
+                //if result == false return error
                 if (testing != undefined)
                     return testing('Invalid Username and Password');
                 else {
@@ -386,16 +442,13 @@ var signinHandler = function (req, res, testing) {
                     return testing('true');
                 console.log("signinHandler " + results[0].user_id);
                 setLoggedInUserId(req, results[0].user_id);
-                //                exports.getProfileHandler(req, res, results[0].user_id);
-                res.status(200);
-                var returnJSON = {
-                    "status": "success",
-                    "message": "Success"
-                }
-                sendBackJSON(returnJSON, res);
+                common.redirectToPage('/user/profile', res);
+                return;
             }
-        })
+        });
     }).catch(function (err) {
+        
+        //return error if invalid match
         if (testing != undefined)
             return testing('Invalid Username and Password');
         res.status(401);
@@ -418,20 +471,15 @@ exports.signupHandler = function (request, response) {
     var username = request.body.signupUsername;
     var password = request.body.signupPassword;
     var passwordConfirmation = request.body.userPasswordConfirm;
-
+    
+    //new a user
     exports.createUser(name, username, password, passwordConfirmation, function (errorType, userId) {
 
         console.log(errorType);
         if (errorType === undefined) { // Success
             // Automatically log the user in
             setLoggedInUserId(request, userId);
-            //exports.getProfileHandler(request, response, userId);
-            response.status(200);
-            var returnJSON = {
-                "status": "success",
-                "message": "Success"
-            }
-            sendBackJSON(returnJSON, response);
+            common.redirectToPage('/user/profile', response);
             return;
         }
 
@@ -441,6 +489,12 @@ exports.signupHandler = function (request, response) {
             response.status(401);
             return response.render('home', {
                 errorContent: '<p><strong>Opps!</strong> Your username and password must be at least 8 characters long and max 20 characters!</p>',
+                loggedIn: false
+            });
+        case 'Incorrect Name Length':
+            response.status(401);
+            return response.render('home', {
+                errorContent: '<p><strong>Opps!</strong> Your name can be a maximum of 20 characters!</p>',
                 loggedIn: false
             });
         case 'Incorrect Password Length':
@@ -467,6 +521,12 @@ exports.signupHandler = function (request, response) {
                 errorContent: '<p><strong>Opps!</strong> You have missed some required fields!</p>',
                 loggedIn: false
             });
+        default:
+            response.status(401);
+            return response.render('home', {
+                errorContent: '<p><strong>Opps!</strong> Something went wrong. Contact the system administrator for help.</p>',
+                loggedIn: false
+            });
         }
     });
 };
@@ -480,21 +540,31 @@ exports.test.signupHandler = exports.signupHandler;
  */
 exports.createUser = function (name, username, password, passwordConfirmation, callback) {
 
-    if (name == null || name == undefined || name == '' || username == null || username == undefined || username == '' || password == null || password == undefined || password == '' || passwordConfirmation == null || passwordConfirmation == undefined || passwordConfirmation == '') {
+    /* Error checking */
+    if (name === undefined || name === '' || username === undefined || password === undefined) {
         callback('Required field missing');
         return;
     }
-
+    
+    //check for invalid input and return accordingly
     if (password != passwordConfirmation) {
         callback('Passwords Don\'t Match');
         return;
     }
-
+    
+    //check for invalid input and return accordingly
     if (username.length < 8 || username.length > 20) {
         callback('Incorrect Username Length');
         return;
     }
+    
+    //check for invalid input and return accordingly
+    if (name.length > 24) {
+        callback('Incorrect Name Length');
+        return;
+    }
 
+    //check for invalid input and return accordingly
     if (password.length < 8 || password.length > 20) {
         callback('Incorrect Password Length');
         return;
@@ -507,7 +577,7 @@ exports.createUser = function (name, username, password, passwordConfirmation, c
 
     db.transaction(function (transactionObject) {
         // Insert into USERS table
-        return db.query("INSERT INTO USERS (name, profile_picture_path) VALUES ( $1 , $2 )", {
+        return db.query("INSERT INTO USERS (name, profile_color) VALUES ( $1 , $2 )", {
                 transaction: transactionObject,
                 bind: [name, signupProfilePicture]
             })
@@ -545,7 +615,7 @@ var logoutHandler = function (req, res) {
         var returnJSON = {
             "status": "success",
             "message": "Logout Success"
-        }
+        };
         sendBackJSON(returnJSON, res);
     }
     // otherwise return an error
@@ -554,7 +624,7 @@ var logoutHandler = function (req, res) {
         var returnJSON = {
             "status": "error",
             "message": "Logout Error"
-        }
+        };
         sendBackJSON(returnJSON, res);
     }
 };
@@ -562,51 +632,62 @@ var logoutHandler = function (req, res) {
 exports.logoutHandler = logoutHandler;
 exports.test.logoutHandler = logoutHandler;
 
-
-exports.deleteUserHelper = function (user_id, callback) {
-        db.query("DELETE FROM LOGIN_CREDENTIALS WHERE user_id= $1", {
-            bind: [user_id]
-        }).spread(function (results, metadata) {
-            db.query("DELETE FROM USERS WHERE id= $1", {
-                bind: [user_id]
-            }).spread(function (results, metadata) {
-                callback('success');
-            }).catch(function (err) {
-                callback('errorinner')
-            });
-        }).catch(function (err) {
-            callback('errorouter')
-        });
+//delete user helper
+exports.deleteUser = function (userId, callback) {
+    //check if invalid input
+    if (userId === undefined || userId < 1 || userId === '') {
+        callback('Invalid user id');
+        return;
     }
-    //CASCADE ALL USERS and CLASSES
+    
+    //delete user from LOGIN_CREDENTIALS on delete casacde applies to all other table
+    db.query("DELETE FROM LOGIN_CREDENTIALS WHERE user_id= $1", {
+        bind: [userId]
+        
+    }).spread(function () {
+        db.query("DELETE FROM USERS WHERE id= $1", {bind: [userId]}).spread(function () {
+            callback('Success');
+            
+        }).catch(function () {
+            callback('Error deleting user');
+        });
+        
+    }).catch(function () {
+        callback('Error deleting login credentials');
+    });
+};
+
+//CASCADE ALL USERS and CLASSES
 exports.deleteUserHandler = function (req, res) {
-    var user_id = getLoggedInUserId(req);
-    // always set the user_id to logged out
+    var userId = getLoggedInUserId(req);
+    // always set the userId to logged out since we are deleting the user
     setLoggedInUserId(req, 0);
 
-    exports.deleteUserHelper(user_id, function (result) {
-        if (result == 'success') {
-            var returnJSON = {
+    exports.deleteUser(userId, function (result) {
+        var responseBody = {};
+        if (result == 'Success') {
+            responseBody = {
                 "status": "success",
                 "message": "Delete Success"
-            }
-            sendBackJSON(returnJSON, res);
-        } else if (result == 'errorinner') {
+            };
+            
+        } else if (result == 'Error deleting user') {
             console.log("Err in deleting user");
-            var returnJSON = {
+            responseBody = {
                 "status": "error",
                 "message": "Err in delete inner"
-            }
-            sendBackJSON(returnJSON, res);
-        } else if (result == 'errorouter') {
-            console.log("Err in delete course");
-            var returnJSON = {
+            };
+
+        } else if (result == 'Error deleting login credentials') {
+            console.log("Err in deleting login credentials");
+            responseBody = {
                 "status": "error",
                 "message": "Err in delete user outer"
-            }
-            sendBackJSON(returnJSON, res);
+            };
+
         }
-    })
+        sendBackJSON(responseBody, res);
+    });
 };
 exports.test.deleteUserHelper = exports.deleteUserHelper;
 exports.test.deleteUserHandler = exports.deleteUserHandler;

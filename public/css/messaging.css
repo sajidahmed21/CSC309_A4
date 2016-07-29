@@ -21,9 +21,14 @@ section#user-list {
 }
 
 section#user-list div.user {
-    border-bottom: 1px solid #e5e5e5;
+    padding-top: 4px;
+    padding-left: 8px;
     
     cursor: pointer;
+}
+
+section#user-list div.user:not(:last-child) {
+    border-bottom: 1px solid gray;
 }
 
 /* make the user row a light red if there is a new message */
