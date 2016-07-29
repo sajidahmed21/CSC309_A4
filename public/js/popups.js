@@ -12,7 +12,7 @@ $(document).ready(function () {
     $('div#popups .cancel_icon').click(hidePopups);
     
     // redirection for Google
-    $('button#googleLogin').click(redirectToGoogleAuthentication);
+    $('button#google-login').click(redirectToGoogleAuthentication);
     
     // hide the signup error box
     $('#signup-error-message').hide();
