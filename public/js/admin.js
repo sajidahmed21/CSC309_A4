@@ -176,7 +176,7 @@ function getDangerZoneSection(buttonTitle, clickListener) {
     
     $('<h3/>').text('Danger Zone').appendTo($dangerZone);
     var warningMessage = 'Be careful! This should ideally never be used apart from testing purposes ' +
-                         'unless there is some serious emergency.';
+                         'or unless there is some serious emergency.';
     $('<p/>').text(warningMessage).appendTo($dangerZone);
     
     $deleteButton = $('<button/>', {
@@ -238,6 +238,13 @@ function showClassTab() {
     $searchContainer.appendTo($editClassSection);
 
     $mainContent.append($editClassSection);
+    
+    /* Danger zone which allows the admin to delete all classes */
+    $dangerZone = getDangerZoneSection('Delete All Classes', function () {
+        showDeleteAllWarning('Are you sure want to delete all classes? This cannot be reversed.');
+    });
+    
+    $mainContent.append($dangerZone);
 }
 
 /* Shows Create User form */

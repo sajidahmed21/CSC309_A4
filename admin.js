@@ -342,3 +342,5 @@ exports.handleAnalyticsDataRequest = function (request, response) {
         
     });
 };
+
+/* Delete All User */
