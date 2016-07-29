@@ -23,7 +23,7 @@ exports.changeName = function (userId, newName, callback) {
         callback('Invalid name');
         return;
     }
-
+    //update user name query
     var updateQuery = 'UPDATE USERS SET name = $1 WHERE id = $2';
     db.query(updateQuery, {
         bind: [newName, userId]
@@ -46,8 +46,10 @@ exports.changeNameHandler = function (request, response) {
 
     exports.changeName(userId, newName, function (result) {
         var responseBody = {};
-
+        
         console.log(result);
+        
+        //if success return success JSON else return error
         if (result == 'Success') {
             responseBody = {
                 "status": "success",
@@ -71,24 +73,31 @@ exports.test.changeNameHandler = exports.changeNameHandler;
  **/
 exports.changePassword = function (userId, currentPassword, newPassword, newPasswordConfirm, isAdminChanging, callback) {
     // Error checking
+    //no user id
     if (userId === undefined || userId === 0) {
         callback('Invalid user id');
         return;
     }
+    
+    //invalid current password
     if ((currentPassword === undefined || currentPassword.length < 8 || currentPassword.length > 20) && !isAdminChanging) {
         callback('Incorrect password');
         return;
     }
+    
+    //invalid new password
     if (newPassword === undefined || newPassword.length < 8 || newPassword > 20) {
         callback('Invalid new password');
         return;
     }
 
+    //invalid new password confirm
     if (newPasswordConfirm === undefined || newPasswordConfirm.length < 8 || newPasswordConfirm > 20) {
         callback('Invalid old password');
         return;
     }
 
+    //password and confrim password does not match
     if (newPassword != newPasswordConfirm) {
         callback('Passwords do not match');
         return;
@@ -118,10 +127,11 @@ exports.changePasswordHandler = function (request, response) {
     var newPassword = request.body.changePassword;
     var newPasswordConfirm = request.body.newPasswordConfirm;
 
-
+    
     exports.changePassword(userId, currentPassword, newPassword, newPasswordConfirm, false, function (result) {
         var responseBody = {};
-
+        
+        //if success return success JSON else return error JSON with error msg
         console.log(result);
         if (result == 'Success') {
             responseBody = {
@@ -149,7 +159,8 @@ exports.test.changePasswordHandler = exports.changePasswordHandler;
 /* Updates the password in the database for the user specified by `userId` */
 function updatePassword(userId, newPassword, callback) {
     var hashedPassword = common.generatePasswordHash(newPassword);
-
+    
+    //update password query
     db.query("UPDATE LOGIN_CREDENTIALS SET password = $1 WHERE user_id= $2", {
         bind: [hashedPassword, userId]
 
@@ -168,6 +179,7 @@ exports.test.updatePassword = updatePassword;
  */
 function verifyUserPassword(userId, password, callback) {
     
+    //select all from login credentials
     db.query('SELECT * FROM LOGIN_CREDENTIALS WHERE user_id = $1', {
         bind: [userId]
     }).spread(function (results) {
@@ -175,6 +187,8 @@ function verifyUserPassword(userId, password, callback) {
             callback('Error');
             return;
         }
+        
+        // check if password input match with database password
         var currentPasswordHash = results[0].password;
         if (common.comparePassword(password, currentPasswordHash)) {
             callback('Valid');
@@ -190,7 +204,10 @@ exports.test.verifyUserPassword = verifyUserPassword;
 var changeProfilePicHandler = function (req, res) {
     var changeProfilepic = req.body.changeProfilepic;
     var user_id = getLoggedInUserId(req);
+    
+    //profile color change
     db.query("UPDATE USERS SET profile_color = '" + changeProfilepic + "' WHERE id=" + user_id).spread(function (results, metadata) {
+        //if success return change success
         var returnJSON = {
             "status": "success",
             "message": "Change Profile Pic Success"
@@ -209,8 +226,10 @@ var changeProfilePicHandler = function (req, res) {
 exports.changeProfilePicHandler = changeProfilePicHandler;
 exports.test.changeProfilePicHandler = changeProfilePicHandler;
 
-
+//helper for stop teaching course
 exports.stopTeachingHelper = function (user_id, class_id, callback) {
+    
+    //delete the class from CLASSES table
     console.log("execute STOP TECHING");
     db.query("DELETE FROM CLASSES WHERE instructor= $1 AND id = $2", {
         bind: [user_id, class_id]
@@ -226,6 +245,8 @@ exports.stopTeachingHelper = function (user_id, class_id, callback) {
 exports.stopTeachingHandler = function (req, res) {
     var user_id = getLoggedInUserId(req);
     var class_id = req.body.stopteachingCourse_id;
+    
+    //execute stopteaching helper. Return success if deleted, else return error
     exports.stopTeachingHelper(user_id, class_id, function (result) {
         if (result == 'success') {
             var returnJSON = {
@@ -244,13 +265,16 @@ exports.stopTeachingHandler = function (req, res) {
     });
 };
 
-
+//Unenroll helper for unenroll a user in a course
 exports.unenrollUser = function (userId, classId, callback) {
+    
+    //check for invalid 
     if (userId === undefined || userId < 1 || classId === undefined || classId < 1) {
         callback('Invalid input');
         return;
     }
     
+    //delete the enrollment of the user
     db.query("DELETE FROM ENROLMENT WHERE user_id= $1 AND class_id = $2", {
         bind: [userId, classId]
     }).spread(function () {
@@ -260,14 +284,16 @@ exports.unenrollUser = function (userId, classId, callback) {
     });
 };
 
-
+//Handler for unenroll
 exports.unenrollHandler = function (req, res) {
     var userId = getLoggedInUserId(req);
     var classId = req.body.dropCourse_id;
     
+    //call the unenroll helper to check whether the unenroll is successful or fail
     exports.unenrollUser(userId, classId, function (result) {
         var responseBody = {};
         
+        //return success JSOn if success, else return error in unenroll process
         if (result == 'Success') {
             responseBody = {
                 "status": "success",
@@ -290,20 +316,30 @@ exports.test.unenrollHandler = exports.unenrollHandler;
 var getProfileHandler = function (req, res, profileUserId) {
     console.log("GETPROFILE" + profileUserId);
     console.log(common.getLoggedInUserId(req));
+    
+    //select name and profile_color from USERS table
     db.query("SELECT name, profile_color FROM USERS WHERE id = $1", {
         bind: [profileUserId]
     }).spread(function (results, metadata) {
         var name = results[0].name;
+        
+        //check if the color exist
         var background_color = results[0].profile_color;
         if (color.indexOf(background_color) < 0)
             background_color = 'grey_background';
+        
+        //capital the first character if a-z
         var firstLetterProfile = name.charAt(0);
         if (firstLetterProfile >= 'a' && firstLetterProfile <= 'z')
             firstLetterProfile = firstLetterProfile.toUpperCase();
         console.log('HERREEEEEE');
+        
+        //select the class enrolled in
         db.query("SELECT CLASSES.id AS id, CLASSES.class_name AS class_name, USERS.name AS instructor FROM ENROLMENT, CLASSES, USERS WHERE USERS.id=CLASSES.instructor AND CLASSES.id=ENROLMENT.class_id AND ENROLMENT.user_id = $1", {
             bind: [profileUserId]
         }).spread(function (result, meta) {
+            
+            //select whether it is followed
             db.query("SELECT EXISTS(SELECT 1 FROM FOLLOWINGS WHERE follower = $1 AND followee= $2 ) AS checkfollow", {
                 bind: [getLoggedInUserId(req), profileUserId]
             }).spread(function (resultInner, metaInner) {
@@ -312,11 +348,15 @@ var getProfileHandler = function (req, res, profileUserId) {
                     boolFollow = true;
                 var classenroll = result;
                 console.log(result);
+                
+                //select the class teaching for this user
                 db.query("SELECT class_name, name AS instructor, CLASSES.id AS id FROM USERS, CLASSES WHERE USERS.id = $1 AND USERS.id = instructor", {
                     bind: [profileUserId]
                 }).spread(function (classtaught, metadata) {
                     var classteaching = classtaught;
                     console.log(classteaching);
+                    
+                    //if all success render page
                     res.render('profile', {
                         profile_name: firstLetterProfile,
                         background_color: background_color,
@@ -333,6 +373,7 @@ var getProfileHandler = function (req, res, profileUserId) {
         });
 
     }).catch(function (err) {
+        //if fail return error msg
         console.log("Err in getting user profile");
         var returnJSON = {
             "status": "error",
@@ -349,6 +390,8 @@ exports.test.getProfileHandler = getProfileHandler;
 var signinHandler = function (req, res, testing) {
     var signinUsername = req.body.signinUsername;
     var signinPassword = req.body.signinPassword;
+    
+    //check for invalid input and return accordingly
     if (signinUsername == null || signinUsername == undefined || signinUsername == '' || signinPassword == null || signinPassword == undefined || signinPassword == '') {
         if (testing != undefined)
             return 'Missing Required Field!';
@@ -360,6 +403,8 @@ var signinHandler = function (req, res, testing) {
             });
         }
     }
+    
+    //check for invalid input and return accordingly
     if (signinUsername.length < 8 || signinUsername.length > 20 || signinPassword.length < 8 || signinPassword.length > 20) {
         if (testing != undefined)
             return 'Too long / Too Short Username or Password';
@@ -371,6 +416,8 @@ var signinHandler = function (req, res, testing) {
             });
         }
     }
+    
+    //get the password and user_id. check if  password match
     db.query("SELECT user_id, password FROM LOGIN_CREDENTIALS WHERE username = $1", {
         bind: [signinUsername]
     }).spread(function (results, metadata) {
@@ -378,6 +425,8 @@ var signinHandler = function (req, res, testing) {
         console.log(thisid);
         bcrypt.compare(signinPassword, results[0].password, function (err, result) {
             if (err || result === false) {
+                
+                //if result == false return error
                 if (testing != undefined)
                     return testing('Invalid Username and Password');
                 else {
@@ -398,6 +447,8 @@ var signinHandler = function (req, res, testing) {
             }
         });
     }).catch(function (err) {
+        
+        //return error if invalid match
         if (testing != undefined)
             return testing('Invalid Username and Password');
         res.status(401);
@@ -420,7 +471,8 @@ exports.signupHandler = function (request, response) {
     var username = request.body.signupUsername;
     var password = request.body.signupPassword;
     var passwordConfirmation = request.body.userPasswordConfirm;
-
+    
+    //new a user
     exports.createUser(name, username, password, passwordConfirmation, function (errorType, userId) {
 
         console.log(errorType);
@@ -493,22 +545,26 @@ exports.createUser = function (name, username, password, passwordConfirmation, c
         callback('Required field missing');
         return;
     }
-
+    
+    //check for invalid input and return accordingly
     if (password != passwordConfirmation) {
         callback('Passwords Don\'t Match');
         return;
     }
-
+    
+    //check for invalid input and return accordingly
     if (username.length < 8 || username.length > 20) {
         callback('Incorrect Username Length');
         return;
     }
     
+    //check for invalid input and return accordingly
     if (name.length > 24) {
         callback('Incorrect Name Length');
         return;
     }
 
+    //check for invalid input and return accordingly
     if (password.length < 8 || password.length > 20) {
         callback('Incorrect Password Length');
         return;
@@ -576,11 +632,15 @@ var logoutHandler = function (req, res) {
 exports.logoutHandler = logoutHandler;
 exports.test.logoutHandler = logoutHandler;
 
+//delete user helper
 exports.deleteUser = function (userId, callback) {
+    //check if invalid input
     if (userId === undefined || userId < 1 || userId === '') {
         callback('Invalid user id');
         return;
     }
+    
+    //delete user from LOGIN_CREDENTIALS on delete casacde applies to all other table
     db.query("DELETE FROM LOGIN_CREDENTIALS WHERE user_id= $1", {
         bind: [userId]
         
