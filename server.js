@@ -280,7 +280,18 @@ app.post('/admin/delete_user/:id', admin.checkAuthentication, admin.handleDelete
 
 app.post('/admin/remove_user_from_course/:id', admin.checkAuthentication, admin.handleUnenrolUserRequest);
 
-app.get('/admin/edit_course/:id', admin.checkAuthentication, admin.handleEditCourseRequest);
+app.get('/admin/edit_course/:id',
+    admin.checkAuthentication,
+    courses.get_class_info,
+    courses.get_course_rating,
+    courses.get_enrolled_students,
+    courses.get_reviews, 
+    courses.get_posts,
+    courses.hasLoggedInUserReviewed, 
+    courses.isLoggedInUserInstructor,
+    courses.isLoggedInUserEnrolled,
+    courses.getLoggedInUserAvatar,
+    courses.render_course_page);
 
 
 /* Searches  --------------------------------------------------------*/

@@ -220,28 +220,43 @@ exports.render_course_page = function(req, res, next) {
 	} else {
 		titlefont = "5vw";
 	}
-		res.render('coursedesc', {
-            anyposts: res.anyposts,
-            posts: res.posts,
-			enrolled: res.enrolled,
-			Reviewed: res.reviewed,
-			LIname: res.LIname,
-			isInstructor: res.isInstructor,
-			LIfirstLetter: res.LIfirstLetter,
-			LIbackgroundColor: res.LIbackgroundColor,
-			loggedIn: common.userIsLoggedIn(req),
-			imgPath: res.class_info[0].banner_picture_path,
-			titlefont: titlefont,
-			courseTitle: res.class_info[0].class_name,
-			instructor: res.class_info[0].instructor,
-			rating: res.rating,
-			enrollment: res.enrolled_students.length,
-			courseDesc: res.class_info[0].coursedesc, // need this in database
-			courseRequirements: res.class_info[0].coursereqs, // need this in database
-			students: res.enrolled_students,
-			reviews: res.reviews
-		}); 
-		return;
+        
+        renderCoursePage(req, res);
+}
+
+function renderCoursePage(req, res) {
+	//res.render('coursedesc', {
+        var values = {
+                anyposts: res.anyposts,
+                posts: res.posts,
+                enrolled: res.enrolled,
+                Reviewed: res.reviewed,
+                LIname: res.LIname,
+                isInstructor: res.isInstructor,
+                LIfirstLetter: res.LIfirstLetter,
+                LIbackgroundColor: res.LIbackgroundColor,
+                loggedIn: common.userIsLoggedIn(req),
+                imgPath: res.class_info[0].banner_picture_path,
+                titlefont: titlefont,
+                courseTitle: res.class_info[0].class_name,
+                instructor: res.class_info[0].instructor,
+                rating: res.rating,
+                enrollment: res.enrolled_students.length,
+                courseDesc: res.class_info[0].coursedesc, // need this in database
+                courseRequirements: res.class_info[0].coursereqs, // need this in database
+                students: res.enrolled_students,
+                reviews: res.reviews
+        };
+        
+        /* Render the edit course admin page if the request originated from an admin */
+        if (req.url.startsWith('/admin/edit_course') && req.session.adminId !== undefined) {
+                values.adminUsername = req.session.adminId;
+                res.render('edit_course_admin', values);
+        }
+        // Else render the course page for users / instructors
+        else {
+                res.render('coursedesc', values);
+        }
 }
 
 
