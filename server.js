@@ -185,6 +185,8 @@ app.post('/createcourse', checkAuthentication, function (req, res, next) {
     upload(req, res, function (err) {
         res.courseBannerErr = '';
         res.courseTitleErr = '';
+        res.courseDescErr = '';
+        res.courseReqsErr = '';
         if (err) {
             console.log("something went wrong with file upload");
             return;

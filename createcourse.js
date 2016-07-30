@@ -7,7 +7,7 @@ exports.test.isImage = isImage;
 
 /*replace 1 with getLoggedInUserId(req)*/
 exports.validate = function (req, res, next) {
-
+    var empty_fields = false;
     if (!req.body.courseTitle) {
         res.courseTitleErr = "Title cannot be empty";
         empty_fields = true;
