@@ -691,7 +691,7 @@ exports.test.logoutHandler = logoutHandler;
 //delete user helper
 exports.deleteUser = function (userId, callback) {
     //check if invalid input
-    if (userId === undefined || userId < 1 || userId === '') {
+    if (userId === undefined || userId <= 0 || userId === '') {
         callback('Invalid user id');
         return;
     }
@@ -745,7 +745,7 @@ exports.deleteUserHandler = function (req, res) {
         sendBackJSON(responseBody, res);
     });
 };
-exports.test.deleteUserHelper = exports.deleteUser;
+exports.test.deleteUser = exports.deleteUser;
 exports.test.deleteUserHandler = exports.deleteUserHandler;
 
 /* Checks for error and returns the profile picture color for a user */

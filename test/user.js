@@ -113,7 +113,10 @@ describe('user', function () {
             it('successs', function () {
                 test.createUser('testingpurpose', 'testingpurpose', 'testingpurpose1.', 'testingpurpose1.', function (errorType, id) {
                     if(id != undefined)
+                    {
+                        console.log("TESTING ID:" + id);
                         user_id = id;
+                    }
                     assert.equal(errorType, undefined);
                 });
             });
@@ -449,30 +452,33 @@ describe('user', function () {
         });
     });
     describe('delete-user-successful', function () {
-        it('delete-user-successful', function () {
-            test.deleteUserHelper(user_id, function (result) {
-                assert(result, 'success');
+        describe('delete-user-unsuccessful', function () {
+            it('invalid id', function () {
+                test.deleteUser(0, function (result) {
+                    console.log("DELETE RESULT" + result);
+                    assert(result, 'Invalid user id');
+                });
+            });
+            it('undefined id', function () {
+                test.deleteUser(undefined, function (result) {
+                    console.log("DELETE RESULT" + result);
+                    assert(result, 'Invalid user id');
+                });
+            });
+            it('empty id', function () {
+                test.deleteUser('', function (result) {
+                    console.log("DELETE RESULT" + result);
+                    assert(result, 'Invalid user id');
+                });
+            });
+        });
+        describe('delete-user-successful', function () {
+            it('delete-user-successful', function () {
+                test.deleteUser(user_id, function (result) {
+                    console.log("DELETE RESULT" + result);
+                    assert(result, 'Success');
+                });
             });
         });
     });
 });
-
-//describe('user', function () {
-//    describe('signinHandler()', function () {
-//        it('signin-correct', function () {
-//            var req = {
-//                "body":{
-//                    "signinUsername": 'bill',
-//                    "signinPassword": '123123123'
-//                }
-//            }
-//            var res = {
-//                "status": undefined
-//            }
-//            test.signinHandler(req, res, function(result){
-//               asser.equals(result, true);
-//            });
-//            //assert.equal(test.signinHandler(req, res), true);
-//        });
-//    });
-//});
