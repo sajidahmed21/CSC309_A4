@@ -58,7 +58,7 @@ exports.get_enrolled_students = function(req, res, next) {
 
 exports.get_reviews = function(req, res, next) {
 	db.query('SELECT' 
-			+' U.name as username, U.profile_color as dp, R.content as review, R.rating as rating, R.created_timestamp as postdate' 
+			+' U.name as username, U.profile_color as dp, R.user_id AS review_id, R.content as review, R.rating as rating, R.created_timestamp as postdate' 
 			+ ' FROM REVIEWS R, USERS U WHERE R.class_id = $1 AND U.id = R.user_id ORDER BY R.created_timestamp ASC;', 
 			{ bind: [res.class_info[0].id]}
 			).spread(function(results, metadata) {

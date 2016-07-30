@@ -1,13 +1,14 @@
 $(document).ready(function() {
    
+   /* Click listener for delete course button */
    $('#delete_course_button').click(showDeleteWarning);
+   
+   /* Click listener for delete review button */
+   $('.delete_review_button').click(deleteReview);
    
 });
 
 function showDeleteWarning() {
-
-    /* Remove any existng notification messages while trying to create a user */
-   //removeNotificationMessage();
    
    /* Remove any existing popups */
    hideDeleteCoursePopup();
@@ -70,4 +71,35 @@ function showDeleteWarning() {
 
 function hideDeleteCoursePopup() {
     $('#popup').remove();
+}
+
+
+/* Click listener function for delete review buttons */
+function deleteReview() {
+    var url = window.location.pathname;
+    var courseId = url.slice(url.lastIndexOf('/') + 1);
+    var userId = this.value;
+    
+    var requestBody = {courseId: courseId, userId: userId};
+   
+    $.ajax({
+        type: "POST",
+        url: "/admin/delete_review",
+        data: JSON.stringify(requestBody),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+            if (data.status == 'Success') {
+               location.reload(true);
+            }
+        },
+        failure: function () {
+            hidePopup();
+            alert('Oops! Something went wrong. Please try later.');
+        },
+        error: function () {
+            hidePopup();
+            alert('Oops! Something went wrong. Please try later.');
+        }
+    });
 }
