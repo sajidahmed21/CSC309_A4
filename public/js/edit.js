@@ -32,7 +32,7 @@ $(document).ready(function() {
                                       //On ajax success do this
                                 
                                        alert("Edited successfully");
-                                       $("#input-coursedesc").replaceWith("<p class=standard-font>" + input + "</p>");
+                                       $("#input-coursedesc").replaceWith("<pre class=standard-font>" + input + "</p>");
                                          var btn = create_edit_btn().attr('id', "edit-course-desc");
                                         $("#save-course-desc").replaceWith(btn);
                                     },
@@ -40,7 +40,7 @@ $(document).ready(function() {
                                     //On error do this
                                         console.log('Error: ' + status);
                                       alert("Couldn't edit at this time");
-                                      $("#input-coursedesc").replaceWith("<p class=standard-font>" + origCourseDesc+ "</p>");
+                                      $("#input-coursedesc").replaceWith("<pre class=standard-font>" + origCourseDesc+ "</p>");
                                       var btn = create_edit_btn().attr('id', "edit-course-desc");
                                       $("#save-course-desc").replaceWith(btn);
                                     }
@@ -73,7 +73,7 @@ $(document).ready(function() {
                                 
                                        alert("Edited successfully");
                                        console.log(input);
-                                       $("#input-requirements").replaceWith("<p class=standard-font>" + input + "</p>");
+                                       $("#input-requirements").replaceWith("<pre class=standard-font>" + input + "</pre>");
                                          var btn = create_edit_btn().attr('id', "edit-requirements");
                                         $("#save-requirements").replaceWith(btn);
                                     },
@@ -81,7 +81,7 @@ $(document).ready(function() {
                                     //On error do this
                                         console.log('Error: ' + status);
                                       alert("Couldn't edit at this time");
-                                       $("#input-requirements").replaceWith("<p class=standard-font>" + origCourseReqs+ "</p>");
+                                       $("#input-requirements").replaceWith("<pre class=standard-font>" + origCourseReqs+ "</p>");
                                  var btn = create_edit_btn().attr('id', "edit-requirements");
                                  $("#save-requirements").replaceWith(btn);
                                     }
