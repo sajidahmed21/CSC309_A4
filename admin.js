@@ -153,7 +153,8 @@ exports.handleEditProfileRequest = function (request, response) {
                 background_color: profileData.background_color,
                 name: profileData.name,
                 classes: profileData.classes,
-                userId: request.params.id /* May be I need this in case I need the user id in the html page */
+                userId: request.params.id, /* May be I need this in case I need the user id in the html page */
+                isGoogleUser: profileData.isGoogleUser
             });
             // Reset messages after they have been rendered
             request.session.message = undefined;
@@ -291,13 +292,21 @@ function getUserProfileData(profileUserId, callback) {
             bind: [profileUserId]
         
         }).spread(function (result) {
-            var profileData = {
-                profile_name: firstLetterProfile,
-                background_color: backgroundColor,
-                name: name,
-                classes: result,
-            };
-            callback('Success', profileData);
+            user.isGoogleUser(profileUserId, function(err, result) {
+                if (err) {
+                    callback('Error fetching google information');
+                }
+                else {
+                    var profileData = {
+                        profile_name: firstLetterProfile,
+                        background_color: backgroundColor,
+                        name: name,
+                        classes: result,
+                        isGoogleUser: result
+                    };
+                    callback('Success', profileData);
+                }
+            });
         });
 
     }).catch(function () {
