@@ -15,11 +15,11 @@ exports.test = {};
  */
 exports.changeName = function (userId, newName, callback) {
     // Error checking
-    if (userId === undefined || userId === 0) {
+    if (userId || userId === '') {
         callback('Invalid user id');
         return;
     }
-    if (newName === undefined || newName.length === 0) {
+    if (newName || newName === '') {
         callback('Invalid name');
         return;
     }
@@ -73,32 +73,32 @@ exports.test.changeNameHandler = exports.changeNameHandler;
  **/
 exports.changePassword = function (userId, currentPassword, newPassword, newPasswordConfirm, isAdminChanging, callback) {
     // Error checking
-    //no user id
-    if (userId === undefined || userId === 0) {
+    //no user id, null user id, or user id = 0
+    if (!userId) {
         callback('Invalid user id');
         return;
     }
     
     //invalid current password
-    if ((currentPassword === undefined || currentPassword.length < 8 || currentPassword.length > 20) && !isAdminChanging) {
+    if ((!currentPassword || currentPassword.length < 8 || currentPassword.length > 20) && !isAdminChanging) {
         callback('Incorrect password');
         return;
     }
     
     //invalid new password
-    if (newPassword === undefined || newPassword.length < 8 || newPassword > 20) {
+    if (!newPassword || newPassword.length < 8 || newPassword > 20) {
         callback('Invalid new password');
         return;
     }
 
     //invalid new password confirm
-    if (newPasswordConfirm === undefined || newPasswordConfirm.length < 8 || newPasswordConfirm > 20) {
+    if (!newPasswordConfirm || newPasswordConfirm.length < 8 || newPasswordConfirm > 20) {
         callback('Invalid old password');
         return;
     }
 
     //password and confrim password does not match
-    if (newPassword != newPasswordConfirm) {
+    if (newPassword !== newPasswordConfirm) {
         callback('Passwords do not match');
         return;
     }
@@ -540,8 +540,10 @@ exports.test.signupHandler = exports.signupHandler;
  */
 exports.createUser = function (name, username, password, passwordConfirmation, callback) {
 
-    /* Error checking */
-    if (name === undefined || name === '' || username === undefined || password === undefined) {
+    /* Error checking: all fields must be provided and valid,
+       therefore they cannot be undefined, null, or empty string
+     */
+    if (!name || !username || !password) {
         callback('Required field missing');
         return;
     }
@@ -689,7 +691,7 @@ exports.deleteUserHandler = function (req, res) {
         sendBackJSON(responseBody, res);
     });
 };
-exports.test.deleteUserHelper = exports.deleteUserHelper;
+exports.test.deleteUserHelper = exports.deleteUser;
 exports.test.deleteUserHandler = exports.deleteUserHandler;
 
 /* Checks for error and returns the profile picture color for a user */
