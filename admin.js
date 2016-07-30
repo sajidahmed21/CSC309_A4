@@ -342,3 +342,57 @@ exports.handleAnalyticsDataRequest = function (request, response) {
         
     });
 };
+
+/* Danger Zone: Services implementing Delete All User and Classes */
+exports.handleDeleteAllUsersRequest = function (request, response) {
+    deleteAllUsers(function (result) {
+        if (result == 'Success') {
+            request.session.message = '<p>All users and their associated data have been deleted.</p>';
+        }
+        else {
+            request.session.errorContent = '<p><strong>Opps!</strong> Something went wrong. Please try later!</p>';        
+        }
+        
+        /* Redirect to the admin home page */
+        common.redirectToPage('/admin', response);
+    });
+};
+
+exports.handleDeleteAllClassesRequest = function (request, response) {
+    deleteAllClasses(function (result) {
+        if (result == 'Success') {
+            request.session.message = '<p>All classes and their associated data have been deleted.</p>';
+        }
+        else {
+            request.session.errorContent = '<p><strong>Opps!</strong> Something went wrong. Please try later!</p>';        
+        }
+        
+        /* Redirect to the admin home page */
+        common.redirectToPage('/admin', response);
+    });
+};
+
+/* Deletes all users from the database and notifies the caller about the
+ * result using the `callback` function.
+*/
+function deleteAllUsers(callback) {
+    db.query('DELETE FROM USERS').spread(function () {
+        callback('Success');
+    
+    }).catch(function () {
+        callback('Error');
+    });
+}
+
+
+/* Deletes all classes from the database and notifies the caller about the
+ * result using the `callback` function.
+*/
+function deleteAllClasses(callback) {
+    db.query('DELETE FROM CLASSES').spread(function () {
+        callback('Success');
+    
+    }).catch(function () {
+        callback('Error');
+    });
+}
