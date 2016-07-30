@@ -7,7 +7,15 @@
     width: 100%;
     height: 400px;
 }
-
+.edit-input {
+    height: 300px; 
+    padding-top: 20px; 
+    width: 90%; 
+    margin-top: 50px; 
+    margin-left: auto; 
+    margin-right: auto; 
+    font-size: 20px;
+}
 #course-profile {
     width: auto;
     height: auto;
@@ -45,10 +53,20 @@
     display: inline;
     position: absolute;
     right: 0;
+    bottom: -50px;
     padding-top: 2px;
     padding-bottom: 2px;
     height: 40px;
     
+}
+#post-msg {
+    display: inline;
+    position: absolute;
+    bottom: -25px;
+
+}
+.post-bottom {
+    margin-top: 5px;
 }
 
 .table {
@@ -106,14 +124,28 @@
     margin-bottom: 30px;
 }
 
-
-.post-container {
-    position: relative;
+.post-box {
     width: 82%;
+    position: relative;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 100px;
+    margin-top: 50px;
     margin-bottom: 100px;
+}
+
+.post-container {
+    border-radius: 25px;
+    border: 2px solid #CCCCCC;
+    position: relative;
+    width: 82%;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
+    margin-bottom: 50px;
 }
 table, th {
     text-align: center;
@@ -132,10 +164,12 @@ table, th {
 glyphicon glyphicon-star:hover {
     color: white;
 }
-.tab-container p {
+#desc-content .tab-container p {
     word-wrap: break-word;
-    width:80%;
-    white-space: pre-wrap;
+    width:90%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 20px;
 }
 #desc-content p {
     font-size: 20px;
@@ -221,7 +255,7 @@ border-right:0;}
 .course-title {
     font-size: 5vw;
     text-align: center;
-    vertical-align: middle;
+    vertdescriptionical-align: middle;
 }
 .banner-container {
     position: absolute;
