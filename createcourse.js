@@ -7,52 +7,67 @@ exports.test.isImage = isImage;
 
 /*replace 1 with getLoggedInUserId(req)*/
 exports.validate = function (req, res, next) {
-    
-    var num_errors = 0;
-    if (req.file) { // if not using default image
-        if (!hasGoodSize(req.file.size) || !isImage(req.file.mimetype)) {
-            res.courseBannerErr = "File too large or not an image";
-            num_errors++;
-        }
-    }
+
     if (!req.body.courseTitle) {
         res.courseTitleErr = "Title cannot be empty";
-        res.render('createcourse', {
+        empty_fields = true;
+    }
+    if(!req.body.courseDesc) {
+        res.courseDescErr = "Course description cannot be empty";
+        empty_fields = true;
+    } 
+    if (!req.body.courseReqs) {
+        res.courseReqsErr = "Course requirements cannot be empty";
+        empty_fields = true;
+    }
+    if (empty_fields) {
+    // if fields are empty, render before searching database:
+    res.render('createcourse', {
                     loggedIn: true,
                     courseBannerErr: res.courseBannerErr,
                     courseTitle: req.body.courseTitle,
                     courseReqs: req.body.courseReqs,
                     courseDesc: req.body.courseDesc,
-                    courseTitleErr: res.courseTitleErr
+                    courseTitleErr: res.courseTitleErr, 
+                    courseReqsErr: res.courseReqsErr,
+                    courseDescErr: res.courseDescErr
                 });
         return;
+    } else { // no fields are empty, so let's continue with further validation
+            var courseTitle = req.body.courseTitle;
+            var num_errors = 0;
+            if (req.file) { // if not using default image
+                if (!hasGoodSize(req.file.size) || !isImage(req.file.mimetype)) {
+                    res.courseBannerErr = "File too large or not an image";
+                    num_errors++;
+                }
+            }
+            console.log("res.bannerpath in alreadyInDb: " + res.bannerpath);
+            db.query('SELECT * FROM CLASSES WHERE class_name =$1 AND instructor = $2', {
+                    bind: [courseTitle, common.getLoggedInUserId(req)]
+                }).spread(function (results, metadata) {
+                    if (results.length > 0) {
+                        res.courseTitleErr = "Course with that name already exists";
+                        num_errors++;
+                    }
+                    if (num_errors > 0) {
+                        res.render('createcourse', {
+                            loggedIn: true,
+                            courseBannerErr: res.courseBannerErr,
+                            courseTitle: req.body.courseTitle,
+                            courseReqs: req.body.courseReqs,
+                            courseDesc: req.body.courseDesc,
+                            courseTitleErr: res.courseTitleErr
+                        });
+                        return;
+                    } else {
+                        next();
+                    }
+                })
+                .catch(function (err) {
+                    console.log("query failed");
+                })
     }
-    var courseTitle = req.body.courseTitle;
-    console.log("res.bannerpath in alreadyInDb: " + res.bannerpath);
-    db.query('SELECT * FROM CLASSES WHERE class_name =$1 AND instructor = $2', {
-            bind: [courseTitle, common.getLoggedInUserId(req)]
-        }).spread(function (results, metadata) {
-            if (results.length > 0) {
-                res.courseTitleErr = "Course with that name already exists";
-                num_errors++;
-            }
-            if (num_errors > 0) {
-                res.render('createcourse', {
-                    loggedIn: true,
-                    courseBannerErr: res.courseBannerErr,
-                    courseTitle: req.body.courseTitle,
-                    courseReqs: req.body.courseReqs,
-                    courseDesc: req.body.courseDesc,
-                    courseTitleErr: res.courseTitleErr
-                });
-                return;
-            } else {
-                next();
-            }
-        })
-        .catch(function (err) {
-            console.log("query failed");
-        })
 }
 exports.addClassInfoAndRedirect = function (req, res) {
     console.log("res.bannerpath in redirect: " + res.bannerpath);
