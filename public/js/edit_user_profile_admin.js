@@ -80,6 +80,9 @@ var changeName = function () {
     $container.appendTo($middle);
     $middle.appendTo($outer);
     $outer.appendTo($popup);
+    
+    /* Scroll to top of page */
+    $('body').scrollTop(0);
 };
 
 /* Removes any notification message displayed on top of the page */
@@ -182,6 +185,9 @@ var changePassword = function () {
     $container.appendTo($middle);
     $middle.appendTo($outer);
     $outer.appendTo($popup);
+    
+    /* Scroll to top of page */
+    $('body').scrollTop(0);
 };
 
 var deleteUser = function () {
@@ -244,6 +250,9 @@ var deleteUser = function () {
     $container.appendTo($middle);
     $middle.appendTo($outer);
     $outer.appendTo($popup);
+    
+    /* Scroll to top of page */
+    $('body').scrollTop(0);
 };
 
 var removeUserFromCourse = function () {
