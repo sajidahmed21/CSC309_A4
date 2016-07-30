@@ -84,7 +84,7 @@ $(document).ready(function () {
                 console.log(input);
                 
                  var insertthis = $("<p class=standard-font></p>").text(input);
-                $("#input-requirements").replaceWith("insertthis");
+                $("#input-requirements").replaceWith(insertthis);
                 var btn = create_edit_btn().attr('id', "edit-requirements");
                 $("#save-requirements").replaceWith(btn);
             },
