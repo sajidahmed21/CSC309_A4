@@ -99,17 +99,11 @@
         </div>
         <div class="tab-content">
                 <div id="course-desc" class="tab-container tab-pane fade in active">
-                    {{#if adminUsername}}
-                    <button id="edit-course-desc" class="edit-btn standard-green-button"> Edit </button>
-                    {{/if}}
                     <p class="standard-font"> 
                     	{{courseDesc}}
                     </p>
                 </div>
                 <div id="requirements" class="tab-container tab-pane fade">
-                    {{#if adminUsername}}
-                    <button id="edit-requirements" class="edit-btn standard-green-button"> Edit </button>
-                    {{/if}}
                     <p class="standard-font">
                         {{courseRequirements}}
                     </p>
@@ -162,12 +156,12 @@
                 {{#if adminUsername}}
 
                     <div id="course-posts" class="tab-pane fade">
-                        <div class="post-container">
+                        <!--<div class="post-container">-->
                             <!--<h3 class="standard-font" style="text-align: center; margin: 40px;"> Make a Post</h3>-->
                             <!--<textarea id="post-input" class="form-control" maxlength = "1000" rows="3" placeholder="Type here... (1000 char limit)" autocomplete="off"></textarea>-->
                             <!--<div id="post-msg" style="display: inline;"> </div>-->
                             <!--<button id="post-btn" class="standard-blue-button post-btn"> Post </button>-->
-                            </div>
+                            <!--</div>-->
 <!--						                                    <div class="standard-container post-container">-->
 <!--                                        <h4 class="standard-font"> Posted On {{timestamp}} </h4>-->
 <!--                                           <p class="standard-font"> This is great Post </p>-->
@@ -178,7 +172,6 @@
                                     <div class="standard-container post-container">
                                         <h4 class="standard-font"> Posted On {{timestamp}} </h4>
                                            <p class="standard-font"> {{post}} </p>
-										   <button id="post-btn" value="{{postId}}" class="standard-red-button btn-danger"> Remove Post </button>
                                     </div>
                                     {{/each}}
                                 {{else}}
