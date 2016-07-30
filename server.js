@@ -202,24 +202,23 @@ app.post('/createcourse', checkAuthentication, function (req, res, next) {
     })
 }, createcourse.validate, checkAuthentication, createcourse.addClassInfoAndRedirect);
 
-<<<<<<< HEAD
 app.post('/submitreview', checkAuthentication, function(req, res, next) {
         // do some validation
-        var data = req.body;
-            var user_id = getLoggedInUserId(req);
-            var class_id = data.class_id;
-            var content = data.review;
-            var rating = data.rating;
-            db.query('INSERT INTO REVIEWS (user_id, class_id, content, rating) VALUES ($1, $2, $3, $4)', 
-            { bind: [user_id, class_id, content, rating]}
-            ).then(function(rows) {
-                    res.end('{"success" : "Updated Successfully", "status" : 200}');
-            })
-            .catch(function(err) {
-            console.log("query failed");
-            res.status(500);
-            res.end();
-        })
+    var data = req.body;
+    var user_id = getLoggedInUserId(req);
+    var class_id = data.class_id;
+    var content = data.review;
+    var rating = data.rating;
+    db.query('INSERT INTO REVIEWS (user_id, class_id, content, rating) VALUES ($1, $2, $3, $4)', 
+    { bind: [user_id, class_id, content, rating]}
+    ).then(function(rows) {
+            res.end('{"success" : "Updated Successfully", "status" : 200}');
+    })
+    .catch(function(err) {
+        console.log("query failed");
+        res.status(500);
+        res.end();
+    });
 });
 
 

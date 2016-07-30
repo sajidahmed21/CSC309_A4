@@ -3,13 +3,8 @@ var common = require('./common');
 var db = common.db;
 //testing
 exports.test = {};
-
 exports.test.isImage = isImage;
-exports.test.capitalizeEveryElement = capitalizeEveryElement;
-exports.test.capitalizeFirstChar = capitalizeEveryElement;
-exports.test.formatTitle = formatTitle;
-exports.test.formatDesc = formatDesc;
-exports.test.formatReqs = formatReqs;
+
 /*replace 1 with getLoggedInUserId(req)*/
 exports.validate = function (req, res, next) {
     var courseTitle = req.body.courseTitle;
@@ -76,47 +71,6 @@ function hasGoodSize(value) {
 }
 
 function isImage(value) {
-            // Validation here:
-           pattern = /image(\/jpg$ |\/gif$|\/png$|\/jpeg$|\/bmp$)/i;
-           return pattern.test(value);
-}
-
-function capitalizeFirstChar(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-}
-
-function capitalizeEveryElement(array, breaker) {
-    if (breaker == ".") {
-        breaker = ". ";
-    }
-	var str = '';
-	for (i = 0; i < array.length; i++) {
-		if ((i == array.length - 1)) {
-			str += capitalizeFirstChar(array[i]);
-		} else {
-		     str += capitalizeFirstChar(array[i]) + breaker;
-		}
-	}
-    str = str.trim();
-	return str;
-}
-
-function formatTitle(title) {
-	var array = title.split(" ");
-	return capitalizeEveryElement(array, " ");
-}
-
-function formatDesc(desc) {
-    var array = desc.split(".");
-    return capitalizeEveryElement(array, ".");
-}
-
-function formatReqs(reqs) {
-	var array = reqs.split(".");
-	return capitalizeEveryElement(array, ".");
-}
-
-=======
     // Validation here:
     pattern = /image(\/jpg$ |\/gif$|\/png$|\/jpeg$|\/bmp$)/i;
     return pattern.test(value);
@@ -124,4 +78,3 @@ function formatReqs(reqs) {
 
 exports.test = {};
 exports.test.isImage = isImage;
->>>>>>> f0cfb3fd97690acc2fdd9f010968ff27b12c37ba
