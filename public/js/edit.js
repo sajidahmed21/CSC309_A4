@@ -38,6 +38,7 @@ $(document).ready(function () {
 
                 alert("Edited successfully");
                 var insertthis = $("<p class=standard-font></p>").text(input);
+
                 $("#input-coursedesc").replaceWith(insertthis);
                 var btn = create_edit_btn().attr('id', "edit-course-desc");
                 $("#save-course-desc").replaceWith(btn);
@@ -80,8 +81,9 @@ $(document).ready(function () {
             success: function (data) {
                 //On ajax success do this
 
-                alert("Edited successfully");
+          
                 console.log(input);
+                alert("Edited successfully");
                 var insertthis = $("<p class=standard-font></p>").text(input);
                 $("#input-requirements").replaceWith(insertthis);
                 var btn = create_edit_btn().attr('id', "edit-requirements");
