@@ -15,6 +15,10 @@
 		
         <link rel="stylesheet" type="text/css" href="/css/style.css">
 		<link rel="stylesheet" type="text/css" href="/css/admin_login.css">
+		
+		<!-- Load jQuery first and then admin_login.js -->
+		<script src="/js/jquery-3.0.0.min.js" defer type="text/javascript"></script>
+		<script src="/js/admin_login.js" defer type="text/javascript"></script>
     </head>
     
     <body class="global_font">
@@ -32,6 +36,9 @@
 					<!-- Password must be between 6 - 20 characters and contain at least 1 alphabet, 1 number, and 1 special character -->
                     <input name="password" type="password" placeholder="Password" required="required"
 						   pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&\-])[A-Za-z\d$@$!%*#?&\-]{6,20}$" class="standard-red-input" />
+					
+                    <!-- Any password mismatch messages -->
+					<p class="password-mismatch-message">{{{loginErrorMessage}}}</p>
                     <input type="submit" value="Login" class="btn btn-danger standard-red-button block_btn" />
                 </form>
             </div>
