@@ -251,6 +251,9 @@ function showClassTab() {
 function showCreateUserForm() {
     /* Remove any existng notification messages while trying to create a user */
    removeNotificationMessage();
+   
+   /* Remove any existing popups */
+   hidePopup();
     
    var $popup = $('<article/>', {id: 'popup'});
     

@@ -10,7 +10,7 @@ var ddos = new ddosModule({
     maxexpiry: 600000,
     errormessage: 'Oh no! You\'ve been making too many requests and have been blocked.',
 });
-app.use(ddos.express)
+app.use(ddos.express);
 
 var bcrypt = require('bcryptjs');
 
