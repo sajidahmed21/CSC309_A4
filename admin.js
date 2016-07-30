@@ -155,6 +155,7 @@ exports.handleEditProfileRequest = function (request, response) {
         
         if (status == 'Success') {
             
+            console.log(profileData.classes !== undefined && profileData.classes.length > 0);
             response.render('edit_user_profile_admin', {
                 message: request.session.message,
                 errorMessage: request.session.errorMessage,
@@ -163,7 +164,8 @@ exports.handleEditProfileRequest = function (request, response) {
                 background_color: profileData.background_color,
                 name: profileData.name,
                 classes: profileData.classes,
-                userId: request.params.id, /* May be I need this in case I need the user id in the html page */
+                isEnrolledInClass: profileData.classes !== undefined && profileData.classes.length > 0,
+                userId: request.params.id,
                 isGoogleUser: profileData.isGoogleUser
             });
             // Reset messages after they have been rendered
@@ -371,7 +373,7 @@ function getUserProfileData(profileUserId, callback) {
         db.query("SELECT CLASSES.id AS id, CLASSES.class_name AS class_name, USERS.name AS instructor FROM ENROLMENT, CLASSES, USERS WHERE USERS.id=CLASSES.instructor AND CLASSES.id=ENROLMENT.class_id AND ENROLMENT.user_id = $1", {
             bind: [profileUserId]
         
-        }).spread(function (result) {
+        }).spread(function (classes) {
             user.isGoogleUser(profileUserId, function(err, result) {
                 if (err) {
                     callback('Error fetching google information');
@@ -381,7 +383,7 @@ function getUserProfileData(profileUserId, callback) {
                         profile_name: firstLetterProfile,
                         background_color: backgroundColor,
                         name: name,
-                        classes: result,
+                        classes: classes,
                         isGoogleUser: result
                     };
                     callback('Success', profileData);
