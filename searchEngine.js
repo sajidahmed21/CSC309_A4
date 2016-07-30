@@ -14,20 +14,20 @@ var messaging = require('./messaging');
  */
 function scorePart(query, string) {
     // split the string into words and filter the ones which contain the query
-    var matchingWords = string.split(' ').filter(function(word) {
+    var matchingWords = string.split(' ').filter(function (word) {
         return word.indexOf(query) !== -1;
     });
-    
+
     // go through each matching word, with a base score relative to the
     // number of matching words
-    var score = matchingWords.reduce(function(score, word) {
+    var score = matchingWords.reduce(function (score, word) {
         // if the word matches at the beginning, add an additional bonus
         if (word.startsWith(query)) {
             score += 5;
         }
-        
+
         var lengthDifference = word.length - query.length;
-        
+
         // for an exact match, add another bonus
         if (lengthDifference === 0) {
             score += 10;
@@ -36,10 +36,10 @@ function scorePart(query, string) {
         else {
             score -= lengthDifference;
         }
-        
+
         return score;
     }, matchingWords.length * 10);
-    
+
     return score;
 }
 
@@ -48,7 +48,7 @@ function scorePart(query, string) {
  * sum of the score of each word in the query string in the matching string.
  */
 function scoreString(queryString, string) {
-    return queryString.split(' ').reduce(function(score, query) {
+    return queryString.split(' ').reduce(function (score, query) {
         return score + scorePart(query, string);
     }, 0);
 }
@@ -59,7 +59,7 @@ function scoreString(queryString, string) {
  * each word in the query.
  */
 function scoreResults(query, searchField, results) {
-    results.forEach(function(result) {
+    results.forEach(function (result) {
         result.score = scoreString(query.toLowerCase(), result[searchField].toLowerCase());
     });
 }
@@ -111,15 +111,17 @@ function limitResults(limit, results) {
  */
 function search(query, searchString, likeSearch, limit, additionalBindings, callback) {
     var searchParameter = likeSearch ? '%' + searchString + '%' : searchString;
-    
-    db.query(query, {bind: [searchParameter].concat(additionalBindings)})
-    .spread(function(results, metadata) {
-       scoreResults(searchString, 'matchingString', results);
-       sortResults(results);
-       limitResults(limit, results);
 
-       callback(results);
-   });
+    db.query(query, {
+            bind: [searchParameter].concat(additionalBindings)
+        })
+        .spread(function (results, metadata) {
+            scoreResults(searchString, 'matchingString', results);
+            sortResults(results);
+            limitResults(limit, results);
+
+            callback(results);
+        });
 }
 
 
@@ -132,11 +134,9 @@ function search(query, searchString, likeSearch, limit, additionalBindings, call
 function mergeStrings(primary, secondary) {
     if (primary && secondary) {
         return primary + ' (' + secondary + ')';
-    }
-    else if (primary) {
+    } else if (primary) {
         return primary;
-    }
-    else {
+    } else {
         return secondary;
     }
 }
@@ -146,42 +146,15 @@ function mergeStrings(primary, secondary) {
 function searchUsersByName(searchString, limit, userId, callback) {
     var query =
         'SELECT U.name, LC.username, U.id AS data, ' +
-            'U.name AS matchingString ' +
+        'U.name AS matchingString ' +
         'FROM USERS U ' +
         'LEFT OUTER JOIN LOGIN_CREDENTIALS LC ' +
-            'ON LC.user_id = U.id ' +
-        'WHERE U.name LIKE $1 AND U.id != $2 '
-    ;
-    
-   search(query, searchString, true, limit, [userId], function(results) {
-       // add a value field and strip out unneeded fields
-       results.forEach(function(result) {
-           result.value = mergeStrings(result.name, result.username);
+        'ON LC.user_id = U.id ' +
+        'WHERE U.name LIKE $1 AND U.id != $2 ';
 
-           result['matchingString'] = undefined;
-           result['name'] = undefined;
-           result['username'] = undefined;
-       });
-       
-       callback(results);
-   });
-}
-
-
-/* Searches for users by username and calls the callback with the results. */
-function searchUsersByUsername(searchString, limit, userId, callback) {
-    var query =
-        'SELECT U.name, LC.username, U.id AS data, ' +
-            'LC.username AS matchingString ' +
-        'FROM USERS U ' +
-        'INNER JOIN LOGIN_CREDENTIALS LC ' +
-            'ON LC.user_id = U.id ' +
-        'WHERE LC.username LIKE $1 AND U.id != $2 '
-    ;
-    
-    search(query, searchString, true, limit, [userId], function(results) {
+    search(query, searchString, true, limit, [userId], function (results) {
         // add a value field and strip out unneeded fields
-        results.forEach(function(result) {
+        results.forEach(function (result) {
             result.value = mergeStrings(result.name, result.username);
 
             result['matchingString'] = undefined;
@@ -190,7 +163,32 @@ function searchUsersByUsername(searchString, limit, userId, callback) {
         });
 
         callback(results);
-   });
+    });
+}
+
+
+/* Searches for users by username and calls the callback with the results. */
+function searchUsersByUsername(searchString, limit, userId, callback) {
+    var query =
+        'SELECT U.name, LC.username, U.id AS data, ' +
+        'LC.username AS matchingString ' +
+        'FROM USERS U ' +
+        'INNER JOIN LOGIN_CREDENTIALS LC ' +
+        'ON LC.user_id = U.id ' +
+        'WHERE LC.username LIKE $1 AND U.id != $2 ';
+
+    search(query, searchString, true, limit, [userId], function (results) {
+        // add a value field and strip out unneeded fields
+        results.forEach(function (result) {
+            result.value = mergeStrings(result.name, result.username);
+
+            result['matchingString'] = undefined;
+            result['name'] = undefined;
+            result['username'] = undefined;
+        });
+
+        callback(results);
+    });
 }
 
 
@@ -199,15 +197,15 @@ function searchUsersByUsername(searchString, limit, userId, callback) {
  * results1 which have a duplicate in results2 of the same score will be kept.
  */
 function _mergeResults(results1, results2, keepEquals) {
-    return results1.filter(function(result1) {
-        var duplicateResult = results2.find(function(result2) {
+    return results1.filter(function (result1) {
+        var duplicateResult = results2.find(function (result2) {
             // return true if the userIds match
             return result1.data == result2.data;
         });
-        
+
         // return true if there was no dupplicate, the duplicate has a lower score
         // or we are accepting equal scores and the score was equal
-        return (!duplicateResult || 
+        return (!duplicateResult ||
             (duplicateResult.score < result1.score) ||
             (keepEquals && duplicateResult.score == result1.score));
     });
@@ -224,17 +222,17 @@ function mergeResults(results1, results2) {
 
 /* Searches for users by name username and calls the callback with the results. */
 function searchUsers(searchString, limit, userId, callback) {
-    searchUsersByName(searchString, null, userId, function(nameResults) {
-        searchUsersByUsername(searchString, null, userId, function(usernameResults) {
+    searchUsersByName(searchString, null, userId, function (nameResults) {
+        searchUsersByUsername(searchString, null, userId, function (usernameResults) {
             // merge the two result arrays, resolving duplicates by keeping
             // the one with the higher score
             var results = mergeResults(nameResults, usernameResults);
-            
+
             // resort the merged results and then add a limit on them
             // so that we limit the highest amongst both searches
             sortResults(results);
             limitResults(limit, results);
-            
+
             // finally call the callback
             callback(results);
         });
@@ -246,16 +244,15 @@ function searchUsers(searchString, limit, userId, callback) {
 function searchForUser(searchString, callback) {
     var query =
         'SELECT U.name, LC.username, U.id AS data, ' +
-            'LC.username AS matchingString ' +
+        'LC.username AS matchingString ' +
         'FROM USERS U ' +
         'LEFT OUTER JOIN LOGIN_CREDENTIALS LC ' +
-            'ON LC.user_id = U.id ' +
-        'WHERE U.id = $1 '
-    ;
-    
-    search(query, searchString, false, null, [], function(results) {
+        'ON LC.user_id = U.id ' +
+        'WHERE U.id = $1 ';
+
+    search(query, searchString, false, null, [], function (results) {
         // add a value field and strip out unneeded fields
-        results.forEach(function(result) {
+        results.forEach(function (result) {
             result.value = mergeStrings(result.name, result.username);
 
             result['matchingString'] = undefined;
@@ -264,7 +261,7 @@ function searchForUser(searchString, callback) {
         });
 
         callback(results);
-   });
+    });
 }
 
 
@@ -272,16 +269,15 @@ function searchForUser(searchString, callback) {
 function searchClasses(searchString, limit, callback) {
     var query =
         'SELECT C.id AS data, C.class_name, U.name AS instructor, ' +
-            'C.class_name AS matchingString ' +
+        'C.class_name AS matchingString ' +
         'FROM CLASSES C ' +
         'INNER JOIN USERS U ' +
-            'ON C.instructor = U.id ' +
-        'WHERE C.class_name LIKE $1 '
-    ;
-    
-    search(query, searchString, true, limit, [], function(results) {
+        'ON C.instructor = U.id ' +
+        'WHERE C.class_name LIKE $1 ';
+
+    search(query, searchString, true, limit, [], function (results) {
         // add a value field and strip out unneeded fields
-        results.forEach(function(result) {
+        results.forEach(function (result) {
             result.value = mergeStrings(result.class_name, result.instructor);
 
             result['matchingString'] = undefined;
@@ -290,7 +286,7 @@ function searchClasses(searchString, limit, callback) {
         });
 
         callback(results);
-   });
+    });
 }
 
 
@@ -298,114 +294,120 @@ function searchClasses(searchString, limit, callback) {
  * it as the response.
  */
 function returnResults(results, res) {
-    sendBackJSON({'suggestions': results}, res);
+    sendBackJSON({
+        'suggestions': results
+    }, res);
 }
 
 /* exported library functions ----------------------------------------------*/
 
 /* Handles all requests directed to the search service. */
-exports.handleSearch = function(req, res) {
+exports.handleSearch = function (req, res) {
     var searchString = req.query.query;
     var searchType = req.query.type ? req.query.type : '';
     var limit = req.query.limit ? req.query.limit : null;
     var userId = common.getLoggedInUserId(req);
-    
+
     // if the limit is negative, make it null
     if (limit < 0) {
         limit = null;
     }
-    
+
     console.log('search for [' + searchString + '] by [' + userId +
         '] with type [' + searchType + ']; limit is [' + limit + ']');
-    
+
     if (!searchString) {
-        sendBadRequestResponse({'status': 'no search query provided'}, res);
+        sendBadRequestResponse({
+            'status': 'no search query provided'
+        }, res);
     }
     // if a user or admin isn't logged in and the search is for users, reject it
     else if (req.session.adminId === undefined && userId === 0 && searchType.startsWith('user')) {
-        sendBadRequestResponse({'status': 'search type not allowed'}, res);
-    }
-    else {
+        sendBadRequestResponse({
+            'status': 'search type not allowed'
+        }, res);
+    } else {
         // trim the search string if it is too long
         if (searchString.length > 20) {
             searchString = searchString.substring(0, 20);
         }
-        
-        switch(searchType) {
+
+        switch (searchType) {
             // default: all allowed types
-            case '':
-                searchClasses(searchString, null, function(classResults) {
-                    // add a field to the results so that the caller knows the type
-                    classResults.forEach(function(result) {
-                        result.type = 'class';
-                    });
-                    
-                    // if logged in, search users as well
-                    if (userId != 0) {
-                        searchUsers(searchString, null, userId, function(userResults) {
-                            // add a field to the results so that the caller knows the type
-                            userResults.forEach(function(result) {
-                                result.type = 'user';
-                            });
-                            
-                            // concatenate the results and sort them again
-                            var results = classResults.concat(userResults);
-                            sortResults(results);
-                            limitResults(limit, results);
-                            returnResults(results, res);
+        case '':
+            searchClasses(searchString, null, function (classResults) {
+                // add a field to the results so that the caller knows the type
+                classResults.forEach(function (result) {
+                    result.type = 'class';
+                });
+
+                // if logged in, search users as well
+                if (userId != 0) {
+                    searchUsers(searchString, null, userId, function (userResults) {
+                        // add a field to the results so that the caller knows the type
+                        userResults.forEach(function (result) {
+                            result.type = 'user';
                         });
-                    }
-                    else {
-                        limitResults(limit, classResults);
-                        returnResults(classResults, res);
-                    }
-                });
-                break;
-            
-            case 'usersbyname':
-                searchUsersByName(searchString, limit, userId, function(results) {
-                    returnResults(results, res);
-                });
-                break;
-            
-            case 'usersbyusername':
-                searchUsersByUsername(searchString, limit, userId, function(results) {
-                    returnResults(results, res);
-                });
-                break;
-            
-            case 'users':
-                searchUsers(searchString, limit, userId, function(results) {
-                    returnResults(results, res);
-                });
-                break;
-            
-            case 'userbyid':
-                searchForUser(searchString, function(results) {
-                    returnResults(results, res);
-                });
-                break;
-            
-            case 'onlineusers':
-                searchUsers(searchString, limit, userId, function(results) {
-                    // next, filter out ones which are not online
-                    results = results.filter(function(result) {
-                        return messaging.userIsOnline(result.data);
+
+                        // concatenate the results and sort them again
+                        var results = classResults.concat(userResults);
+                        sortResults(results);
+                        limitResults(limit, results);
+                        returnResults(results, res);
                     });
-                    
-                    returnResults(results, res);
+                } else {
+                    limitResults(limit, classResults);
+                    returnResults(classResults, res);
+                }
+            });
+            break;
+
+        case 'usersbyname':
+            searchUsersByName(searchString, limit, userId, function (results) {
+                returnResults(results, res);
+            });
+            break;
+
+        case 'usersbyusername':
+            searchUsersByUsername(searchString, limit, userId, function (results) {
+                returnResults(results, res);
+            });
+            break;
+
+        case 'users':
+            searchUsers(searchString, limit, userId, function (results) {
+                returnResults(results, res);
+            });
+            break;
+
+        case 'userbyid':
+            searchForUser(searchString, function (results) {
+                returnResults(results, res);
+            });
+            break;
+
+        case 'onlineusers':
+            searchUsers(searchString, limit, userId, function (results) {
+                // next, filter out ones which are not online
+                results = results.filter(function (result) {
+                    return messaging.userIsOnline(result.data);
                 });
-                break;
-            
-            case 'classes':
-                searchClasses(searchString, limit, function(results) {
-                    returnResults(results, res);
-                });
-                break;
-            
-            default:
-                sendBadRequestResponse({'status': 'unknown search type'}, res);
-                break;
+
+                returnResults(results, res);
+            });
+            break;
+
+        case 'classes':
+            searchClasses(searchString, limit, function (results) {
+                returnResults(results, res);
+            });
+            break;
+
+        default:
+            sendBadRequestResponse({
+                'status': 'unknown search type'
+            }, res);
+            break;
         }
     }
 }
