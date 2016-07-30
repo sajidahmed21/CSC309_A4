@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,32 +24,32 @@
     <script src="/js/logout.js" defer></script>
     <script src="/js/rating.js" defer></script>
     <script src="/js/enroll.js" defer></script>
-    <script src="/js/tab.js" defer> </script>
-     <script src="/js/post.js" defer> </script>
-     <script src="/js/edit.js" defer> </script>
-     <script src="/js/logout.js" defer></script>
+    <script src="/js/tab.js" defer>
+    </script>
+    <script src="/js/post.js" defer>
+    </script>
+    <script src="/js/edit.js" defer>
+    </script>
+    <script src="/js/logout.js" defer></script>
 
-	<!-- include files necessary for the searchbar -->
-	{{> searchbar_head }}
+    <!-- include files necessary for the searchbar -->
+    {{> searchbar_head }}
 
 </head>
+
 <body class="global_font container-fluid">
-	{{> nav }}
-	
-	<div id="course-profile">
-            <div class="course-banner">
-                {{#if loggedIn}}
-                   {{#unless isInstructor}}
-                            {{#if enrolled}}
-                                 <button id="unenroll" class="unenroll-btn">Un-Enroll </button> 
-                            {{else}}
-                                <button id="enroll" class="enroll-btn">Enroll </button>
-                            {{/if}}
-                    {{/unless}}
-                {{/if}}
-                <img alt="<course img>" src="{{imgPath}}">
-                 <div class="banner-container">
-                    
+    {{> nav }}
+
+    <div id="course-profile">
+        <div class="course-banner">
+            {{#if loggedIn}} {{#unless isInstructor}} {{#if enrolled}}
+            <button id="unenroll" class="unenroll-btn">Un-Enroll </button>
+            {{else}}
+            <button id="enroll" class="enroll-btn">Enroll </button>
+            {{/if}} {{/unless}} {{/if}}
+            <img alt="<course img>" src="{{imgPath}}">
+            <div class="banner-container">
+
                 <div id="course-title-box" class="standard-container">
                     <h1 class="standard-font course-title" style="font-size: {{titlefont}};">
                             
@@ -57,49 +58,48 @@
 
                 </div>
 
-           
-            <div class="standard-container quick-info">
-                <div class="col-sm-4 qi-box">
-                    <h3 class="standard-font">Instructor </h3>
-                    <p class="standard-font"> {{instructor}} </p>
-                </div>
-                <div class="col-sm-4 qi-box">
-                    <h3 class="standard-font">Rating </h3>
-                    <p class="standard-font"> {{rating}}</p>
-                </div>
-                <div class="col-sm-4 qi-right-box">
-                    <h3 class="standard-font">Enrollment </h3>
-                    <p class="standard-font">{{enrollment}}</p>
-                </div>
 
+                <div class="standard-container quick-info">
+                    <div class="col-sm-4 qi-box">
+                        <h3 class="standard-font">Instructor </h3>
+                        <p class="standard-font"> {{instructor}} </p>
+                    </div>
+                    <div class="col-sm-4 qi-box">
+                        <h3 class="standard-font">Rating </h3>
+                        <p class="standard-font"> {{rating}}</p>
+                    </div>
+                    <div class="col-sm-4 qi-right-box">
+                        <h3 class="standard-font">Enrollment </h3>
+                        <p class="standard-font">{{enrollment}}</p>
+                    </div>
+
+                </div>
             </div>
         </div>
-    </div>
 
 
-            <div id="desc-content">
+        <div id="desc-content">
 
-                <div id="course-nav" class="standard-font">
-                      <ul class="nav nav-tabs">
-                        <li class="active"> <a href="#course-desc"> Course Description </a> </li>
-                        <li> <a href="#requirements"> Requirements </a> </li>
-                        <li> <a href="#course-enrollment"> Current Course Enrollment </a> </li>
-                        {{#if enrolled}} 
-                             <li> <a href="#course-posts"> Course Posts </a> </li>
-                        {{/if}}
-                        {{#if isInstructor }}
-                            <li> <a href="#course-posts"> Course Posts </a> </li>
-                        {{/if}}
-                    </ul>
-                </div>
-                <div class="tab-content">
+            <div id="course-nav" class="standard-font">
+                <ul class="nav nav-tabs">
+                    <li class="active"> <a href="#course-desc"> Course Description </a> </li>
+                    <li> <a href="#requirements"> Requirements </a> </li>
+                    <li> <a href="#course-enrollment"> Current Course Enrollment </a> </li>
+                    {{#if enrolled}}
+                    <li> <a href="#course-posts"> Course Posts </a> </li>
+                    {{/if}} {{#if isInstructor }}
+                    <li> <a href="#course-posts"> Course Posts </a> </li>
+                    {{/if}}
+                </ul>
+            </div>
+            <div class="tab-content">
                 <div id="course-desc" class="tab-container tab-pane fade in active">
                     {{#if isInstructor}}
                     <button id="edit-course-desc" class="edit-btn standard-green-button"> Edit </button>
                     {{/if}}
                     <!-- <h1 class="standard-font"> Course Description </h1> -->
-                    <p class="standard-font"> 
-                    	{{courseDesc}}
+                    <p class="standard-font">
+                        {{courseDesc}}
                     </p>
                 </div>
                 <div id="requirements" class="tab-container tab-pane fade">
@@ -121,58 +121,51 @@
 
                             <tr>
                                 <th>Username</th>
-                               
-                            
+
+
                             </tr>
                         </thead>
                         <tbody>
-                        	{{#each students}}
+                            {{#each students}}
                             <tr>
                                 <td><a href="/user/profile/{{id}}"> {{student}} </a> </td>
-                                
+
                             </tr>
-                       	{{/each}}
+                            {{/each}}
                         </tbody>
                     </table>
 
                     {{else}}
-                                <br>
-                                <h1 class="standard-font center-align"> :( </h1>
-                                <br>
-                            <h4 class="standard-font center-align"> No one has enrolled yet </h4>
-                    {{/if}}
+                    <br>
+                    <h1 class="standard-font center-align"> :( </h1>
+                    <br>
+                    <h4 class="standard-font center-align"> No one has enrolled yet </h4> {{/if}}
                 </div>
 
-                {{#if enrolled}} 
+                {{#if enrolled}}
 
-                             <div id="course-posts" class="tab-container tab-pane fade">
-                                {{#if anyposts}}
-                                    {{#each posts}}
-                                    <div class="standard-container post-container">
-                                        <h4 class="standard-font"> Posted On {{timestamp}} </h4>
-                                           <p class="standard-font"> {{post}} </p>
-                                    </div>
-                                    {{/each}}
-                                {{else}}
-                                        <h1 class="standard-font center-align"> :( </h1>
-                                    <h4 class="standard-font center-align"> The instructor hasn't made any posts yet </h4>
-                                {{/if}}
-                             </div>
-                {{/if}}
-                
-                {{#if isInstructor}}
+                <div id="course-posts" class="tab-container tab-pane fade">
+                    {{#if anyposts}} {{#each posts}}
+                    <div class="standard-container post-container">
+                        <h4 class="standard-font"> Posted On {{timestamp}} </h4>
+                        <p class="standard-font"> {{post}} </p>
+                    </div>
+                    {{/each}} {{else}}
+                    <h1 class="standard-font center-align"> :( </h1>
+                    <h4 class="standard-font center-align"> The instructor hasn't made any posts yet </h4> {{/if}}
+                </div>
+                {{/if}} {{#if isInstructor}}
 
-                        <div id="course-posts" class="tab-pane fade">
-                        <div class="post-box">
-                            <h3 class="standard-font center-align-margin"> Make a Post</h3>
-                            <textarea id="post-input" class="form-control" maxlength = "1000" rows="3" placeholder="Type here... (1000 char limit)" autocomplete="off"></textarea>
-                            <div id="post-msg"> </div>
-                            <button id="post-btn" class="standard-blue-button post-btn"> Post </button>
-                        </div>
-                                {{#if anyposts}}
-                                    {{#each posts}}
-                                    <div class="post-container">
-                                        <h5 class="standard-font"> Posted On {{timestamp}} </h4>
+                <div id="course-posts" class="tab-pane fade">
+                    <div class="post-box">
+                        <h3 class="standard-font center-align-margin"> Make a Post</h3>
+                        <textarea id="post-input" class="form-control" maxlength="1000" rows="3" placeholder="Type here... (1000 char limit)" autocomplete="off"></textarea>
+                        <div id="post-msg"> </div>
+                        <button id="post-btn" class="standard-blue-button post-btn"> Post </button>
+                    </div>
+                    {{#if anyposts}} {{#each posts}}
+                    <div class="post-container">
+                        <h5 class="standard-font"> Posted On {{timestamp}} </h4>
                                            <p class="standard-font"> {{post}} </p>
                                     </div>
                                     {{/each}}

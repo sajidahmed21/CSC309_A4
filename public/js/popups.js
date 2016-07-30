@@ -20,74 +20,74 @@ function redirectToGoogleAuthentication() {
 
 
 /* Destroys any existing popup and then displays the references popup. */
-var showReferences = function(){
+var showReferences = function () {
     var $popup = $('#popup');
     $popup.empty();
-    
+
     $outer = $('<div/>', {
-       id:  'reference_form'
+        id: 'reference_form'
     });
-    
+
     $middle = $('<div/>', {
-       class:  'col-md-6'
+        class: 'col-md-6'
     });
-    
+
     $container = $('<div/>', {
-       class:  'standard-ref-container'
+        class: 'standard-ref-container'
     });
-    
+
     $cancelwrapper = $('<div/>');
-    
+
     $cancelicon = $('<span/>', {
-       class:  'glyphicon glyphicon-remove cancel_icon'
+        class: 'glyphicon glyphicon-remove cancel_icon'
     });
-    $cancelicon.click(function(){
+    $cancelicon.click(function () {
         hidePopup();
     });
     $cancelwrapper.append($cancelicon);
-    
+
     $container.append($cancelwrapper);
-    
+
     $form = $('<form/>');
-    
-    $title = $('<h1/>',{
-        class : 'standard-title'
+
+    $title = $('<h1/>', {
+        class: 'standard-title'
     });
     $title.text('References').appendTo($form);
-    
+
     $ul = $('<ul/>');
-    
+
     $ul.css('list-style-type', 'none');
     $ul.css('margin', '0');
     $ul.css('padding', '0');
     $ul.css('text-align', 'center');
-    
-    $li = $('<li/>',{
-        class: 'standard_ref_list'
-    });
-    
-    $li.text('Youtube. (Company). (2005). maxresdefault. [Digital image]. Retrieved from https://i.ytimg.com/vi/MWOdIIGOHGU/maxresdefault.jpg');
-            
-    $li.appendTo($ul);
-    
+
     $li = $('<li/>', {
         class: 'standard_ref_list'
     });
-    
-    $li.text('Youtube. (Company). (2005). maxresdefault. [Digital image]. Retrieved from https://i.ytimg.com/vi/LrGPkzy6mFo/maxresdefault.jpg');
-            
+
+    $li.text('Youtube. (Company). (2005). maxresdefault. [Digital image]. Retrieved from https://i.ytimg.com/vi/MWOdIIGOHGU/maxresdefault.jpg');
+
     $li.appendTo($ul);
-    
-    $li = $('<li/>',{
+
+    $li = $('<li/>', {
         class: 'standard_ref_list'
     });
-    
-    $li.text('boredpanda. (Website). origami-crane-paper-art-fb. [Digital image]. Retrieved from http://static.boredpanda.com/blog/wp-content/uploads/2015/10/origami-crane-paper-art-fb.jpg');
-            
+
+    $li.text('Youtube. (Company). (2005). maxresdefault. [Digital image]. Retrieved from https://i.ytimg.com/vi/LrGPkzy6mFo/maxresdefault.jpg');
+
     $li.appendTo($ul);
-    
+
+    $li = $('<li/>', {
+        class: 'standard_ref_list'
+    });
+
+    $li.text('boredpanda. (Website). origami-crane-paper-art-fb. [Digital image]. Retrieved from http://static.boredpanda.com/blog/wp-content/uploads/2015/10/origami-crane-paper-art-fb.jpg');
+
+    $li.appendTo($ul);
+
     $ul.appendTo($form);
-            
+
     $form.appendTo($container);
     $container.appendTo($middle);
     $middle.appendTo($outer);
@@ -183,7 +183,7 @@ var showSignin = function () {
     $container.appendTo($middle);
     $middle.appendTo($outer);
     $outer.appendTo($popup);
-    
+
     // throw the focus onto the first field
     $('input#signinUsername').focus();
 };
@@ -299,7 +299,7 @@ var showSignup = function () {
     $container.appendTo($middle);
     $middle.appendTo($outer);
     $outer.appendTo($popup);
-    
+
     // throw the focus onto the first field
     $('input#signupName').focus();
 };
@@ -312,25 +312,23 @@ var showSignup = function () {
  */
 function validateSignup(form) {
     var $error = $('#signup-error-message');
-    
+
     // hide any existing error
     $error.hide();
-    
+
     // fetch form variables
     var name = $('#signupName').val();
     var username = $('#signupUsername').val();
     var password = $('#signupPassword').val();
     var passwordConfirmation = $('#userPasswordConfirm').val();
-    
+
     if (password !== passwordConfirmation) {
         $error.text('Opps! The passwords don\'t match.');
         $error.show();
-    }
-    else if (name = '') {
+    } else if (name = '') {
         $error.text('A name is required to signup.');
         $error.show();
-    }
-    else if (username = '' || username.length < 8) {
+    } else if (username = '' || username.length < 8) {
         $error.text('A username of at least eight characters must be provided.');
         $error.show();
     }
@@ -338,7 +336,7 @@ function validateSignup(form) {
     else {
         return true;
     }
-    
+
     // return false so that the form submission doesn't occur
     return false;
 }

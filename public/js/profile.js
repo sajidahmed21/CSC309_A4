@@ -1,51 +1,51 @@
 $(document).ready(function () {
     initialize();
-    
+
     //if drop course is click
     $('.drop_course_btn').click(function () {
         dropCourse(this.value);
     });
-    
+
     //if stop teaching is click
     $('.stop_teaching_btn').click(function () {
         stopTeaching(this.value);
     });
-    
+
     //if change password is click
     $('#changepassword_btn').click(function () {
         changePassword();
     });
-    
+
     //if change name is click
     $('#changename_btn').click(function () {
         changeName();
     });
-    
+
     //if delete user is click
     $('#deleteuser_btn').click(function () {
         deleteUser();
     });
-    
+
     //if reference is click
     $('#reference').click(function () {
         referencePopup();
     });
-    
+
     //if cancel icon is clikced
     $('.cancel_icon').click(function () {
         hidePopup();
     });
-    
+
     //if logout is clicked
     $('#logout-anchor').click(function () {
         logout();
     });
-    
+
     //if unfollow is clicked
     $('#unfollow_btn').click(function () {
         unfollow(this.value);
     });
-    
+
     //if follow is clicked
     $('#follow_btn').click(function () {
         follow(this.value);
@@ -56,8 +56,8 @@ var stopTeaching = function (stopteachingCourse_id) {
     //clear popup
     var $popup = $('#popup');
     $popup.empty();
-    
-    
+
+
     //dynamically create a unenroll form using JQuery
     $outer = $('<div/>', {
         id: 'unenroll_form'
@@ -96,7 +96,7 @@ var stopTeaching = function (stopteachingCourse_id) {
     $input.text('Are you sure you want to stop teaching this course?');
 
     $input.appendTo($form);
-    
+
     //button to trigger stop teaching
     $input = $('<input/>', {
         type: 'button',
@@ -118,22 +118,22 @@ var stopTeaching = function (stopteachingCourse_id) {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (data) {
-                
+
                 //if success re direct
                 hidePopup();
                 console.log(data);
                 window.location.href = "/user/profile";
             },
             error: function (data) {
-                
+
                 //if fail display error msg
                 hidePopup();
                 window.location.href = "/?errorMessage=Your%20session%20has%20expired";
             }
         });
     });
-    
-    
+
+
     //input and form append accordingly
     $input.appendTo($form);
 
@@ -144,7 +144,7 @@ var stopTeaching = function (stopteachingCourse_id) {
 };
 
 var unfollow = function (followee_id) {
-    
+
     //if unfollow trigger the following AJAX 
     var body = {
         "followee": followee_id
@@ -183,14 +183,14 @@ var follow = function (followee_id) {
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (data) {
-            
+
             //if success redirect
             hidePopup();
             console.log(data);
             window.location.href = "/user/profile/" + followee_id;
         },
         error: function (data) {
-            
+
             //if fail show error msg
             hidePopup();
             window.location.href = "/?errorMessage=Your%20session%20has%20expired";
@@ -199,7 +199,7 @@ var follow = function (followee_id) {
 };
 
 var dropCourse = function (dropCourse_id) {
-    
+
     //popup clear
     var $popup = $('#popup');
     $popup.empty();
@@ -249,7 +249,7 @@ var dropCourse = function (dropCourse_id) {
         value: 'Unenroll',
         class: 'btn btn-danger standard-red-button block_btn'
     });
-    
+
     //if the unenroll button is click
     $input.click(function () {
         var body = {
@@ -263,21 +263,21 @@ var dropCourse = function (dropCourse_id) {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (data) {
-                
+
                 //if success redirect
                 hidePopup();
                 console.log(data);
                 window.location.href = "/user/profile";
             },
             error: function (data) {
-                
+
                 //if fail show error msg
                 hidePopup();
                 window.location.href = "/?errorMessage=Your%20session%20has%20expired";
             }
         });
     });
-    
+
     //append all accordingly
     $input.appendTo($form);
 
@@ -288,7 +288,7 @@ var dropCourse = function (dropCourse_id) {
 };
 
 var logout = function () {
-    
+
     //ajax for logout
     $.ajax({
         type: "POST",
@@ -320,11 +320,11 @@ var hidePopup = function () {
 };
 
 var referencePopup = function () {
-    
+
     //clear popup
     var $popup = $('#popup');
     $popup.empty();
-    
+
     //create reference dynamically with JQuery
     $outer = $('<div/>', {
         id: 'reference_form'
@@ -388,8 +388,8 @@ var referencePopup = function () {
     $li.text('boredpanda. (Website). origami-crane-paper-art-fb. [Digital image]. Retrieved from http://static.boredpanda.com/blog/wp-content/uploads/2015/10/origami-crane-paper-art-fb.jpg');
 
     $li.appendTo($ul);
-    
-    
+
+
     //append each element accordingly
     $ul.appendTo($form);
 
@@ -400,7 +400,7 @@ var referencePopup = function () {
 };
 
 var deleteUser = function () {
-    
+
     //popup clear
     var $popup = $('#popup');
     $popup.empty();
@@ -451,7 +451,7 @@ var deleteUser = function () {
         value: 'Delete',
         class: 'btn btn-danger standard-red-button block_btn'
     });
-    
+
     //click event for delete user
     $input.click(function () {
         var body = {};
@@ -463,14 +463,14 @@ var deleteUser = function () {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (data) {
-                
+
                 //if success redirect
                 hidePopup();
                 console.log(data);
                 window.location.href = "/";
             },
             error: function (data) {
-                
+
                 //if fail msg appear
                 hidePopup();
                 window.location.href = "/?errorMessage=Your%20session%20has%20expired";
@@ -487,12 +487,12 @@ var deleteUser = function () {
 };
 
 var changePassword = function () {
-    
+
     //popup section clear
     var $popup = $('#popup');
     $popup.empty();
-    
-    
+
+
     //change password create dynamically wih JQuery
     $outer = $('<div/>', {
         id: 'userlogin_form'
@@ -534,7 +534,7 @@ var changePassword = function () {
         required: 'required',
         pattern: '^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&\\-])[A-Za-z\\d$@$!%*#?&\\-]{6,20}$',
         title: 'Password must contain at least 1 letter, 1 number, 1 special character, ' +
-               ' and must be between 6 and 20 characters long. Special characters include $@!%*#?&-',
+            ' and must be between 6 and 20 characters long. Special characters include $@!%*#?&-',
         class: 'standard-green-input'
     });
 
@@ -549,7 +549,7 @@ var changePassword = function () {
         required: 'required',
         pattern: '^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&\\-])[A-Za-z\\d$@$!%*#?&\\-]{6,20}$',
         title: 'Your new password must contain at least 1 letter, 1 number, 1 special character, ' +
-               ' and must be between 6 and 20 characters long. Special characters include $@!%*#?&-',
+            ' and must be between 6 and 20 characters long. Special characters include $@!%*#?&-',
         class: 'standard-green-input'
     });
 
@@ -576,19 +576,18 @@ var changePassword = function () {
     });
 
     $input.appendTo($form);
-    
+
     //prevent form submit
     $form.submit(function (e) {
         e.preventDefault();
-        
+
         //check error/ invalid
         console.log($('#currentPassword').val());
         if ($('#currentPassword').val().length < 1) {
             $('#error-message').empty();
             $('#error-message').css('display', 'block');
             $('#error-message').text('Current Password cannot be empty!');
-        }
-        else if ($('#changePassword').val() != $('#newPasswordConfirm').val()) {
+        } else if ($('#changePassword').val() != $('#newPasswordConfirm').val()) {
             $popup.empty();
             $('#error-message').empty();
             $('#error-message').css('display', 'block');
@@ -605,7 +604,7 @@ var changePassword = function () {
                 "changePassword": $('#changePassword').val(),
                 "newPasswordConfirm": $('#newPasswordConfirm').val()
             };
-            
+
             //if all valid is checked do AJAX call for change password
             $.ajax({
                 type: "POST",
@@ -632,7 +631,7 @@ var changePassword = function () {
 };
 
 var changeName = function () {
-    
+
     //popup clear
     var $popup = $('#popup');
     $popup.empty();
@@ -687,18 +686,18 @@ var changeName = function () {
     });
 
     $input.appendTo($form);
-    
+
     //form submite and prevent default
     $form.submit(function (e) {
         e.preventDefault();
-        
+
         //check for invalid
         if ($('#changeName').val().length < 1) {
             $popup.empty();
             $('#error-message').css('display', 'block');
             $('#error-message').text('Your name cannot be Empty!');
         } else {
-            
+
             //if checked well-formatted do AJAX call
             var body = {
                 "changeName": $('#changeName').val()
@@ -711,14 +710,14 @@ var changeName = function () {
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (data) {
-                    
+
                     //if success redirect
                     hidePopup();
                     console.log(data);
                     window.location.href = "/user/profile";
                 },
                 error: function (data) {
-                    
+
                     //if fail display error msg
                     console.log('ERRORFAIL');
                     window.location.href = "/?errorMessage=Your%20session%20has%20expired";
@@ -726,8 +725,8 @@ var changeName = function () {
             });
         }
     });
-    
-    
+
+
     //append each element accordingly
     $form.appendTo($container);
     $container.appendTo($middle);

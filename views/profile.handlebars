@@ -8,8 +8,8 @@
     <title>LearnR</title>
 
     <script src="/js/jquery-2.0.0.min.js" defer></script>
-	<script src="/js/popups.js" defer></script>
-	
+    <script src="/js/popups.js" defer></script>
+
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
@@ -49,10 +49,10 @@
         <div class="col-md-5">
             {{#if userIsOwner }}
             <button id="changename_btn" type="button" class="btn standard-green-button">Change Name</button>
-			{{#unless isGoogleUser }}
-           	<button id="changepassword_btn" type="button" class="btn standard-green-button">Change Password</button>
-           	{{/unless}}
-			<button id="deleteuser_btn" type="button" class="btn btn-danger standard-red-button">Delete Account</button>
+            {{#unless isGoogleUser }}
+            <button id="changepassword_btn" type="button" class="btn standard-green-button">Change Password</button>
+            {{/unless}}
+            <button id="deleteuser_btn" type="button" class="btn btn-danger standard-red-button">Delete Account</button>
             {{else}} {{#if followed}}
             <button id="unfollow_btn" value="{{current_id}}" type="button" class="btn btn-danger standard-blue-button">Unfollow</button>
             {{else}}
@@ -60,15 +60,14 @@
             {{/if}} {{/if}}
         </div>
     </div>
-    
+
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-4">
             <h2 class="standard-font">Currently Teaching</h2></div>
         <div class="col-md-5"></div>
     </div>
-    {{#if classteaching.length}}
-    {{#each classteaching}}
+    {{#if classteaching.length}} {{#each classteaching}}
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-9">
@@ -93,8 +92,7 @@
             </div>
         </div>
     </div>
-    {{/each}}
-    {{else}}
+    {{/each}} {{else}}
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-9">
@@ -114,8 +112,7 @@
             <h2 class="standard-font">Enrolled Classes</h2></div>
         <div class="col-md-5"></div>
     </div>
-    {{#if classes.length}}
-    {{#each classes}}
+    {{#if classes.length}} {{#each classes}}
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-9">
@@ -140,16 +137,13 @@
             </div>
         </div>
     </div>
-    {{/each}}
-    {{else}}
+    {{/each}} {{else}}
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-9">
             <h3 class="standard-font empty-class-list">You have not yet enrolled in any class</h3></div>
     </div>
-    {{/if}}
-    
-	{{> footer }}
+    {{/if}} {{> footer }}
 </body>
 
 </html>
