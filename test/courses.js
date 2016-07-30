@@ -5,8 +5,6 @@ var server = require('../server.js');
 var http = require('http');
 
 
-
-
 describe('Courses', function () {
     describe('isImage', function () {
         describe('tests where mimetype is not an image', function () {
