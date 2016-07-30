@@ -351,13 +351,12 @@ exports.handleSearch = function(req, res) {
                             // concatenate the results and sort them again
                             var results = classResults.concat(userResults);
                             sortResults(results);
-                            
                             limitResults(limit, results);
                             returnResults(results, res);
                         });
                     }
                     else {
-                        limitResults(classResults, limit);
+                        limitResults(limit, classResults);
                         returnResults(classResults, res);
                     }
                 });
