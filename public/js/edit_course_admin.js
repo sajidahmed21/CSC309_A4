@@ -1,15 +1,16 @@
 $(document).ready(function() {
    
    $('#delete_course_button').click(showDeleteWarning);
+   
 });
 
-function showDeleteWarning(message, action) {
+function showDeleteWarning() {
 
     /* Remove any existng notification messages while trying to create a user */
    //removeNotificationMessage();
    
    /* Remove any existing popups */
-   hidePopup();
+   hideDeleteCoursePopup();
     
    var $popup = $('<article/>', {id: 'popup'});
     
@@ -31,12 +32,14 @@ function showDeleteWarning(message, action) {
        class:  'glyphicon glyphicon-remove cancel_icon'
     });
     
-    $cancelicon.click(hidePopup);
+    $cancelicon.click(hideDeleteCoursePopup);
     $cancelwrapper.append($cancelicon);
     
     $container.append($cancelwrapper);
     
-    var courseId = this.value;
+    var url = window.location.pathname;
+    var courseId = url.slice(url.lastIndexOf('/') + 1);
+    
     $form = $('<form/>', {id: 'create_user_form', action: '/admin/delete_course/' + courseId, method: 'POST'});
     
     $title = $('<h1/>',{
@@ -65,6 +68,6 @@ function showDeleteWarning(message, action) {
     $body.scrollTop(0);
 }
 
-function hidePopup() {
+function hideDeleteCoursePopup() {
     $('#popup').remove();
 }

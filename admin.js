@@ -277,6 +277,45 @@ exports.handleEditCourseRequest = function (request, response) {
 };
 
 
+/* Handles delete course request by deleting a course and rendering appropriate message on the front end */
+exports.handleDeleteCourseRequest = function (request, response) {
+    
+    deleteCourse(request.params.id, function (result) {
+        if (result === 'Success') {
+            request.session.message = '<p>Course has been deleted.</p>';
+        }
+        else {
+            request.session.errorContent = '<p><strong>Opps!</strong> Something went wrong. Please try later!</p>';  
+        }
+        
+        /* Redirect to the admin home page */
+        common.redirectToPage('/admin', response);
+    });
+};
+
+
+/* Deletes the course with the given `courseId` and notifies about the result using the `callback` function */
+function deleteCourse(courseId, callback) {
+    if (courseId === undefined) {
+        callback('Missing course id');
+        return;
+    }
+    
+    if (courseId < 1) {
+        callback('Invalid course id');
+        return;
+    }
+    
+    db.query("DELETE FROM CLASSES WHERE id = $1", {
+        bind: [courseId]
+    }).spread(function () {
+        callback('Success');
+    }).catch(function () {
+        callback('Error');
+    });
+}
+
+
 /* Utility function that queries data about a users profile and their classes.
  * It provides the profile data back through the `callback` function.
  */
@@ -368,6 +407,7 @@ exports.handleDeleteAllUsersRequest = function (request, response) {
     });
 };
 
+/* Handles delete all classes request by deleting all classes and rendering appropriate message on the front end */
 exports.handleDeleteAllClassesRequest = function (request, response) {
     deleteAllClasses(function (result) {
         if (result == 'Success') {
