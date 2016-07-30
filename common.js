@@ -29,7 +29,9 @@ exports.sendInternalServerErrorResponse = function (response) {
 };
 
 function sendJSONResponse(statusCode, data, response) {
-    response.writeHead(statusCode, {'Content-Type': 'application/json'});
+    response.writeHead(statusCode, {
+        'Content-Type': 'application/json'
+    });
     response.end(JSON.stringify(data));
 }
 
@@ -49,9 +51,9 @@ function userIsLoggedIn(req) {
 exports.userIsLoggedIn = userIsLoggedIn;
 
 /* Sets the given userId as the logged in user. */
-exports.setLoggedInUserId = function(req, userId) {
+exports.setLoggedInUserId = function (req, userId) {
     req.session.userId = userId;
-    
+
     if (userId !== undefined && userId != 0) {
         analytics.trackUserLogin(userId, exports.db);
     }
@@ -66,7 +68,7 @@ exports.checkAuthentication = function (req, res, next) {
     if (userIsLoggedIn(req)) {
         return next();
     } else {
-        if(req.method.toLowerCase() == 'post') {
+        if (req.method.toLowerCase() == 'post') {
             res.status(400);
         }
         console.log('access denied to request');
@@ -78,8 +80,10 @@ exports.checkAuthentication = function (req, res, next) {
 };
 
 /* Redirects a HTTP request to the page specified `relativePath` */
-exports.redirectToPage = function(redirectPath, response) {
-    response.writeHead(302, {'Location': redirectPath});
+exports.redirectToPage = function (redirectPath, response) {
+    response.writeHead(302, {
+        'Location': redirectPath
+    });
     response.end();
 };
 

@@ -112,8 +112,7 @@ describe('user', function () {
         describe('create-user-success', function () {
             it('successs', function () {
                 test.createUser('testingpurpose', 'testingpurpose', 'testingpurpose1.', 'testingpurpose1.', function (errorType, id) {
-                    if(id != undefined)
-                    {
+                    if (id != undefined) {
                         console.log("TESTING ID:" + id);
                         user_id = id;
                     }

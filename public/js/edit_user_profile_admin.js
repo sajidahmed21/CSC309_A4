@@ -2,16 +2,16 @@ $(document).ready(function () {
     // Remove any notification messages after 5 seconds
     var fiveSecondsInMillis = 5000;
     setTimeout(hideNotificationMessage, fiveSecondsInMillis);
-    
+
     // Attach click listener for change name button
     $('#changename_btn').click(changeName);
-    
+
     // Attach click listener for change password button
     $('#changepassword_btn').click(changePassword);
-    
+
     // Attach click listener for delete user button
     $('#deleteuser_btn').click(deleteUser);
-    
+
     // Attach click listeners for all 'remove from course' buttons
     $('.drop_course_btn').click(removeUserFromCourse);
 });
@@ -45,7 +45,7 @@ var changeName = function () {
     $container.append($cancelwrapper);
 
     var userId = this.value;
-    
+
     $form = $('<form/>', {
         action: '/admin/edit_user/name/' + userId,
         method: 'POST'
@@ -80,18 +80,18 @@ var changeName = function () {
     $container.appendTo($middle);
     $middle.appendTo($outer);
     $outer.appendTo($popup);
-    
+
     /* Scroll to top of page */
     $('body').scrollTop(0);
 };
 
 /* Removes any notification message displayed on top of the page */
-var hideNotificationMessage = function() {
+var hideNotificationMessage = function () {
     $message = $('#top-notification-message');
     if ($message !== undefined && $message.length > 0) {
         $message.remove();
     }
-    
+
     $errorMessage = $('#error-message');
     if ($errorMessage !== undefined && $errorMessage.length > 0) {
         $errorMessage.remove();
@@ -128,7 +128,7 @@ var changePassword = function () {
     $container.append($cancelwrapper);
 
     var userId = this.value;
-    
+
     $form = $('<form/>', {
         action: '/admin/edit_user/change_password/' + userId,
         method: 'POST'
@@ -147,7 +147,7 @@ var changePassword = function () {
         required: 'required',
         pattern: '^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&\\-])[A-Za-z\\d$@$!%*#?&\\-]{6,20}$',
         title: 'Password must contain at least 1 letter, 1 number, 1 special character, ' +
-               ' and must be between 6 and 20 characters long. Special characters include $@!%*#?&-',
+            ' and must be between 6 and 20 characters long. Special characters include $@!%*#?&-',
         class: 'standard-green-input'
     });
 
@@ -165,9 +165,11 @@ var changePassword = function () {
 
     $confirmPasswordInput.on('input', hidePasswordMismatchMessage);
     $confirmPasswordInput.appendTo($form);
-    
+
     /* Password mismatch message */
-    $errorMessage = $('<p>', {class: 'password-mismatch-message'});
+    $errorMessage = $('<p>', {
+        class: 'password-mismatch-message'
+    });
     $errorMessage.text('Passwords don\'t match');
     $errorMessage.css('display', 'none');
     $errorMessage.appendTo($form);
@@ -177,15 +179,15 @@ var changePassword = function () {
         value: 'Edit Now!',
         class: 'btn standard-green-button block_btn'
     });
-    
+
     $submitButton.click(validateChangePasswordInput);
     $submitButton.appendTo($form);
-    
+
     $form.appendTo($container);
     $container.appendTo($middle);
     $middle.appendTo($outer);
     $outer.appendTo($popup);
-    
+
     /* Scroll to top of page */
     $('body').scrollTop(0);
 };
@@ -219,7 +221,7 @@ var deleteUser = function () {
     $container.append($cancelwrapper);
 
     var userId = this.value;
-    
+
     $form = $('<form/>', {
         action: '/admin/delete_user/' + userId,
         method: 'POST'
@@ -250,7 +252,7 @@ var deleteUser = function () {
     $container.appendTo($middle);
     $middle.appendTo($outer);
     $outer.appendTo($popup);
-    
+
     /* Scroll to top of page */
     $('body').scrollTop(0);
 };
@@ -285,19 +287,19 @@ var removeUserFromCourse = function () {
 
     var userId = $('#deleteuser_btn').val();
     var courseId = this.value;
-    
+
     $form = $('<form/>', {
         action: '/admin/remove_user_from_course/' + userId,
         method: 'POST'
     });
-    
+
     // Pass in the course id along with POST request.
     $courseId = $('<input/>', {
         type: 'hidden',
         name: 'courseId',
         value: courseId
     });
-    
+
     $courseId.appendTo($form);
 
     $title = $('<h1/>', {
@@ -328,29 +330,27 @@ var removeUserFromCourse = function () {
 
 /* Checks if the the new password and its confirmation match or not.
  * Other validations are handled by thr browser.
-*/
-var validateChangePasswordInput = function() {
+ */
+var validateChangePasswordInput = function () {
     $newPasswordField = $('#new_password_field');
     $confirmPasswordField = $('#confirm_new_password_field');
-    
+
     var fieldsEmpty = false;
 
     if ($newPasswordField.val().length === 0) {
         fieldsEmpty = true;
-    }
-    
-    else if ($confirmPasswordField.val().length === 0) {
+    } else if ($confirmPasswordField.val().length === 0) {
         fieldsEmpty = true;
     }
-    
+
     // Let the browser handle empty fields
     if (fieldsEmpty) {
         return true;
     }
-    
+
     // Check if passwords match
     if ($newPasswordField.val() !== $confirmPasswordField.val()) {
-        
+
         // Show password mismatch messsage
         $errorMessage = $('p.password-mismatch-message');
         $errorMessage.css('display', 'block');
