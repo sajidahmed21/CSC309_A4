@@ -15,12 +15,13 @@ exports.test = {};
  * Notifies about success / failure using the callback.
  */
 exports.changeName = function (userId, newName, callback) {
+    
     // Error checking
-    if (userId || userId === '') {
+    if (!userId || userId === '') {
         callback('Invalid user id');
         return;
     }
-    if (newName || newName === '') {
+    if (!newName || newName === '') {
         callback('Invalid name');
         return;
     }
