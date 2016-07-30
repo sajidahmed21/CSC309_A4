@@ -5,7 +5,7 @@ var db = common.db;
 
 /*replace 1 with getLoggedInUserId(req)*/
 exports.validate = function (req, res, next) {
-    var courseTitle = formatTitle(req.body.courseTitle);
+    var courseTitle = req.body.courseTitle;
     var num_errors = 0;
     if (req.file) { // if not using default image
         if (!hasGoodSize(req.file.size) || !isImage(req.file.mimetype)) {
@@ -41,9 +41,9 @@ exports.validate = function (req, res, next) {
 }
 exports.addClassInfoAndRedirect = function (req, res) {
     console.log("res.bannerpath in redirect: " + res.bannerpath);
-    var courseTitle = formatTitle(req.body.courseTitle);
-    var courseDesc = formatDesc(req.body.courseDesc);
-    var courseReqs = formatReqs(req.body.courseReqs);
+    var courseTitle = req.body.courseTitle;
+    var courseDesc = req.body.courseDesc;
+    var courseReqs = req.body.courseReqs;
 
 
     db.query('INSERT INTO CLASSES (class_name, instructor, coursedesc, coursereqs, banner_picture_path) VALUES ($1, $2, $3, $4, $5)', {
@@ -70,37 +70,9 @@ function hasGoodSize(value) {
 
 function isImage(value) {
     // Validation here:
-    pattern = /image(\/jpg$ |\/gif$|\/png$|\/jpeg$)/i;
+    pattern = /image(\/jpg$ |\/gif$|\/png$|\/jpeg$|\/bmp$)/i;
     return pattern.test(value);
 }
 
-function capitalizeFirstChar(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-}
-
-function capitalizeEveryElement(array) {
-    var str = '';
-    for (i = 0; i < array.length; i++) {
-        if (i > 0) {
-            str += " " + capitalizeFirstChar(array[i]);
-        } else {
-            str += capitalizeFirstChar(array[i]);
-        }
-    }
-    return str;
-}
-
-function formatTitle(title) {
-    var array = title.split(" ");
-    return capitalizeEveryElement(array);
-}
-
-function formatDesc(desc) {
-    var array = desc.split(".");
-    return capitalizeEveryElement(array);
-}
-
-function formatReqs(reqs) {
-    var array = reqs.split(".");
-    return capitalizeEveryElement(array);
-}
+exports.test = {};
+exports.test.isImage = isImage;
