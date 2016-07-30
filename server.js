@@ -12,6 +12,12 @@ var ddos = new ddosModule({
 });
 app.use(ddos.express)
 
+
+//will cache compiled templates, and 
+//only recompile and recache when template changes
+// improves performance
+app.set('view cache', true);
+
 var bcrypt = require('bcryptjs');
 
 // other modules
