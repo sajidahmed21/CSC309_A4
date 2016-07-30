@@ -5,6 +5,7 @@ var db = common.db;
 var notifications = require('./notifications');
 var colors = ['#b6cde3',  '#b6e2e3', '#b6e3d2', '#b6e3c6',  '#bbe3b6',  '#c9e3b6' ,  '#dae3b6',  
                 '#e3d7b6',  '#e3c5b6',  '#e3b6d6',  '#dab6e3',  '#c0b6e3'];
+
 exports.get_class_info = function(req, res, next) {
 		db.query('SELECT C.id, U.name as instructor, C.class_name, C.banner_picture_path, C.coursedesc, C.coursereqs, C.created_timestamp'
 		+' FROM CLASSES C, USERS U  WHERE C.id= $1 AND U.id = C.instructor',
@@ -66,7 +67,7 @@ exports.get_reviews = function(req, res, next) {
 				for (i = 0; i < results.length; i++) {
 					var username = results[i].username;
 					results[i].firstLetter = username.charAt(0).toUpperCase();
-					results[i].dp = colors[username.charCodeAt(0) % colors.length];
+					results[i].dp = colors[(username.charCodeAt(0) + username.length) % colors.length];
 				}
 				res.reviews = results;
 				next();
@@ -78,7 +79,7 @@ exports.get_reviews = function(req, res, next) {
 } 
 
 exports.get_posts = function(req, res, next) {
-    db.query('SELECT content as post, created_timestamp as timestamp FROM INSTRUCTOR_POSTS WHERE class_id = $1 ORDER BY timestamp ASC', 
+    db.query('SELECT content as post, created_timestamp as timestamp FROM INSTRUCTOR_POSTS WHERE class_id = $1 ORDER BY timestamp DESC', 
             { bind: [req.params.id]}
             ).spread(function(results, metadata) {
                 // circular avatars
@@ -196,20 +197,26 @@ exports.getLoggedInUserAvatar = function(req, res, next) {
 		next();
 	}	
 }
+
+function getTitleFont(class_name) {
+    var nameLength = class_name.length;
+    if (nameLength > 27) {
+        titlefont = "2vw";
+    } else if (nameLength> 20) {
+        titlefont = "3vw";
+    } else if (nameLength > 16) {
+        titlefont = "4vw";
+    } else {
+        titlefont = "5vw";
+    }
+    return titlefont
+}
 /* res.rating, res.class_info */
 exports.render_course_page = function(req, res, next) {
 	console.log(res.enrolled);
 	console.log(res.reviewed);
-	console.log(res.isInstructor);
-	if (res.class_info[0].class_name.length > 20) {
-		titlefont = "3vw";
-	} else if (res.class_info[0].class_name.length > 16) {
-		titlefont = "4vw";
-	} else {
-		titlefont = "5vw";
-	}
-        
-        renderCoursePage(req, res);
+	console.log(res.isInstructor);     
+    renderCoursePage(req, res);
 }
 
 function renderCoursePage(req, res) {
@@ -225,7 +232,7 @@ function renderCoursePage(req, res) {
                 LIbackgroundColor: res.LIbackgroundColor,
                 loggedIn: common.userIsLoggedIn(req),
                 imgPath: res.class_info[0].banner_picture_path,
-                titlefont: titlefont,
+                titlefont: getTitleFont(res.class_info[0].class_name),
                 courseTitle: res.class_info[0].class_name,
                 instructor: res.class_info[0].instructor,
                 rating: res.rating,
@@ -672,4 +679,3 @@ exports.isInstructor = function(req, res, next) {
             }
             });
 }
-

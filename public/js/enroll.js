@@ -1,5 +1,5 @@
 $(document).ready(function(){
-
+          $("#not-pop-up").hide();
          $(document).on('click',  '#enroll',  function()  {
             //alert("enroll clicked");
             // click button, send ajax, if it returns good, then send a pop saying, enrolled, otherwise, 
@@ -18,7 +18,11 @@ $(document).ready(function(){
                 dataType:'json',
              success: function(data){
                 //On ajax success do this
-                alert("You were successfully enrolled"); // have a pop up here that disappears letting the user know they've enrolled
+               $("#not-pop-up").children().replaceWith("<h2 class=standard-font style=\"text-align: center;\">You've been enrolled!</h2>");
+                $("#not-pop-up").css("background-color", "#1abc9c");
+                $("#not-pop-up").show(); // have a pop up here that disappears letting the user know they've enrolled
+                setTimeout(function(){ $("#not-pop-up").fadeOut('slow'); }, 1000);
+                
                 $("#enroll").replaceWith("<button id=\"unenroll\" class=\"unenroll-btn\">Un-Enroll </button>"); 
               },
            error: function(jqxhr, status) {
@@ -45,7 +49,10 @@ $(document).ready(function(){
                 dataType:'json',
              success: function(data){
                 //On ajax success do this
-                alert("You were successfully un-enrolled"); // have a pop up here that disappears letting the user know they've enrolled
+                 $("#not-pop-up").children().replaceWith("<h2 class=standard-font style=\"text-align: center;\">You've been un-enrolled!</h2>");
+                $("#not-pop-up").css("background-color", "#ff5a5f"); // make red
+                $("#not-pop-up").show(); // have a pop up here that disappears letting the user know they've enrolled
+                setTimeout(function(){ $("#not-pop-up").fadeOut('slow'); }, 1000); // have a pop up here that disappears letting the user know they've enrolled
                  $("#unenroll").replaceWith("<button id=\"enroll\" class=\"enroll-btn\">Enroll </button>"); 
               },
            error: function(jqxhr, status) {

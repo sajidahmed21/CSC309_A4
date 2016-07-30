@@ -150,8 +150,8 @@ app.get('/', renderHome);
 
 /* Courses ----------------------------------------------------------*/
 
-app.post('/course/enroll', courses.enrollHandler);
-app.delete('/course/unenroll', courses.unenrollHandler);
+app.post('/course/enroll', checkAuthentication, courses.enrollHandler);
+app.delete('/course/unenroll', checkAuthentication, courses.unenrollHandler);
 app.post('/submitpost', courses.checkLoggedIn, courses.classExists, courses.isInstructor);
 app.get('/course/:id',
     courses.get_class_info,
@@ -179,13 +179,11 @@ app.get('/createcourse', checkAuthentication, function (req, res) {
 
 app.post('/editcoursedesc', checkAuthentication, courses.editCourseDescHandler);
 app.post('/editcoursereqs', checkAuthentication, courses.editCourseReqsHandler);
+
 var upload = multer({
     dest: __dirname + '/public/img/'
 }).single('courseBanner');
 app.post('/createcourse', checkAuthentication, function (req, res, next) {
-    console.log(req);
-    console.log("FILE" + req.file);
-    console.log("FILES" + req.files);
     upload(req, res, function (err) {
         res.courseBannerErr = '';
         res.courseTitleErr = '';
@@ -202,14 +200,12 @@ app.post('/createcourse', checkAuthentication, function (req, res, next) {
             // replace 1 with id of logged in user
             console.log("res.bannerpath in server: " + res.bannerpath);
             next();
-
         }
     })
 }, createcourse.validate, checkAuthentication, createcourse.addClassInfoAndRedirect);
 
 app.post('/submitreview', checkAuthentication, function(req, res, next) {
         // do some validation
-        // how to get user_id and instructor id? 
         var data = req.body;
             var user_id = getLoggedInUserId(req);
             var class_id = data.class_id;

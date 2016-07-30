@@ -110,6 +110,11 @@ describe('Courses', function() {
 					'Requirements:                should have laptop. Should        have prior knowledge of information etc etc.');
 				
 			});
+			it('should capitalize every sentence, given a lot of spacing', function() {
+				assert.equal(createcourse.formatReqs("requirements:                should hAVeEe laptop.shoULld        have prior knowledge of information etc etc."), 
+					'Requirements:                should haveee laptop. Shoulld        have prior knowledge of information etc etc.');
+				
+			});
 		});
 
 	});

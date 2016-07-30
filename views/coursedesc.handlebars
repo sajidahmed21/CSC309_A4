@@ -107,10 +107,9 @@
                     <button id="edit-requirements" class="edit-btn standard-green-button"> Edit </button>
                     {{/if}}
                     <!-- <h1 class="standard-font"> Requirements </h1> -->
-                    <p class="standard-font">
-                        {{courseRequirements}}
-                    </p>
-
+                   
+                        <p class="standard-font"> {{courseRequirements}}</p>
+                  
                 </div>
 
                 <div id="course-enrollment" class="tab-container tab-pane fade">
@@ -155,6 +154,7 @@
                                     {{/each}}
                                 {{else}}
                                         <h1 class="standard-font center-align"> :( </h1>
+                                        <br>
                                     <h4 class="standard-font center-align"> The instructor hasn't made any posts yet </h4>
                                 {{/if}}
                              </div>
@@ -173,7 +173,7 @@
                                     {{#each posts}}
                                     <div class="post-container">
                                         <h5 class="standard-font"> Posted On {{timestamp}} </h4>
-                                           <p class="standard-font"> {{post}} </p>
+                                           <pre><span class="standard-font"> {{post}} </span></pre>
                                     </div>
                                     {{/each}}
                                 {{else}}
@@ -273,8 +273,9 @@
 
                     {{/if}}
                     <!-- add-comment -->
-                </div>
 
+                </div>
+                <div id="not-pop-up" class="pop-up"> <h2 class="standard-font"> You've been enrolled</h2></div>
             </div>
         </div>
         
