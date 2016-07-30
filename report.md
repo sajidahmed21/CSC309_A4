@@ -86,7 +86,7 @@ Changes are triggered by the user in the presentation layer, which makes calls t
 We have implemented security in a few ways on our web app: form validation, prepared statements, cross-site scripting protection, DOS protection from too many requests.
 
 ### Form Validation
-Methods in the logic layer validate the inputs given to them (to ensure that they are provided and valid). If there is any problem, no change is triggered on the data layer. For example, when enrolling in a class, we check to make sure that a class id is provided, that it is not negative, that it corresponds to a known course, and that the user is eligible to enrol (he is not the instructor nor currently enrolled in the class).
+The input data is both validated within the presentation layer and the logic layer. The input is first checked on the presentation layer so that when passing into logic layer, the data is well-formatted. Then, Methods in the logic layer validate the inputs given to them (to ensure that they are provided and valid). If there is any problem, no change is triggered on the data layer. For example, when enrolling in a class, we check to make sure that a class id is provided, that it is not negative, that it corresponds to a known course, and that the user is eligible to enrol (he is not the instructor nor currently enrolled in the class).
 
 Testing can be done on the front end by overriding the client side validation in the JavaScript/HTML5 and supplying invalid fields.
 
@@ -98,7 +98,8 @@ Testing can be done on the front end by attempting to inject data in any of the 
 ### Cross-Site Scripting
 In order to provide protection against XSS, we used a node module called Helmet. Helmet ensures that HTTP headers the server sends contain the necessary information for the browser to prevent scripts from other sites being executed (namely 'X-XSS-Protection').
 
-Testing: ??
+Testing can be done by trying to type <script>...</script> into the input area.
+For example input: <script>alert('hello')</script>, the alert popup does not appear
 
 ### DOS Protection
 We included a node module called ddos which prevents DOS attacks from single points. It is configured with a maximum number of requests allowed within a time frame (for example, one hundred requests per minute) along with a burst limit. Should a user reach the burst limit within a short period of time, the expiry time is doubled for him (for example, one hundred requests per two minutes). If a request is made when the limit is reached, the server does not process the request and instead returns an error message.
