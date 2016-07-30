@@ -1,8 +1,8 @@
 var express = require('express');
 var app = express();
 
-// security
-var ddosModule = require('ddos')
+// Denial of Service module for too many requests from a particular client
+var ddosModule = require('ddos');
     // allow 160 requests per minute, with no more than 12 at a given time
 var ddos = new ddosModule({
     limit: 200,
@@ -10,7 +10,7 @@ var ddos = new ddosModule({
     maxexpiry: 600000,
     errormessage: 'Oh no! You\'ve been making too many requests and have been blocked.',
 });
-app.use(ddos.express)
+app.use(ddos.express);
 
 var bcrypt = require('bcryptjs');
 
