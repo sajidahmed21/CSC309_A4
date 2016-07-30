@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 $(document).ready(function(){
           $("#not-pop-up").hide();
          $(document).on('click',  '#enroll',  function()  {
