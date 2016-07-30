@@ -94,7 +94,7 @@ exports.changePassword = function (userId, currentPassword, newPassword, newPass
     }
 
     //invalid new password confirm
-    if (!newPasswordConfirm || newPasswordConfirm.length < 8 || newPasswordConfirm.length > 20) {
+    if (!newPasswordConfirm || newPasswordConfirm.length < 8 || newPasswordConfirm > 20) {
         callback('Invalid old password');
         return;
     }
