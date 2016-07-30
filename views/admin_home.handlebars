@@ -1,66 +1,66 @@
 <!DOCTYPE html>
-    
-<html lang="en">
-    <head>
-        <meta name="author" content="LearnR">
-        <meta name="description" content="LearnR Admin Home Page">
-        <meta name="keywords" content="LearnR, Admin Home, Admin">
-        <meta name="Copyright" content="LearnR Team">
-        
-		<!-- This is to prevent some mobile device browsers from scaling down page -->
-		<meta name="viewport" content="width=device-width, initial-scale=1"/>
-		
-		<title>LearnR Admin</title>
-		
-	    <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-		
-        <link rel="stylesheet" type="text/css" href="/css/style.css">
-		<link rel="stylesheet" type="text/css" href="/css/admin_home.css">
-		
-		<!-- jQuery -->
-		<script src="/js/jquery-3.0.0.min.js" defer type="text/javascript"></script>
-		
-		<!-- jQuery Autocomplete Library -->
-		<script src="/js/jquery.autocomplete.js" defer type="text/javascript"></script>
-		
-		<script src="/js/admin.js" defer type="text/javascript"></script>
-        
-    </head>
-    
-    <body>
-		<header class="global_font">
-			<a class="headerbar-title-anchor" href="/admin">
-				<h1>LearnR</h1>
-				<h2>Admin</h2>
-			</a>
-			
-			<a id="logout-anchor" class="standard-clear-button" href="/admin/logout">Logout</a>
-			<img src="/img/profile.png" alt="Profile" height="40" width="45" class="profile_icon">
-			<h3 id="admin-username">{{adminUsername}}</h3>
 
-            <nav>
-				<ul id="tabs-list">
-					<li><a id="analytics-tab" href="#">Analytics</a></li>
-					<li><a id="users-tab" href="#">Users</a></li>
-					<li><a id="class-tab" href="#">Class</a></li>
-				</ul>
-			</nav>
-		</header>
-		
-		{{#if message }}
-		<div id="top-notification-message" role="alert">
-			{{{message}}}
-		</div>
-		{{/if}}
-		
-		{{#if errorContent}}
-		    <div id="error-message" class="alert alert-danger nomargin" role="alert">
-			    {{{errorContent}}}
-		    </div>
-		{{/if}}
-		<main id="main-content" class="global_font">
-			
-		</main>
-    </body>
+<html lang="en">
+
+<head>
+    <meta name="author" content="LearnR">
+    <meta name="description" content="LearnR Admin Home Page">
+    <meta name="keywords" content="LearnR, Admin Home, Admin">
+    <meta name="Copyright" content="LearnR Team">
+
+    <!-- This is to prevent some mobile device browsers from scaling down page -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>LearnR Admin</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/admin_home.css">
+
+    <!-- jQuery -->
+    <script src="/js/jquery-3.0.0.min.js" defer type="text/javascript"></script>
+
+    <!-- jQuery Autocomplete Library -->
+    <script src="/js/jquery.autocomplete.js" defer type="text/javascript"></script>
+
+    <script src="/js/admin.js" defer type="text/javascript"></script>
+
+</head>
+
+<body>
+    <header class="global_font">
+        <a class="headerbar-title-anchor" href="/admin">
+            <h1>LearnR</h1>
+            <h2>Admin</h2>
+        </a>
+
+        <a id="logout-anchor" class="standard-clear-button" href="/admin/logout">Logout</a>
+        <img src="/img/profile.png" alt="Profile" height="40" width="45" class="profile_icon">
+        <h3 id="admin-username">{{adminUsername}}</h3>
+
+        <nav>
+            <ul id="tabs-list">
+                <li><a id="analytics-tab" href="#">Analytics</a></li>
+                <li><a id="users-tab" href="#">Users</a></li>
+                <li><a id="class-tab" href="#">Class</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    {{#if message }}
+    <div id="top-notification-message" role="alert">
+        {{{message}}}
+    </div>
+    {{/if}} {{#if errorContent}}
+    <div id="error-message" class="alert alert-danger nomargin" role="alert">
+        {{{errorContent}}}
+    </div>
+    {{/if}}
+    <main id="main-content" class="global_font">
+
+    </main>
+</body>
+
 </html>

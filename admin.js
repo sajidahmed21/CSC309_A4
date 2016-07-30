@@ -155,6 +155,7 @@ exports.handleEditProfileRequest = function (request, response) {
         
         if (status == 'Success') {
             
+            console.log(profileData.classes !== undefined && profileData.classes.length > 0);
             response.render('edit_user_profile_admin', {
                 message: request.session.message,
                 errorMessage: request.session.errorMessage,
@@ -163,7 +164,9 @@ exports.handleEditProfileRequest = function (request, response) {
                 background_color: profileData.background_color,
                 name: profileData.name,
                 classes: profileData.classes,
-                userId: request.params.id /* May be I need this in case I need the user id in the html page */
+                isEnrolledInClass: profileData.classes !== undefined && profileData.classes.length > 0,
+                userId: request.params.id,
+                isGoogleUser: profileData.isGoogleUser
             });
             // Reset messages after they have been rendered
             request.session.message = undefined;
@@ -277,6 +280,76 @@ exports.handleEditCourseRequest = function (request, response) {
 };
 
 
+/* Handles delete course request by deleting a course and rendering appropriate message on the front end */
+exports.handleDeleteCourseRequest = function (request, response) {
+    
+    deleteCourse(request.params.id, function (result) {
+        if (result === 'Success') {
+            request.session.message = '<p>Course has been deleted.</p>';
+        }
+        else {
+            request.session.errorContent = '<p><strong>Opps!</strong> Something went wrong. Please try later!</p>';  
+        }
+        
+        /* Redirect to the admin home page */
+        common.redirectToPage('/admin', response);
+    });
+};
+
+/* Handles delete course request by deleting a course and rendering appropriate message on the front end */
+exports.handleDeleteReviewRequest = function (request, response) {
+    
+    deleteReview(request.body.courseId, request.body.userId, function (result) {
+        var responseBody = {status: result};
+        common.sendBackJSON(responseBody, response);
+    });
+};
+
+
+/* Deletes the review with the given `courseId` and notifies about the result using the `callback` function */
+function deleteReview(courseId, userId, callback) {
+    if (courseId === undefined || userId === undefined) {
+        callback('Missing required field');
+        return;
+    }
+    
+    if (courseId < 1 || userId < 1) {
+        callback('Invalid id');
+        return;
+    }
+    
+    db.query("DELETE FROM REVIEWS WHERE user_id = $1 AND class_id = $2", {
+        bind: [userId, courseId]
+    }).spread(function () {
+        callback('Success');
+    }).catch(function () {
+        callback('Error');
+    });
+}
+
+
+/* Deletes the course with the given `courseId` and notifies about the result using the `callback` function */
+function deleteCourse(courseId, callback) {
+    if (courseId === undefined) {
+        callback('Missing course id');
+        return;
+    }
+    
+    if (courseId < 1) {
+        callback('Invalid course id');
+        return;
+    }
+    
+    db.query("DELETE FROM CLASSES WHERE id = $1", {
+        bind: [courseId]
+    }).spread(function () {
+        callback('Success');
+    }).catch(function () {
+        callback('Error');
+    });
+}
+
+
 /* Utility function that queries data about a users profile and their classes.
  * It provides the profile data back through the `callback` function.
  */
@@ -300,14 +373,22 @@ function getUserProfileData(profileUserId, callback) {
         db.query("SELECT CLASSES.id AS id, CLASSES.class_name AS class_name, USERS.name AS instructor FROM ENROLMENT, CLASSES, USERS WHERE USERS.id=CLASSES.instructor AND CLASSES.id=ENROLMENT.class_id AND ENROLMENT.user_id = $1", {
             bind: [profileUserId]
         
-        }).spread(function (result) {
-            var profileData = {
-                profile_name: firstLetterProfile,
-                background_color: backgroundColor,
-                name: name,
-                classes: result,
-            };
-            callback('Success', profileData);
+        }).spread(function (classes) {
+            user.isGoogleUser(profileUserId, function(err, result) {
+                if (err) {
+                    callback('Error fetching google information');
+                }
+                else {
+                    var profileData = {
+                        profile_name: firstLetterProfile,
+                        background_color: backgroundColor,
+                        name: name,
+                        classes: classes,
+                        isGoogleUser: result
+                    };
+                    callback('Success', profileData);
+                }
+            });
         });
 
     }).catch(function () {
@@ -368,6 +449,7 @@ exports.handleDeleteAllUsersRequest = function (request, response) {
     });
 };
 
+/* Handles delete all classes request by deleting all classes and rendering appropriate message on the front end */
 exports.handleDeleteAllClassesRequest = function (request, response) {
     deleteAllClasses(function (result) {
         if (result == 'Success') {

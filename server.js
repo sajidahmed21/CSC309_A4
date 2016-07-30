@@ -3,7 +3,7 @@ var app = express();
 
 // Denial of Service module for too many requests from a particular client
 var ddosModule = require('ddos');
-    // allow 200 requests per minute, with no more than 12 at a given time
+// allow 200 requests per minute, with no more than 12 at a given time
 var ddos = new ddosModule({
     limit: 200,
     burst: 24,
@@ -30,37 +30,35 @@ var googleStrategy = require('passport-google-oauth20').Strategy;
 
 /* serialising and deserialising are used to store information, but since
  * we are transfering the data to internal columns, we don't need to do anything */
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
     console.log('serialising');
     done(null, user);
 });
 
 
-passport.deserializeUser(function(obj, done) {
+passport.deserializeUser(function (obj, done) {
     console.log('deserialising');
     done(null, obj);
 });
 
 passport.use(new googleStrategy({
-    clientID: '640017624415-meb3upiuuvfktulov25iuo26gjgejti2.apps.googleusercontent.com',
-    clientSecret: 'APx9gK5DrCyjPqS3M4aI8fJV',
-    callbackURL: "https://csc309-learnr.herokuapp.com/auth/google/callback"
-  },
-  function(accessToken, refreshToken, profile, callback) {
+        clientID: '640017624415-meb3upiuuvfktulov25iuo26gjgejti2.apps.googleusercontent.com',
+        clientSecret: 'APx9gK5DrCyjPqS3M4aI8fJV',
+        callbackURL: "https://csc309-learnr.herokuapp.com/auth/google/callback"
+    },
+    function (accessToken, refreshToken, profile, callback) {
         console.log('fetching user');
-        googleLogin.findOrCreateUser(profile, function(err, userId) {
+        googleLogin.findOrCreateUser(profile, function (err, userId) {
             if (err) {
                 console.log('error in findOrCreateUser()');
                 return callback(err, profile);
-            }
-            else {
+            } else {
                 // we should have a valid userId now available
                 console.log('findOrCreateUser() returned successfully');
                 return callback(null, profile);
             }
         });
-    })
-);
+    }));
 
 app.use(passport.initialize());
 
@@ -92,13 +90,13 @@ socketIO.use(sharedSession(session, {
 var helmet = require('helmet');
 app.use(helmet.xssFilter());
 app.use(helmet.hsts({
-  maxAge: 7776000000,
-  includeSubdomains: true
+    maxAge: 7776000000,
+    includeSubdomains: true
 }));
 
 // set hostname and port here
 var hostname = 'localhost';
-var port = 9090;
+var port = 3000;
 var expressValidator = require('express-validator')
 var bodyParser = require('body-parser');
 var multer = require('multer');
@@ -141,7 +139,7 @@ app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 
 // set public directory for css, js, and imgs
-app.use(express.static( __dirname + '/public'));
+app.use(express.static(__dirname + '/public'));
 
 
 /* page routing -----------------------------------------------------*/
@@ -157,9 +155,9 @@ app.get('/course/:id',
     courses.get_class_info,
     courses.get_course_rating,
     courses.get_enrolled_students,
-    courses.get_reviews, 
+    courses.get_reviews,
     courses.get_posts,
-    courses.hasLoggedInUserReviewed, 
+    courses.hasLoggedInUserReviewed,
     courses.isLoggedInUserInstructor,
     courses.isLoggedInUserEnrolled,
     courses.getLoggedInUserAvatar,
@@ -195,7 +193,7 @@ app.post('/createcourse', checkAuthentication, function (req, res, next) {
             if (!req.file) // undefined, use default path 
                 res.bannerpath = "/img/study.jpg";
             else {
-                res.bannerpath = "/img/"+req.file.filename;
+                res.bannerpath = "/img/" + req.file.filename;
             }
             // replace 1 with id of logged in user
             console.log("res.bannerpath in server: " + res.bannerpath);
@@ -204,6 +202,7 @@ app.post('/createcourse', checkAuthentication, function (req, res, next) {
     })
 }, createcourse.validate, checkAuthentication, createcourse.addClassInfoAndRedirect);
 
+<<<<<<< HEAD
 app.post('/submitreview', checkAuthentication, function(req, res, next) {
         // do some validation
         var data = req.body;
@@ -220,9 +219,9 @@ app.post('/submitreview', checkAuthentication, function(req, res, next) {
             console.log("query failed");
             res.status(500);
             res.end();
-            })
+        })
 });
-        
+
 
 
 /* Users ------------------------------------------------------------*/
@@ -288,14 +287,18 @@ app.post('/admin/delete_all_users', admin.checkAuthentication, admin.handleDelet
 
 app.post('/admin/delete_all_classes', admin.checkAuthentication, admin.handleDeleteAllClassesRequest);
 
+app.post('/admin/delete_course/:id', admin.checkAuthentication, admin.handleDeleteCourseRequest);
+
+app.post('/admin/delete_review', admin.checkAuthentication, admin.handleDeleteReviewRequest);
+
 app.get('/admin/edit_course/:id',
     admin.checkAuthentication,
     courses.get_class_info,
     courses.get_course_rating,
     courses.get_enrolled_students,
-    courses.get_reviews, 
+    courses.get_reviews,
     courses.get_posts,
-    courses.hasLoggedInUserReviewed, 
+    courses.hasLoggedInUserReviewed,
     courses.isLoggedInUserInstructor,
     courses.isLoggedInUserEnrolled,
     courses.getLoggedInUserAvatar,
@@ -321,19 +324,21 @@ socketIO.on('connection', messaging.onConnection);
 
 /* The request made to redirect to Google for authentication. */
 app.get('/auth/google/',
-  passport.authenticate('google', { scope: ['openid profile'] }));
+    passport.authenticate('google', {
+        scope: ['openid profile']
+    }));
 
 /* The request users are redirected to by Google after they have authenticated. */
 app.get('/auth/google/callback',
-    passport.authenticate('google'), function(req, res) {
+    passport.authenticate('google'),
+    function (req, res) {
         console.log('google user authenticated');
-        
+
         // since we only have the googleId, convert it to an internal userId
-        googleLogin.fetchUser(req.user.id, function(err, userId) {
+        googleLogin.fetchUser(req.user.id, function (err, userId) {
             if (err) {
                 renderHome(req, res, '<p><strong>Oh no!</strong> It doesn\' look like you succesfully logged in.</p>');
-            }
-            else {
+            } else {
                 common.setLoggedInUserId(req, userId);
                 console.log('logged in and redirected google user');
                 // authenticated successfully and now logged in

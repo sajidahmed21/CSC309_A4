@@ -8,7 +8,7 @@
     <title>LearnR</title>
 
     <script src="/js/jquery-2.0.0.min.js" defer></script>
-	<script src="/js/popups.js" defer></script>
+    <script src="/js/popups.js" defer></script>
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -33,20 +33,17 @@
             <h1>LearnR</h1>
             <h2>Admin</h2>
         </a>
-        
+
         <a id="logout-anchor" class="standard-clear-button" href="/admin/logout">Logout</a>
         <img src="/img/profile.png" alt="Profile" height="40" width="45" class="profile_icon">
         <h3 id="admin-username">{{adminUsername}}</h3>
     </header>
-    
+
     {{#if message }}
     <div id="top-notification-message" role="alert">
         {{{message}}}
     </div>
-    {{/if}}
-
-    
-    {{#if errorMessage }}
+    {{/if}} {{#if errorMessage }}
     <div id="error-message" class="alert alert-danger nomargin" role="alert">
         {{{errorMessage}}}
     </div>
@@ -63,7 +60,9 @@
         </div>
         <div class="col-md-5">
             <button id="changename_btn" type="button" value="{{userId}}" class="btn standard-green-button">Change Name</button>
+            {{#unless isGoogleUser }}
             <button id="changepassword_btn" type="button" value="{{userId}}" class="btn standard-green-button">Change Password</button>
+            {{/unless}}
             <button id="deleteuser_btn" type="button" value="{{userId}}" class="btn btn-danger standard-red-button">Delete Account</button>
         </div>
     </div>
@@ -96,9 +95,7 @@
             </div>
         </div>
     </div>
-    {{/each}}
-    
-	{{> footer }}
+    {{/each}} {{> footer }}
 </body>
 
 </html>

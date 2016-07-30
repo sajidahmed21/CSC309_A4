@@ -1,0 +1,5 @@
+.panel-heading:after {
+    content: " ";
+    display: block;
+    clear: both;
+}

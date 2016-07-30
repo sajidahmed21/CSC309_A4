@@ -1,4 +1,5 @@
 var common = require('./common');
+var home = require('./home');
 var bcrypt = require('bcryptjs');
 
 var sendBackJSON = common.sendBackJSON;
@@ -15,11 +16,11 @@ exports.test = {};
  */
 exports.changeName = function (userId, newName, callback) {
     // Error checking
-    if (userId || userId === '') {
+    if (!userId || userId === '') {
         callback('Invalid user id');
         return;
     }
-    if (newName || newName === '') {
+    if (!newName || newName === '') {
         callback('Invalid name');
         return;
     }
@@ -46,9 +47,9 @@ exports.changeNameHandler = function (request, response) {
 
     exports.changeName(userId, newName, function (result) {
         var responseBody = {};
-        
+
         console.log(result);
-        
+
         //if success return success JSON else return error
         if (result == 'Success') {
             responseBody = {
@@ -78,21 +79,21 @@ exports.changePassword = function (userId, currentPassword, newPassword, newPass
         callback('Invalid user id');
         return;
     }
-    
+
     //invalid current password
     if ((!currentPassword || currentPassword.length < 8 || currentPassword.length > 20) && !isAdminChanging) {
         callback('Incorrect password');
         return;
     }
-    
+
     //invalid new password
-    if (!newPassword || newPassword.length < 8 || newPassword > 20) {
+    if (!newPassword || newPassword.length < 8 || newPassword.length > 20) {
         callback('Invalid new password');
         return;
     }
 
     //invalid new password confirm
-    if (!newPasswordConfirm || newPasswordConfirm.length < 8 || newPasswordConfirm > 20) {
+    if (!newPasswordConfirm || newPasswordConfirm.length < 8 || newPasswordConfirm.length > 20) {
         callback('Invalid old password');
         return;
     }
@@ -127,10 +128,10 @@ exports.changePasswordHandler = function (request, response) {
     var newPassword = request.body.changePassword;
     var newPasswordConfirm = request.body.newPasswordConfirm;
 
-    
+
     exports.changePassword(userId, currentPassword, newPassword, newPasswordConfirm, false, function (result) {
         var responseBody = {};
-        
+
         //if success return success JSON else return error JSON with error msg
         console.log(result);
         if (result == 'Success') {
@@ -159,7 +160,7 @@ exports.test.changePasswordHandler = exports.changePasswordHandler;
 /* Updates the password in the database for the user specified by `userId` */
 function updatePassword(userId, newPassword, callback) {
     var hashedPassword = common.generatePasswordHash(newPassword);
-    
+
     //update password query
     db.query("UPDATE LOGIN_CREDENTIALS SET password = $1 WHERE user_id= $2", {
         bind: [hashedPassword, userId]
@@ -178,7 +179,7 @@ exports.test.updatePassword = updatePassword;
  * Notifies the result through the given callback function.
  */
 function verifyUserPassword(userId, password, callback) {
-    
+
     //select all from login credentials
     db.query('SELECT * FROM LOGIN_CREDENTIALS WHERE user_id = $1', {
         bind: [userId]
@@ -187,7 +188,7 @@ function verifyUserPassword(userId, password, callback) {
             callback('Error');
             return;
         }
-        
+
         // check if password input match with database password
         var currentPasswordHash = results[0].password;
         if (common.comparePassword(password, currentPasswordHash)) {
@@ -204,7 +205,7 @@ exports.test.verifyUserPassword = verifyUserPassword;
 var changeProfilePicHandler = function (req, res) {
     var changeProfilepic = req.body.changeProfilepic;
     var user_id = getLoggedInUserId(req);
-    
+
     //profile color change
     db.query("UPDATE USERS SET profile_color = '" + changeProfilepic + "' WHERE id=" + user_id).spread(function (results, metadata) {
         //if success return change success
@@ -228,7 +229,7 @@ exports.test.changeProfilePicHandler = changeProfilePicHandler;
 
 //helper for stop teaching course
 exports.stopTeachingHelper = function (user_id, class_id, callback) {
-    
+
     //delete the class from CLASSES table
     console.log("execute STOP TECHING");
     db.query("DELETE FROM CLASSES WHERE instructor= $1 AND id = $2", {
@@ -245,7 +246,7 @@ exports.stopTeachingHelper = function (user_id, class_id, callback) {
 exports.stopTeachingHandler = function (req, res) {
     var user_id = getLoggedInUserId(req);
     var class_id = req.body.stopteachingCourse_id;
-    
+
     //execute stopteaching helper. Return success if deleted, else return error
     exports.stopTeachingHelper(user_id, class_id, function (result) {
         if (result == 'success') {
@@ -267,13 +268,13 @@ exports.stopTeachingHandler = function (req, res) {
 
 //Unenroll helper for unenroll a user in a course
 exports.unenrollUser = function (userId, classId, callback) {
-    
+
     //check for invalid 
     if (userId === undefined || userId < 1 || classId === undefined || classId < 1) {
         callback('Invalid input');
         return;
     }
-    
+
     //delete the enrollment of the user
     db.query("DELETE FROM ENROLMENT WHERE user_id= $1 AND class_id = $2", {
         bind: [userId, classId]
@@ -288,11 +289,11 @@ exports.unenrollUser = function (userId, classId, callback) {
 exports.unenrollHandler = function (req, res) {
     var userId = getLoggedInUserId(req);
     var classId = req.body.dropCourse_id;
-    
+
     //call the unenroll helper to check whether the unenroll is successful or fail
     exports.unenrollUser(userId, classId, function (result) {
         var responseBody = {};
-        
+
         //return success JSOn if success, else return error in unenroll process
         if (result == 'Success') {
             responseBody = {
@@ -312,33 +313,61 @@ exports.unenrollHandler = function (req, res) {
 
 exports.test.unenrollHandler = exports.unenrollHandler;
 
+
+/* Checks whether the given userId refers to a Google user and calls the callback.
+ *
+ * Note that the callback will be called with the error information (if any) and
+ * the result of the query, if successful. 
+ */
+function isGoogleUser(userId, callback) {
+    var query =
+        'SELECT user_id ' +
+        'FROM GOOGLE_CREDENTIALS ' +
+        'WHERE user_id = $1 ';
+
+    db.query(query, {
+            bind: [userId]
+        })
+        .spread(function (results, metadata) {
+            // cast the result as a boolean: if a row was returned, this
+            // is a Google user
+            callback(null, results[0] ? true : false);
+        })
+        .catch(function (err) {
+            callback(err, null);
+        });
+}
+
+exports.isGoogleUser = isGoogleUser;
+
+
 /* Renders the profile for the user with the userId equal to profileUserId. */
 var getProfileHandler = function (req, res, profileUserId) {
     console.log("GETPROFILE" + profileUserId);
     console.log(common.getLoggedInUserId(req));
-    
+
     //select name and profile_color from USERS table
     db.query("SELECT name, profile_color FROM USERS WHERE id = $1", {
         bind: [profileUserId]
     }).spread(function (results, metadata) {
         var name = results[0].name;
-        
+
         //check if the color exist
         var background_color = results[0].profile_color;
         if (color.indexOf(background_color) < 0)
             background_color = 'grey_background';
-        
+
         //capital the first character if a-z
         var firstLetterProfile = name.charAt(0);
         if (firstLetterProfile >= 'a' && firstLetterProfile <= 'z')
             firstLetterProfile = firstLetterProfile.toUpperCase();
         console.log('HERREEEEEE');
-        
+
         //select the class enrolled in
         db.query("SELECT CLASSES.id AS id, CLASSES.class_name AS class_name, USERS.name AS instructor FROM ENROLMENT, CLASSES, USERS WHERE USERS.id=CLASSES.instructor AND CLASSES.id=ENROLMENT.class_id AND ENROLMENT.user_id = $1", {
             bind: [profileUserId]
         }).spread(function (result, meta) {
-            
+
             //select whether it is followed
             db.query("SELECT EXISTS(SELECT 1 FROM FOLLOWINGS WHERE follower = $1 AND followee= $2 ) AS checkfollow", {
                 bind: [getLoggedInUserId(req), profileUserId]
@@ -348,26 +377,51 @@ var getProfileHandler = function (req, res, profileUserId) {
                     boolFollow = true;
                 var classenroll = result;
                 console.log(result);
-                
+
                 //select the class teaching for this user
                 db.query("SELECT class_name, name AS instructor, CLASSES.id AS id FROM USERS, CLASSES WHERE USERS.id = $1 AND USERS.id = instructor", {
                     bind: [profileUserId]
                 }).spread(function (classtaught, metadata) {
                     var classteaching = classtaught;
                     console.log(classteaching);
-                    
-                    //if all success render page
-                    res.render('profile', {
-                        profile_name: firstLetterProfile,
-                        background_color: background_color,
-                        name: name,
-                        classes: classenroll,
-                        classteaching: classteaching,
-                        loggedIn: common.userIsLoggedIn(req),
-                        current_id: profileUserId,
-                        followed: boolFollow,
-                        userIsOwner: profileUserId == getLoggedInUserId(req)
-                    });
+
+                    // if the user is not the owner, render the page now
+                    if (profileUserId != getLoggedInUserId(req)) {
+                        res.render('profile', {
+                            profile_name: firstLetterProfile,
+                            background_color: background_color,
+                            name: name,
+                            classes: classenroll,
+                            classteaching: classteaching,
+                            loggedIn: common.userIsLoggedIn(req),
+                            current_id: profileUserId,
+                            followed: boolFollow,
+                            userIsOwner: false
+                        });
+                    }
+                    // otherwise, fetch any necessary information for the owner
+                    else {
+                        isGoogleUser(profileUserId, function (err, result) {
+                            // on error, render the home page with an erro 
+                            if (err) {
+                                home.render(req, res, '<p><strong>Oh no!</strong> Something went wrong and we can\'t access your profile.</p>');
+                            } else {
+                                //if all success render page
+                                res.render('profile', {
+                                    profile_name: firstLetterProfile,
+                                    background_color: background_color,
+                                    name: name,
+                                    classes: classenroll,
+                                    classteaching: classteaching,
+                                    loggedIn: common.userIsLoggedIn(req),
+                                    current_id: profileUserId,
+                                    followed: boolFollow,
+                                    userIsOwner: true,
+                                    isGoogleUser: result
+                                });
+                            }
+                        });
+                    }
                 });
             });
         });
@@ -390,7 +444,7 @@ exports.test.getProfileHandler = getProfileHandler;
 var signinHandler = function (req, res, testing) {
     var signinUsername = req.body.signinUsername;
     var signinPassword = req.body.signinPassword;
-    
+
     //check for invalid input and return accordingly
     if (signinUsername == null || signinUsername == undefined || signinUsername == '' || signinPassword == null || signinPassword == undefined || signinPassword == '') {
         if (testing != undefined)
@@ -403,7 +457,7 @@ var signinHandler = function (req, res, testing) {
             });
         }
     }
-    
+
     //check for invalid input and return accordingly
     if (signinUsername.length < 8 || signinUsername.length > 20 || signinPassword.length < 8 || signinPassword.length > 20) {
         if (testing != undefined)
@@ -416,7 +470,7 @@ var signinHandler = function (req, res, testing) {
             });
         }
     }
-    
+
     //get the password and user_id. check if  password match
     db.query("SELECT user_id, password FROM LOGIN_CREDENTIALS WHERE username = $1", {
         bind: [signinUsername]
@@ -425,7 +479,7 @@ var signinHandler = function (req, res, testing) {
         console.log(thisid);
         bcrypt.compare(signinPassword, results[0].password, function (err, result) {
             if (err || result === false) {
-                
+
                 //if result == false return error
                 if (testing != undefined)
                     return testing('Invalid Username and Password');
@@ -447,7 +501,7 @@ var signinHandler = function (req, res, testing) {
             }
         });
     }).catch(function (err) {
-        
+
         //return error if invalid match
         if (testing != undefined)
             return testing('Invalid Username and Password');
@@ -471,7 +525,7 @@ exports.signupHandler = function (request, response) {
     var username = request.body.signupUsername;
     var password = request.body.signupPassword;
     var passwordConfirmation = request.body.userPasswordConfirm;
-    
+
     //new a user
     exports.createUser(name, username, password, passwordConfirmation, function (errorType, userId) {
 
@@ -547,19 +601,19 @@ exports.createUser = function (name, username, password, passwordConfirmation, c
         callback('Required field missing');
         return;
     }
-    
+
     //check for invalid input and return accordingly
     if (password != passwordConfirmation) {
         callback('Passwords Don\'t Match');
         return;
     }
-    
+
     //check for invalid input and return accordingly
     if (username.length < 8 || username.length > 20) {
         callback('Incorrect Username Length');
         return;
     }
-    
+
     //check for invalid input and return accordingly
     if (name.length > 24) {
         callback('Incorrect Name Length');
@@ -614,20 +668,13 @@ var logoutHandler = function (req, res) {
     if (getLoggedInUserId(req) != 0) {
         setLoggedInUserId(req, 0);
         console.log("INLOGGINOUT");
-        var returnJSON = {
-            "status": "success",
-            "message": "Logout Success"
-        };
-        sendBackJSON(returnJSON, res);
+        common.redirectToPage('/', res);
     }
     // otherwise return an error
     else {
         setLoggedInUserId(req, 0);
-        var returnJSON = {
-            "status": "error",
-            "message": "Logout Error"
-        };
-        sendBackJSON(returnJSON, res);
+        console.log("NOTLOGGINOUT");
+        home.render(req, res, '<p><strong>Opps!</strong> We weren\'t able to log you out. Please try again or close your browser.</p>');
     }
 };
 
@@ -641,19 +688,21 @@ exports.deleteUser = function (userId, callback) {
         callback('Invalid user id');
         return;
     }
-    
+
     //delete user from LOGIN_CREDENTIALS on delete casacde applies to all other table
     db.query("DELETE FROM LOGIN_CREDENTIALS WHERE user_id= $1", {
         bind: [userId]
-        
+
     }).spread(function () {
-        db.query("DELETE FROM USERS WHERE id= $1", {bind: [userId]}).spread(function () {
+        db.query("DELETE FROM USERS WHERE id= $1", {
+            bind: [userId]
+        }).spread(function () {
             callback('Success');
-            
+
         }).catch(function () {
             callback('Error deleting user');
         });
-        
+
     }).catch(function () {
         callback('Error deleting login credentials');
     });
@@ -672,7 +721,7 @@ exports.deleteUserHandler = function (req, res) {
                 "status": "success",
                 "message": "Delete Success"
             };
-            
+
         } else if (result == 'Error deleting user') {
             console.log("Err in deleting user");
             responseBody = {
@@ -691,7 +740,7 @@ exports.deleteUserHandler = function (req, res) {
         sendBackJSON(responseBody, res);
     });
 };
-exports.test.deleteUserHelper = exports.deleteUser;
+exports.test.deleteUser = exports.deleteUser;
 exports.test.deleteUserHandler = exports.deleteUserHandler;
 
 /* Checks for error and returns the profile picture color for a user */
