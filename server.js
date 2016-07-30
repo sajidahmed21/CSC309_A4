@@ -202,7 +202,6 @@ app.post('/createcourse', checkAuthentication, function (req, res, next) {
     })
 }, createcourse.validate, checkAuthentication, createcourse.addClassInfoAndRedirect);
 
-<<<<<<< HEAD
 app.post('/submitreview', checkAuthentication, function(req, res, next) {
         // do some validation
         var data = req.body;

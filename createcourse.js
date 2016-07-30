@@ -116,12 +116,6 @@ function formatReqs(reqs) {
 	return capitalizeEveryElement(array, ".");
 }
 
-=======
-    // Validation here:
-    pattern = /image(\/jpg$ |\/gif$|\/png$|\/jpeg$|\/bmp$)/i;
-    return pattern.test(value);
-}
-
 exports.test = {};
 exports.test.isImage = isImage;
->>>>>>> f0cfb3fd97690acc2fdd9f010968ff27b12c37ba
+
