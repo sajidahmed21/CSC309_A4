@@ -98,7 +98,7 @@ app.use(helmet.hsts({
 
 // set hostname and port here
 var hostname = 'localhost';
-var port = 9090;
+var port = 3000;
 var expressValidator = require('express-validator')
 var bodyParser = require('body-parser');
 var multer = require('multer');
