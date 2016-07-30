@@ -1,16 +1,16 @@
 var express = require('express');
 var app = express();
 
-// security
-var ddosModule = require('ddos')
+// Denial of Service module for too many requests from a particular client
+var ddosModule = require('ddos');
     // allow 160 requests per minute, with no more than 12 at a given time
 var ddos = new ddosModule({
-    limit: 160,
+    limit: 200,
     burst: 12,
     maxexpiry: 600000,
     errormessage: 'Oh no! You\'ve been making too many requests and have been blocked.',
 });
-app.use(ddos.express)
+app.use(ddos.express);
 
 var bcrypt = require('bcryptjs');
 
@@ -171,6 +171,8 @@ app.get('/createcourse', checkAuthentication, function (req, res) {
     });
 });
 
+app.post('/editcoursedesc', checkAuthentication, courses.editCourseDescHandler);
+app.post('/editcoursereqs', checkAuthentication, courses.editCourseReqsHandler);
 var upload = multer({
     dest: __dirname + '/public/img/'
 }).single('courseBanner');

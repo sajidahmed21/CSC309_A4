@@ -158,7 +158,8 @@ function showUsersTab(deleteErrorMessage) {
     
     // Danger zone section that allows to delete all users
     $dangerZone = getDangerZoneSection('Delete All Users', function () {
-        showDeleteAllWarning('Are you sure you want to delete users? This cannot be reversed.');
+        showDeleteAllWarning('Are you sure you want to delete all users? This cannot be reversed.',
+                             '/admin/delete_all_users');
     });
     
     $usersTab.append($dangerZone);
@@ -166,8 +167,62 @@ function showUsersTab(deleteErrorMessage) {
     $mainContent.append($usersTab);
 }
 
-function showDeleteAllWarning(message) {
+function showDeleteAllWarning(message, action) {
+
+    /* Remove any existng notification messages while trying to create a user */
+   removeNotificationMessage();
+   
+   /* Remove any existing popups */
+   hidePopup();
     
+   var $popup = $('<article/>', {id: 'popup'});
+    
+    $outer = $('<div/>', {
+       id:  'signup_form'
+    });
+    
+    $middle = $('<div/>', {
+       class:  'col-md-6'
+    });
+    
+    $container = $('<div/>', {
+       class:  'standard-container'
+    });
+    
+    $cancelwrapper = $('<div/>');
+    
+    $cancelicon = $('<span/>', {
+       class:  'glyphicon glyphicon-remove cancel_icon'
+    });
+    
+    $cancelicon.click(hidePopup);
+    $cancelwrapper.append($cancelicon);
+    
+    $container.append($cancelwrapper);
+    
+    $form = $('<form/>', {id: 'create_user_form', action: action, method: 'POST'});
+    
+    $title = $('<h1/>',{
+        class : 'standard-title'
+    });
+    $title.text(message).appendTo($form);
+    
+    $submitButton = $('<input/>',{
+        type : 'submit',
+        value : 'Delete',
+        class : 'standard-red-button block_btn btn-danger'
+    });
+    
+    $submitButton.click(validateCreateUserInput);
+    
+    $submitButton.appendTo($form);
+    
+    $form.appendTo($container);
+    $container.appendTo($middle);
+    $middle.appendTo($outer);
+    $outer.appendTo($popup);
+    
+    $('#main-content').append($popup);
 }
 
 /* Creates a danger zone section element */
@@ -241,7 +296,8 @@ function showClassTab() {
     
     /* Danger zone which allows the admin to delete all classes */
     $dangerZone = getDangerZoneSection('Delete All Classes', function () {
-        showDeleteAllWarning('Are you sure want to delete all classes? This cannot be reversed.');
+        showDeleteAllWarning('Are you sure want to delete all classes? This cannot be reversed.',
+                             '/admin/delete_all_classes');
     });
     
     $mainContent.append($dangerZone);
@@ -251,6 +307,9 @@ function showClassTab() {
 function showCreateUserForm() {
     /* Remove any existng notification messages while trying to create a user */
    removeNotificationMessage();
+   
+   /* Remove any existing popups */
+   hidePopup();
     
    var $popup = $('<article/>', {id: 'popup'});
     
