@@ -3,7 +3,6 @@ var sequelize = require('sequelize');
 var db = common.db;
 
 var notifications = require('./notifications');
-<<<<<<< HEAD
 var colors = ['#b6cde3',  '#b6e2e3', '#b6e3d2', '#b6e3c6',  '#bbe3b6',  '#c9e3b6' ,  '#dae3b6',  
                 '#e3d7b6',  '#e3c5b6',  '#e3b6d6',  '#dab6e3',  '#c0b6e3'];
 
@@ -59,7 +58,7 @@ exports.get_enrolled_students = function (req, res, next) {
         })
 }
 
-<<<<<<< HEAD
+
 exports.get_reviews = function(req, res, next) {
 	db.query('SELECT' 
 			+' U.name as username, U.profile_color as dp, R.user_id AS review_id, R.content as review, R.rating as rating, R.created_timestamp as postdate' 
@@ -96,42 +95,6 @@ exports.get_posts = function(req, res, next) {
                 next();
             })
             .catch(function(err) {
-=======
-exports.get_reviews = function (req, res, next) {
-    db.query('SELECT' + ' U.name as username, U.profile_color as dp, R.user_id AS review_id, R.content as review, R.rating as rating, R.created_timestamp as postdate' + ' FROM REVIEWS R, USERS U WHERE R.class_id = $1 AND U.id = R.user_id ORDER BY R.created_timestamp ASC;', {
-            bind: [res.class_info[0].id]
-        }).spread(function (results, metadata) {
-            // circular avatars
-            for (i = 0; i < results.length; i++) {
-                var username = results[i].username;
-                results[i].firstLetter = username.charAt(0).toUpperCase();
-                results[i].dp = colors[username.charCodeAt(0) % colors.length];
-            }
-            res.reviews = results;
-            next();
-        })
-        .catch(function (err) {
-            console.log("query failed");
-            common.sendInternalServerErrorResponse(res);
-        })
-}
-
-exports.get_posts = function (req, res, next) {
-    db.query('SELECT content as post, created_timestamp as timestamp FROM INSTRUCTOR_POSTS WHERE class_id = $1 ORDER BY timestamp ASC', {
-            bind: [req.params.id]
-        }).spread(function (results, metadata) {
-            // circular avatars
-            res.posts = []
-            if (results.length == 0) {
-                res.anyposts = false;
-            } else {
-                res.anyposts = true;
-                res.posts = results;
-            }
-            next();
-        })
-        .catch(function (err) {
->>>>>>> 1f48d968ad9b54264e2665924972d90a3cdc0164
             console.log("query failed");
             common.sendInternalServerErrorResponse(res);
         })
@@ -212,15 +175,6 @@ exports.isLoggedInUserInstructor = function (req, res, next) {
     }
 }
 
-<<<<<<< HEAD
-function getTitleFont(class_name) {
-    var nameLength = class_name.length;
-    if (nameLength > 27) {
-        titlefont = "2vw";
-    } else if (nameLength> 20) {
-        titlefont = "3vw";
-    } else if (nameLength > 16) {
-=======
 exports.getLoggedInUserAvatar = function (req, res, next) {
         // logged in urser hasn't reviewed and isn't instructor
         if (common.userIsLoggedIn(req) && (!res.reviewed) && (!res.instructor)) {
@@ -246,19 +200,17 @@ exports.getLoggedInUserAvatar = function (req, res, next) {
         }
     }
     /* res.rating, res.class_info */
-exports.render_course_page = function (req, res, next) {
-    console.log(res.enrolled);
-    console.log(res.reviewed);
-    console.log(res.isInstructor);
-    if (res.class_info[0].class_name.length > 20) {
+function getTitleFont(class_name) {
+    var nameLength = class_name.length;
+    if (nameLength > 27) {
+        titlefont = "2vw";
+    } else if (nameLength> 20) {
         titlefont = "3vw";
-    } else if (res.class_info[0].class_name.length > 16) {
->>>>>>> 1f48d968ad9b54264e2665924972d90a3cdc0164
+    } else if (nameLength > 16) {
         titlefont = "4vw";
     } else {
         titlefont = "5vw";
     }
-<<<<<<< HEAD
     return titlefont
 }
 /* res.rating, res.class_info */
@@ -266,14 +218,10 @@ exports.render_course_page = function(req, res, next) {
 	console.log(res.enrolled);
 	console.log(res.reviewed);
 	console.log(res.isInstructor);     
-=======
-
->>>>>>> 1f48d968ad9b54264e2665924972d90a3cdc0164
     renderCoursePage(req, res);
 }
 
 function renderCoursePage(req, res) {
-<<<<<<< HEAD
 	//res.render('coursedesc', {
         var values = {
                 anyposts: res.anyposts,
@@ -306,40 +254,6 @@ function renderCoursePage(req, res) {
         else {
                 res.render('coursedesc', values);
         }
-=======
-    //res.render('coursedesc', {
-    var values = {
-        anyposts: res.anyposts,
-        posts: res.posts,
-        enrolled: res.enrolled,
-        Reviewed: res.reviewed,
-        LIname: res.LIname,
-        isInstructor: res.isInstructor,
-        LIfirstLetter: res.LIfirstLetter,
-        LIbackgroundColor: res.LIbackgroundColor,
-        loggedIn: common.userIsLoggedIn(req),
-        imgPath: res.class_info[0].banner_picture_path,
-        titlefont: titlefont,
-        courseTitle: res.class_info[0].class_name,
-        instructor: res.class_info[0].instructor,
-        rating: res.rating,
-        enrollment: res.enrolled_students.length,
-        courseDesc: res.class_info[0].coursedesc, // need this in database
-        courseRequirements: res.class_info[0].coursereqs, // need this in database
-        students: res.enrolled_students,
-        reviews: res.reviews
-    };
-
-    /* Render the edit course admin page if the request originated from an admin */
-    if (req.url.startsWith('/admin/edit_course') && req.session.adminId !== undefined) {
-        values.adminUsername = req.session.adminId;
-        res.render('edit_course_admin', values);
-    }
-    // Else render the course page for users / instructors
-    else {
-        res.render('coursedesc', values);
-    }
->>>>>>> 1f48d968ad9b54264e2665924972d90a3cdc0164
 }
 
 
@@ -766,14 +680,9 @@ exports.isInstructor = function (req, res, next) {
                 .catch(function (err) {
                     console.log("query failed");
                     common.sendInternalServerErrorResponse(res);
-<<<<<<< HEAD
                 })  
             }
-            });
+        });
 }
-=======
-                })
-        }
-    });
-}
->>>>>>> 1f48d968ad9b54264e2665924972d90a3cdc0164
+
+
