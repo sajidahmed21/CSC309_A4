@@ -71,10 +71,47 @@ function hasGoodSize(value) {
 }
 
 function isImage(value) {
-    // Validation here:
-    pattern = /image(\/jpg$ |\/gif$|\/png$|\/jpeg$|\/bmp$)/i;
-    return pattern.test(value);
+            // Validation here:
+           pattern = /image(\/jpg$ |\/gif$|\/png$|\/jpeg$|\/bmp$)/i;
+           return pattern.test(value);
 }
 
-exports.test = {};
-exports.test.isImage = isImage;
+function capitalizeFirstChar(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+function capitalizeEveryElement(array, breaker) {
+    if (breaker == ".") {
+        breaker = ". ";
+    }
+	var str = '';
+	for (i = 0; i < array.length; i++) {
+		if ((i == array.length - 1)) {
+			str += capitalizeFirstChar(array[i]);
+		} else {
+		     str += capitalizeFirstChar(array[i]) + breaker;
+		}
+	}
+    str = str.trim();
+	return str;
+}
+
+function formatTitle(title) {
+	var array = title.split(" ");
+	return capitalizeEveryElement(array, " ");
+}
+
+function formatDesc(desc) {
+    var array = desc.split(".");
+    return capitalizeEveryElement(array, ".");
+}
+
+function formatReqs(reqs) {
+	var array = reqs.split(".");
+	return capitalizeEveryElement(array, ".");
+}
+
+
+
+
+
