@@ -77,57 +77,5 @@ describe('Courses', function () {
             });
 		});
 	});
-	describe('testing formatting of course info before entered into db', function() {
-		describe('format title', function() {
-			it('should capitalize every word given mixed lowercase, and uppercase', function() {
-				assert.equal(createcourse.formatTitle("vErY FuNkY nAmE"), 'Very Funky Name');
-				//done();
-			});
-			it('should capitalize every word given uppercase only', function() {
-				assert.equal(createcourse.formatTitle("ALL CAPS AND MORE CAPS"), 'All Caps And More Caps');
-				//done();
-			});
-			it('should do nothing if all numbers', function() {
-				assert.equal(createcourse.formatTitle("39920398405029"), '39920398405029');
-				//done();
-			});
-		});
-		describe('format course desc/reqs', function() {
-			it('should capitalize every sentence given newlines and commas', function() {
-				assert.equal(createcourse.formatDesc("some very long stuff\n including newlines and stuff."
-					+ "one period here and there, and stuff."), 
-				'Some very long stuff\n including newlines and stuff. One period here and there, and stuff.');
-				
-			});
-			it('should capitalize every sentence, given a variety of characters', function() {
-				assert.equal(createcourse.formatReqs("requirements: should have laptop.should have prior knowledge of information etc etc."), 
-					'Requirements: should have laptop. Should have prior knowledge of information etc etc.');
-				
-			});
-			it('should capitalize every sentence, given a lot of spacing', function() {
-				assert.equal(createcourse.formatReqs("requirements:                should have laptop.should        have prior knowledge of information etc etc."), 
-					'Requirements:                should have laptop. Should        have prior knowledge of information etc etc.');
-				
-			});
-			it('should capitalize every sentence, given a lot of spacing', function() {
-				assert.equal(createcourse.formatReqs("requirements:                should hAVeEe laptop.shoULld        have prior knowledge of information etc etc."), 
-					'Requirements:                should haveee laptop. Shoulld        have prior knowledge of information etc etc.');
-				
-			});
-		});
-            });
-            it('should capitalize every sentence, given a variety of characters', function () {
-                assert.equal(createcourse.formatReqs("requirements: should have laptop.should have prior knowledge of information etc etc."),
-                    'Requirements: should have laptop. Should have prior knowledge of information etc etc.');
-
-            });
-            it('should capitalize every sentence, given a lot of spacing', function () {
-                assert.equal(createcourse.formatReqs("requirements:                should have laptop.should        have prior knowledge of information etc etc."),
-                    'Requirements:                should have laptop. Should        have prior knowledge of information etc etc.');
-
-            });
-        });
-
-    });
 });
 

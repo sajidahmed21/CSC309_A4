@@ -3,13 +3,8 @@ var common = require('./common');
 var db = common.db;
 //testing
 exports.test = {};
-
 exports.test.isImage = isImage;
-exports.test.capitalizeEveryElement = capitalizeEveryElement;
-exports.test.capitalizeFirstChar = capitalizeEveryElement;
-exports.test.formatTitle = formatTitle;
-exports.test.formatDesc = formatDesc;
-exports.test.formatReqs = formatReqs;
+
 /*replace 1 with getLoggedInUserId(req)*/
 exports.validate = function (req, res, next) {
     var courseTitle = req.body.courseTitle;
@@ -116,6 +111,7 @@ function formatReqs(reqs) {
 	return capitalizeEveryElement(array, ".");
 }
 
-exports.test = {};
-exports.test.isImage = isImage;
+
+
+
 

@@ -437,14 +437,14 @@ describe('user', function () {
         describe('change-password-successful', function () {
             describe('verify correct password', function () {
                 it('verify correct password', function () {
-                    test.verifyUserPassword(user_id, 'testingpurpose', function (result) {
+                    test.verifyUserPassword(user_id, 'testingpurpose1.', function (result) {
                         assert.equal(result, 'Valid');
                     });
                 });
             });
             describe('change password successful', function () {
                 it('verify correct password', function () {
-                    test.updatePassword(user_id, 'testingpurpose', function (result) {
+                    test.updatePassword(user_id, 'testingpurpose2.', function (result) {
                         assert.equal(result, 'Success');
                     });
                 });

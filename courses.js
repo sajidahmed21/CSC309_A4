@@ -58,6 +58,7 @@ exports.get_enrolled_students = function (req, res, next) {
         })
 }
 
+
 exports.get_reviews = function(req, res, next) {
 	db.query('SELECT' 
 			+' U.name as username, U.profile_color as dp, R.user_id AS review_id, R.content as review, R.rating as rating, R.created_timestamp as postdate' 
@@ -683,4 +684,5 @@ exports.isInstructor = function (req, res, next) {
             }
         });
 }
+
 
