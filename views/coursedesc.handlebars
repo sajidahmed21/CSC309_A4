@@ -26,6 +26,8 @@
     <script src="/js/tab.js" defer> </script>
      <script src="/js/post.js" defer> </script>
      <script src="/js/edit.js" defer> </script>
+     <script src="/js/logout.js" defer></script>
+
 	<!-- include files necessary for the searchbar -->
 	{{> searchbar_head }}
 
@@ -126,7 +128,7 @@
                         <tbody>
                         	{{#each students}}
                             <tr>
-                                <td> {{.}} </td>
+                                <td><a href="/user/profile/{{id}}"> {{student}} </a> </td>
                                 
                             </tr>
                        	{{/each}}
@@ -134,8 +136,10 @@
                     </table>
 
                     {{else}}
-                                <h1 class="standard-font post-container" style="text-align: center;"> :( </h1>
-                            <h4 class="standard-font post-container" style="text-align: center;"> No one has enrolled yet </h4>
+                                <br>
+                                <h1 class="standard-font" style="text-align: center;"> :( </h1>
+                                <br>
+                            <h4 class="standard-font" style="text-align: center;"> No one has enrolled yet </h4>
                     {{/if}}
                 </div>
 
@@ -150,8 +154,8 @@
                                     </div>
                                     {{/each}}
                                 {{else}}
-                                        <h1 class="standard-font post-container" style="text-align: center;"> :( </h1>
-                                    <h4 class="standard-font post-container" style="text-align: center;"> The instructor hasn't made any posts yet </h4>
+                                        <h1 class="standard-font" style="text-align: center;"> :( </h1>
+                                    <h4 class="standard-font" style="text-align: center;"> The instructor hasn't made any posts yet </h4>
                                 {{/if}}
                              </div>
                 {{/if}}
@@ -159,22 +163,23 @@
                 {{#if isInstructor}}
 
                         <div id="course-posts" class="tab-pane fade">
-                        <div class="post-container">
+                        <div class="post-box">
                             <h3 class="standard-font" style="text-align: center; margin: 40px;"> Make a Post</h3>
                             <textarea id="post-input" class="form-control" maxlength = "1000" rows="3" placeholder="Type here... (1000 char limit)" autocomplete="off"></textarea>
-                            <div id="post-msg" style="display: inline;"> </div>
+                            <div id="post-msg"> </div>
                             <button id="post-btn" class="standard-blue-button post-btn"> Post </button>
-                            </div>
+                        </div>
                                 {{#if anyposts}}
                                     {{#each posts}}
-                                    <div class="standard-container post-container">
-                                        <h4 class="standard-font"> Posted On {{timestamp}} </h4>
+                                    <div class="post-container">
+                                        <h5 class="standard-font"> Posted On {{timestamp}} </h4>
                                            <p class="standard-font"> {{post}} </p>
                                     </div>
                                     {{/each}}
                                 {{else}}
-                                        <h2 class="standard-font post-container" style="text-align: center;"> :( </h2>
-                                    <h4 class="standard-font post-container" style="text-align: center;"> You haven't made any posts yet ! </h4>
+                                        <h2 class="standard-font" style="text-align: center;"> :( </h2>
+                                        <br>
+                                    <h4 class="standard-font" style="text-align: center;"> You haven't made any posts yet ! </h4>
                                 {{/if}}
                              </div>
 
