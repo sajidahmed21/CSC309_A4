@@ -27,8 +27,10 @@
                                 <li>
                                     <a class="nopadding" href="/user/profile"><img src="/img/profile.png" alt="Profile" height="40" width="40" class="profile_icon"></a>
                                 </li>
-                                <a id="logout-anchor" class="standard-clear-button" href="/">Logout</a>
                             </ul>
+							<form method="post" action="/user/logout">
+								<button type="submit" class="standard-clear-button">Logout</button>
+							</form>
                         </div>
 
                         {{else}}
