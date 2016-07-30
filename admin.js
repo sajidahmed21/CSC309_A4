@@ -49,22 +49,29 @@ exports.handleAdminHomeRequest = function (request, response) {
 
 
 /* Handles login requests by validating input and verifying username and password */
-exports.handleLoginRequest = function (request, response) {
+exports.handleLoginRequest = function (request, response, callback) {
     var username = request.body.admin_id;
     var password = request.body.password;
 
     if (username === undefined || password === undefined) {
         /* Return login failed response if username or password
            fields are missing */
-        //sendMalformedRequestResponse('Missing field', response);
+        if (callback !== undefined) {
+           callback('Error: Missing required fields');
+           return;
+        }
         sendLoginFailedResponse('Oops! Something went wrong. Please try later', request, response);
         return;
     }
 
-    // TODO: Correct length check
+
     if (username.length < 6 || password.length < 6) {
         /* Return login failed response if username or password
            fields are of incorrect length. This should not happen unless we have a malicious user */
+        if (callback !== undefined) {
+           callback('Error: Incorrect field length');
+           return;
+        }
         sendLoginFailedResponse('Oops! Something went wrong. Please try later', request, response);
         return;
     }
@@ -76,9 +83,11 @@ exports.handleLoginRequest = function (request, response) {
     }).spread(function (results) {
 
         if (results === undefined || results.length !== 1) { // Username doesn't exist
-            //sendInvalidCredentialsResponse(response);
+            if (callback !== undefined) {
+                callback('Login Failed: Invalid Credentials');
+                return;
+            }
             sendLoginFailedResponse('Login Failed: Invalid Credentials', request, response);
-            return;
         }
         var admin = results[0];
 
@@ -87,6 +96,10 @@ exports.handleLoginRequest = function (request, response) {
             // --- Successful login ---
             onSuccessfulLogin(username, request, response);
         } else { // Incorrect password
+            if (callback !== undefined) {
+                callback('Login Failed: Invalid Credentials');
+                return;
+            }
             sendLoginFailedResponse('Login Failed: Invalid Credentials', request, response);
         }
     });
