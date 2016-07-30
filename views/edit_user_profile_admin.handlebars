@@ -63,8 +63,10 @@
         </div>
         <div class="col-md-5">
             <button id="changename_btn" type="button" value="{{userId}}" class="btn standard-green-button">Change Name</button>
-            <button id="changepassword_btn" type="button" value="{{userId}}" class="btn standard-green-button">Change Password</button>
-            <button id="deleteuser_btn" type="button" value="{{userId}}" class="btn btn-danger standard-red-button">Delete Account</button>
+            {{#unless isGoogleUser }}
+			<button id="changepassword_btn" type="button" value="{{userId}}" class="btn standard-green-button">Change Password</button>
+            {{/unless}}
+			<button id="deleteuser_btn" type="button" value="{{userId}}" class="btn btn-danger standard-red-button">Delete Account</button>
         </div>
     </div>
     <div class="row">

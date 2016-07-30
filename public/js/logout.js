@@ -16,7 +16,7 @@ var logout = function () {
             console.log(data);
             window.location.href = "/";
         },
-        failure: function (errMsg) {
+        error: function (errMsg) {
             console.log(errMsg);
             hidePopup();
             window.location.href = "/";
