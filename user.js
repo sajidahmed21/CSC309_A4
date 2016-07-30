@@ -88,13 +88,13 @@ exports.changePassword = function (userId, currentPassword, newPassword, newPass
     }
     
     //invalid new password
-    if (!newPassword || newPassword.length < 8 || newPassword > 20) {
+    if (!newPassword || newPassword.length < 8 || newPassword.length > 20) {
         callback('Invalid new password');
         return;
     }
 
     //invalid new password confirm
-    if (!newPasswordConfirm || newPasswordConfirm.length < 8 || newPasswordConfirm > 20) {
+    if (!newPasswordConfirm || newPasswordConfirm.length < 8 || newPasswordConfirm.length > 20) {
         callback('Invalid old password');
         return;
     }
