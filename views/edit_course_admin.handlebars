@@ -6,10 +6,6 @@
     <title>LearnR</title>
 
     <script src="/js/jquery-2.0.0.min.js" defer></script>
-
-    <script src="/js/footer.js" defer></script>
-
-	<script src="/js/popups.js" defer></script>
 	
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -23,12 +19,15 @@
 
     <link rel="stylesheet" type="text/css" href="/css/style.css">
     <link rel="stylesheet" type="text/css" href="/css/coursedesc-style.css">
+	
+	<!-- JS files have been modularized and re-used across multiple pages -->
+	<script src="/js/edit_course_admin.js" defer> </script>
     <script src="/js/rating.js" defer></script>
-    <script src="/js/enroll.js" defer></script>
+	<script src="/js/tab.js" defer> </script>
+	<script src="/js/popups.js" defer></script>
     <script src="/js/tab.js" defer> </script>
-     <script src="/js/post.js" defer> </script>
-     <script src="/js/edit.js" defer> </script>
-	<!-- include files necessary for the searchbar -->
+    <script src="/js/post.js" defer> </script>
+    <script src="/js/edit.js" defer> </script>
 	
 	<!--<link rel="stylesheet" type="text/css" href="/css/style.css">-->
     <link rel="stylesheet" type="text/css" href="/css/admin_home.css">
@@ -76,6 +75,16 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-4">
+            <h2 class="standard-font"> {{name}} </h2>
+        </div>
+        <div class="col-md-6" style="float: right;">
+            <button id="delete_course_button" type="button" value="{{classId}}" style="float: right; margin-right: 35px;"
+			        class="btn btn-danger standard-red-button">Delete Course</button>
+        </div>
+    </div>
 
     <div id="desc-content">
 
@@ -91,17 +100,11 @@
         </div>
         <div class="tab-content">
                 <div id="course-desc" class="tab-container tab-pane fade in active">
-                    {{#if adminUsername}}
-                    <button id="edit-course-desc" class="edit-btn standard-green-button"> Edit </button>
-                    {{/if}}
                     <p class="standard-font"> 
                     	{{courseDesc}}
                     </p>
                 </div>
                 <div id="requirements" class="tab-container tab-pane fade">
-                    {{#if adminUsername}}
-                    <button id="edit-requirements" class="edit-btn standard-green-button"> Edit </button>
-                    {{/if}}
                     <p class="standard-font">
                         {{courseRequirements}}
                     </p>
@@ -154,12 +157,12 @@
                 {{#if adminUsername}}
 
                     <div id="course-posts" class="tab-pane fade">
-                        <div class="post-container">
+                        <!--<div class="post-container">-->
                             <!--<h3 class="standard-font" style="text-align: center; margin: 40px;"> Make a Post</h3>-->
                             <!--<textarea id="post-input" class="form-control" maxlength = "1000" rows="3" placeholder="Type here... (1000 char limit)" autocomplete="off"></textarea>-->
                             <!--<div id="post-msg" style="display: inline;"> </div>-->
                             <!--<button id="post-btn" class="standard-blue-button post-btn"> Post </button>-->
-                            </div>
+                            <!--</div>-->
 <!--						                                    <div class="standard-container post-container">-->
 <!--                                        <h4 class="standard-font"> Posted On {{timestamp}} </h4>-->
 <!--                                           <p class="standard-font"> This is great Post </p>-->
@@ -170,7 +173,6 @@
                                     <div class="standard-container post-container">
                                         <h4 class="standard-font"> Posted On {{timestamp}} </h4>
                                            <p class="standard-font"> {{post}} </p>
-										   <button id="post-btn" value="{{postId}}" class="standard-red-button btn-danger"> Remove Post </button>
                                     </div>
                                     {{/each}}
                                 {{else}}
@@ -205,6 +207,9 @@
 									<strong>{{username}}</strong> <span class="text-muted">commented on {{postdate}}</span>
 									&nbsp;&nbsp;&nbsp;
 									  <strong>Rating: </strong> <span class="text-muted">{{rating}}/5</span>
+									  <button type="button" value="{{review_id}}"
+									          style="margin-left: 20%; padding: 8px 10px;"
+									          class="delete_review_button btn btn-danger standard-red-button">Delete Review</button>
 								  
 								</div>
 								<div class="panel-body">

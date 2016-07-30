@@ -50,8 +50,10 @@
         <div class="col-md-5">
             {{#if userIsOwner }}
             <button id="changename_btn" type="button" class="btn standard-green-button">Change Name</button>
-            <button id="changepassword_btn" type="button" class="btn standard-green-button">Change Password</button>
-            <button id="deleteuser_btn" type="button" class="btn btn-danger standard-red-button">Delete Account</button>
+			{{#unless isGoogleUser }}
+           	<button id="changepassword_btn" type="button" class="btn standard-green-button">Change Password</button>
+           	{{/unless}}
+			<button id="deleteuser_btn" type="button" class="btn btn-danger standard-red-button">Delete Account</button>
             {{else}} {{#if followed}}
             <button id="unfollow_btn" value="{{current_id}}" type="button" class="btn btn-danger standard-blue-button">Unfollow</button>
             {{else}}

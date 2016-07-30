@@ -1,4 +1,5 @@
 var common = require('./common');
+var home = require('./home');
 var bcrypt = require('bcryptjs');
 
 var sendBackJSON = common.sendBackJSON;
@@ -312,6 +313,33 @@ exports.unenrollHandler = function (req, res) {
 
 exports.test.unenrollHandler = exports.unenrollHandler;
 
+
+/* Checks whether the given userId refers to a Google user and calls the callback.
+ *
+ * Note that the callback will be called with the error information (if any) and
+ * the result of the query, if successful. 
+ */
+function isGoogleUser(userId, callback) {
+    var query =
+        'SELECT user_id ' +
+        'FROM GOOGLE_CREDENTIALS ' +
+        'WHERE user_id = $1 '
+    ;
+    
+    db.query(query, { bind: [userId] })
+    .spread(function(results, metadata) {
+        // cast the result as a boolean: if a row was returned, this
+        // is a Google user
+        callback(null, results[0] ? true : false);
+    })
+    .catch(function(err) {
+        callback(err, null);
+    });
+}
+
+exports.isGoogleUser = isGoogleUser;
+
+
 /* Renders the profile for the user with the userId equal to profileUserId. */
 var getProfileHandler = function (req, res, profileUserId) {
     console.log("GETPROFILE" + profileUserId);
@@ -356,18 +384,44 @@ var getProfileHandler = function (req, res, profileUserId) {
                     var classteaching = classtaught;
                     console.log(classteaching);
                     
-                    //if all success render page
-                    res.render('profile', {
-                        profile_name: firstLetterProfile,
-                        background_color: background_color,
-                        name: name,
-                        classes: classenroll,
-                        classteaching: classteaching,
-                        loggedIn: common.userIsLoggedIn(req),
-                        current_id: profileUserId,
-                        followed: boolFollow,
-                        userIsOwner: profileUserId == getLoggedInUserId(req)
-                    });
+                    // if the user is not the owner, render the page now
+                    if (profileUserId != getLoggedInUserId(req)) {
+                        res.render('profile', {
+                            profile_name: firstLetterProfile,
+                            background_color: background_color,
+                            name: name,
+                            classes: classenroll,
+                            classteaching: classteaching,
+                            loggedIn: common.userIsLoggedIn(req),
+                            current_id: profileUserId,
+                            followed: boolFollow,
+                            userIsOwner: false
+                        });
+                    }
+                    // otherwise, fetch any necessary information for the owner
+                    else {
+                        isGoogleUser(profileUserId, function(err, result) {
+                            // on error, render the home page with an erro 
+                            if (err) {
+                                home.render(req, res, '<p><strong>Oh no!</strong> Something went wrong and we can\'t access your profile.</p>');
+                            }
+                            else {
+                                //if all success render page
+                                res.render('profile', {
+                                    profile_name: firstLetterProfile,
+                                    background_color: background_color,
+                                    name: name,
+                                    classes: classenroll,
+                                    classteaching: classteaching,
+                                    loggedIn: common.userIsLoggedIn(req),
+                                    current_id: profileUserId,
+                                    followed: boolFollow,
+                                    userIsOwner: true,
+                                    isGoogleUser: result
+                                });
+                            }
+                        });
+                    }
                 });
             });
         });

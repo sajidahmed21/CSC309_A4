@@ -98,7 +98,7 @@ app.use(helmet.hsts({
 
 // set hostname and port here
 var hostname = 'localhost';
-var port = 9090;
+var port = 3000;
 var expressValidator = require('express-validator')
 var bodyParser = require('body-parser');
 var multer = require('multer');
@@ -291,6 +291,8 @@ app.post('/admin/remove_user_from_course/:id', admin.checkAuthentication, admin.
 app.post('/admin/delete_all_users', admin.checkAuthentication, admin.handleDeleteAllUsersRequest);
 
 app.post('/admin/delete_all_classes', admin.checkAuthentication, admin.handleDeleteAllClassesRequest);
+
+app.post('/admin/delete_course/:id', admin.checkAuthentication, admin.handleDeleteCourseRequest);
 
 app.get('/admin/edit_course/:id',
     admin.checkAuthentication,
