@@ -3,11 +3,11 @@ var app = express();
 
 // Denial of Service module for too many requests from a particular client
 var ddosModule = require('ddos');
-    // allow 160 requests per minute, with no more than 12 at a given time
+    // allow 200 requests per minute, with no more than 12 at a given time
 var ddos = new ddosModule({
     limit: 200,
-    burst: 12,
-    maxexpiry: 600000,
+    burst: 24,
+    maxexpiry: 60,
     errormessage: 'Oh no! You\'ve been making too many requests and have been blocked.',
 });
 app.use(ddos.express);

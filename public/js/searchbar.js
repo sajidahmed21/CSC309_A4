@@ -17,6 +17,7 @@ $(function() {
         minLength: 0,
         autoFocus: true,
         appendTo: $('div#search-dropdown'),
-        onSelect: onSelectSearchSuggestion
+        onSelect: onSelectSearchSuggestion,
+        showNoSuggestionNotice: true
     });
 });
