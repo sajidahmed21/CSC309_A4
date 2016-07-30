@@ -3,15 +3,6 @@ var sequelize = require('sequelize');
 var db = common.db;
 
 var notifications = require('./notifications');
-
-// TODO: 
-// SUPPORT ADDING COMMENT FUNCTIONALITY
-// ARE WE GOING TO ALLOW GUESTS TO COMMENT? 
-// WHO CAN COMMENT? ANY LOGGED IN USER OR SOMEONE THAT IS IN THE COURSE?
-// WHERE WILL COURSE POSTS GO? NEED TO SUPPORT THAT FUNCTIONALITY
-// NEED TO SUPPORT BASIC INFO ABOUT COURSE LIKE COURSE DESCRIPTION AND REQUIREMENTS
-// NEED TO SUPPORT RATING FUNCTIONALITY (STARS LIGHTING UP ETC)
-// USERNAMES MUST BE UNIQUE, NOT CURRENTLY THE CASE IN DATABASE
 var colors = ['#b6cde3',  '#b6e2e3', '#b6e3d2', '#b6e3c6',  '#bbe3b6',  '#c9e3b6' ,  '#dae3b6',  
                 '#e3d7b6',  '#e3c5b6',  '#e3b6d6',  '#dab6e3',  '#c0b6e3'];
 exports.get_class_info = function(req, res, next) {
@@ -53,13 +44,10 @@ exports.get_course_rating = function(req, res, next) {
 }
 
 exports.get_enrolled_students = function(req, res, next) {
-		db.query('SELECT U.name as student FROM ENROLMENT E, USERS U where E.class_id = $1 AND U.id = E.user_id', 
+		db.query('SELECT U.name as student, U.id FROM ENROLMENT E, USERS U where E.class_id = $1 AND U.id = E.user_id', 
 			{ bind: [res.class_info[0].id]}
 			).spread(function(results, metadata) {
-				res.enrolled_students = [];
-				for (i=0; i < results.length; i++) {
-						res.enrolled_students[i] = results[i].student;
-				}
+				res.enrolled_students = results;
 				next();
 			})
 			.catch(function(err) {
@@ -192,7 +180,7 @@ exports.getLoggedInUserAvatar = function(req, res, next) {
 				).spread(function(results, metadata) {
 					var username = results[0].username;
 					res.LIfirstLetter = username.charAt(0).toUpperCase();
-					res.LIbackgroundColor = colors[username.charCodeAt(0) % colors.length];
+					res.LIbackgroundColor = colors[(username.charCodeAt(0) + username.length) % colors.length];
 					res.LIname = username;
 					next();
 			})
@@ -341,7 +329,113 @@ function doesClassExist(classId, callback) {
         callback(err, null);
     });
 }
+exports.editCourseDescHandler = function(req, res) {
+        
+        // make sure user is instructor
+        // make sure class_id is valid
 
+        var courseDesc = req.body.coursedesc;
+        var class_id = req.body.class_id;
+        var userId = common.getLoggedInUserId(req)
+        // make sure user is logged in 
+        if (!common.userIsLoggedIn(req)) {
+        common.sendUnauthorizedResponse({
+            status: 'ERROR', 
+            message: 'not logged in'
+        }, res);
+        } else {
+            doesClassExist(class_id, function(err, exists) {
+                if (err) {
+                    console.log(err);
+                    common.sendInternalServerErrorResponse(res);
+                } else if (!exists){
+                    common.sendBadRequestResponse({
+                                status: 'ERROR',
+                                message: 'Cannot change course description of non-existent class'
+                            }, res);
+                } else { // class exists
+                    fetchInstructor(class_id, function(err, instructorId) {
+                            if (err) {
+                                console.log(err);
+                                common.sendInternalServerErrorResponse(res);
+                            } else if (instructorId != userId) {
+                                common.sendBadRequestResponse({
+                                status: 'ERROR',
+                                message: 'Only instructor can change course description'
+                            }, res);
+                            } else { // user is instructor, so update course description
+                                 var query =
+                                        'UPDATE CLASSES SET coursedesc = $1 WHERE id = $2' 
+                                    ;
+
+                                    db.query(query, { bind: [courseDesc, class_id] })
+                                    .spread(function(results, metadata) {
+                                        common.sendBackJSON({status: 'SUCCESS'}, res);
+                                    })
+                                    .catch(function(err) {
+                                        console.log(err);
+                                        common.sendInternalServerErrorResponse(res);
+                                    })
+                            }
+                    })
+                }       
+            })
+        }
+}
+
+
+exports.editCourseReqsHandler = function(req, res) {
+         // make sure user is instructor
+        // make sure class_id is valid
+
+        var courseReqs = req.body.coursereqs;
+        var class_id = req.body.class_id;
+        var userId = common.getLoggedInUserId(req)
+        // make sure user is logged in 
+        if (!common.userIsLoggedIn(req)) {
+            common.sendUnauthorizedResponse({
+                status: 'ERROR', 
+                message: 'not logged in'
+            }, res);
+        } else {
+            doesClassExist(class_id, function(err, exists) {
+                if (err) {
+                    console.log(err);
+                    common.sendInternalServerErrorResponse(res);
+                } else if (!exists){
+                    common.sendBadRequestResponse({
+                                status: 'ERROR',
+                                message: 'Cannot change course requirements of non-existent class'
+                            }, res);
+                } else { // class exists
+                    fetchInstructor(class_id, function(err, instructorId) {
+                            if (err) {
+                                console.log(err);
+                                common.sendInternalServerErrorResponse(res);
+                            } else if (instructorId != userId) {
+                                common.sendBadRequestResponse({
+                                status: 'ERROR',
+                                message: 'Only instructor can change course requirements'
+                            }, res);
+                            } else { // user is instructor, so update course description
+                                 var query =
+                                        'UPDATE CLASSES SET coursereqs = $1 WHERE id = $2' 
+                                    ;
+                                    db.query(query, { bind: [courseReqs, class_id] })
+                                    .spread(function(results, metadata) {
+                                        common.sendBackJSON({status: 'SUCCESS'}, res);
+                                    })
+                                    .catch(function(err) {
+                                        console.log(err);
+                                        common.sendInternalServerErrorResponse(res);
+                                    })
+                            }
+
+                    })
+                }       
+            })
+    }
+}
 exports.unenrollHandler = function (req, res) {
     var classId = req.body.class_id;
     var userId = common.getLoggedInUserId(req)
@@ -578,3 +672,4 @@ exports.isInstructor = function(req, res, next) {
             }
             });
 }
+
