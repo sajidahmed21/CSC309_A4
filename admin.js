@@ -28,7 +28,10 @@ exports.checkAuthentication = function(request, response, next) {
     }
     else {
         // Render admin login page if admin is not logged in
-        response.render('admin_login');
+        response.render('admin_login', {
+            loginErrorMessage: request.session.loginErrorMessage // Show any pending error messages
+        });
+        request.session.loginErrorMessage = undefined;
     }
 };
 
@@ -54,15 +57,16 @@ exports.handleLoginRequest = function(request, response) {
     if (username === undefined || password === undefined) {
         /* Return login failed response if username or password
            fields are missing */
-        sendMalformedRequestResponse('Missing field', response);
+        //sendMalformedRequestResponse('Missing field', response);
+        sendLoginFailedResponse('Oops! Something went wrong. Please try later', request, response);
         return;
     }
     
     // TODO: Correct length check
-    if (username.length === 0 || password.length === 0) {
+    if (username.length < 6 || password.length < 6) {
         /* Return login failed response if username or password
-           fields are of incorrect length */
-        sendMalformedRequestResponse('Incorrect field length', response);
+           fields are of incorrect length. This should not happen unless we have a malicious user */
+        sendLoginFailedResponse('Oops! Something went wrong. Please try later', request, response);
         return;
     }
     
@@ -71,7 +75,8 @@ exports.handleLoginRequest = function(request, response) {
     db.query(queryString, {bind: [username]}).spread(function(results) {
         
         if (results === undefined || results.length !== 1) {  // Username doesn't exist
-            sendInvalidCredentialsResponse(response);
+            //sendInvalidCredentialsResponse(response);
+            sendLoginFailedResponse('Login Failed: Invalid Credentials', request, response);
             return;
         }
         var admin = results[0];
@@ -82,10 +87,15 @@ exports.handleLoginRequest = function(request, response) {
             onSuccessfulLogin(username, request, response);
         }
         else { // Incorrect password
-            sendInvalidCredentialsResponse(response);
+            sendLoginFailedResponse('Login Failed: Invalid Credentials', request, response);
         }
     });
 };
+
+function sendLoginFailedResponse(message, request, response) {
+    request.session.loginErrorMessage = message;
+    common.redirectToPage('/admin', response);
+}
 
 /*  Handles logout requests by resetting Admin Id for the particular session
  *  and redirecting to the admin login page
