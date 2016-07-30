@@ -49,9 +49,17 @@ exports.handleAdminHomeRequest = function (request, response) {
 
 
 /* Handles login requests by validating input and verifying username and password */
-exports.handleLoginRequest = function (request, response, callback) {
+exports.handleLoginRequest = function (request, response) {
     var username = request.body.admin_id;
     var password = request.body.password;
+    
+    exports.login(username, password, request, response);
+    
+};
+
+
+/* Logs in an admin with the given username */
+exports.login = function(username, password, request, response, callback) {
 
     if (username === undefined || password === undefined) {
         /* Return login failed response if username or password
@@ -88,12 +96,18 @@ exports.handleLoginRequest = function (request, response, callback) {
                 return;
             }
             sendLoginFailedResponse('Login Failed: Invalid Credentials', request, response);
+            return;
         }
         var admin = results[0];
 
         // Check if password is correct
         if (common.comparePassword(password, admin.password)) { // Correct password
             // --- Successful login ---
+            if (callback !== undefined) {
+                callback('Success');
+                return;
+            }
+            
             onSuccessfulLogin(username, request, response);
         } else { // Incorrect password
             if (callback !== undefined) {
