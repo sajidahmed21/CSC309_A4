@@ -293,6 +293,37 @@ exports.handleDeleteCourseRequest = function (request, response) {
     });
 };
 
+/* Handles delete course request by deleting a course and rendering appropriate message on the front end */
+exports.handleDeleteReviewRequest = function (request, response) {
+    
+    deleteReview(request.body.courseId, request.body.userId, function (result) {
+        var responseBody = {status: result};
+        common.sendBackJSON(responseBody, response);
+    });
+};
+
+
+/* Deletes the review with the given `courseId` and notifies about the result using the `callback` function */
+function deleteReview(courseId, userId, callback) {
+    if (courseId === undefined || userId === undefined) {
+        callback('Missing required field');
+        return;
+    }
+    
+    if (courseId < 1 || userId < 1) {
+        callback('Invalid id');
+        return;
+    }
+    
+    db.query("DELETE FROM REVIEWS WHERE user_id = $1 AND class_id = $2", {
+        bind: [userId, courseId]
+    }).spread(function () {
+        callback('Success');
+    }).catch(function () {
+        callback('Error');
+    });
+}
+
 
 /* Deletes the course with the given `courseId` and notifies about the result using the `callback` function */
 function deleteCourse(courseId, callback) {

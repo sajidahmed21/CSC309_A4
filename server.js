@@ -294,6 +294,8 @@ app.post('/admin/delete_all_classes', admin.checkAuthentication, admin.handleDel
 
 app.post('/admin/delete_course/:id', admin.checkAuthentication, admin.handleDeleteCourseRequest);
 
+app.post('/admin/delete_review', admin.checkAuthentication, admin.handleDeleteReviewRequest);
+
 app.get('/admin/edit_course/:id',
     admin.checkAuthentication,
     courses.get_class_info,
