@@ -368,6 +368,19 @@ p.class-name {
 
 /* actually used by the popups on the profile page... */
 
+#signup_form {
+    width: 350px;
+    z-index: 20;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 16%;
+    bottom: 0;
+    margin: auto;
+    max-height: 100%;
+    max-width: 100%;
+}
+
 #userlogin_form {
     width: 350px;
     z-index: 20;
@@ -381,6 +394,18 @@ p.class-name {
     max-width: 100%;
 }
 
+#reference_form {
+    width: 400px;
+    z-index: 20;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 24%;
+    bottom: 0;
+    margin: auto;
+    max-height: 100%;
+    max-width: 100%;
+}
 .standard-body {
     text-align: center;
     font-size: 150%;

@@ -11,7 +11,8 @@ var sendBackJSON = common.sendBackJSON;
  */
 exports.recommendedClasses = function(userId, limit, callback) {
     var queryString =
-        'SELECT C.id as class_id, C.class_name, count(*) as user_count ' +
+        'SELECT C.id as class_id, C.class_name, C.coursedesc AS class_description, ' +
+            'count(*) as user_count ' +
         'FROM CLASSES C ' +
         'INNER JOIN ENROLMENT E ' +
             'ON E.class_id = C.id ' +
@@ -43,7 +44,7 @@ exports.recommendedClasses = function(userId, limit, callback) {
 exports.popularClasses = function(limit, callback) {
     var queryString =
         'SELECT E.class_id, U.name as instructor, ' +
-            'count(*) AS user_count, C.class_name ' +
+            'count(*) AS user_count, C.class_name, C.coursedesc AS class_description ' +
         'FROM ENROLMENT E ' +
         'INNER JOIN CLASSES C ' +
         	'ON C.id = E.class_id ' +

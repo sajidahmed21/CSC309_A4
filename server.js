@@ -282,6 +282,10 @@ app.post('/admin/delete_user/:id', admin.checkAuthentication, admin.handleDelete
 
 app.post('/admin/remove_user_from_course/:id', admin.checkAuthentication, admin.handleUnenrolUserRequest);
 
+app.post('/admin/delete_all_users', admin.checkAuthentication, admin.handleDeleteAllUsersRequest);
+
+app.post('/admin/delete_all_classes', admin.checkAuthentication, admin.handleDeleteAllClassesRequest);
+
 app.get('/admin/edit_course/:id',
     admin.checkAuthentication,
     courses.get_class_info,
