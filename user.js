@@ -16,11 +16,11 @@ exports.test = {};
  */
 exports.changeName = function (userId, newName, callback) {
     // Error checking
-    if (userId || userId === '') {
+    if (!userId || userId === '') {
         callback('Invalid user id');
         return;
     }
-    if (newName || newName === '') {
+    if (!newName || newName === '') {
         callback('Invalid name');
         return;
     }
@@ -87,13 +87,13 @@ exports.changePassword = function (userId, currentPassword, newPassword, newPass
     }
     
     //invalid new password
-    if (!newPassword || newPassword.length < 8 || newPassword > 20) {
+    if (!newPassword || newPassword.length < 8 || newPassword.length > 20) {
         callback('Invalid new password');
         return;
     }
 
     //invalid new password confirm
-    if (!newPasswordConfirm || newPasswordConfirm.length < 8 || newPasswordConfirm > 20) {
+    if (!newPasswordConfirm || newPasswordConfirm.length < 8 || newPasswordConfirm.length > 20) {
         callback('Invalid old password');
         return;
     }
@@ -738,7 +738,7 @@ exports.deleteUserHandler = function (req, res) {
         sendBackJSON(responseBody, res);
     });
 };
-exports.test.deleteUserHelper = exports.deleteUser;
+exports.test.deleteUser = exports.deleteUser;
 exports.test.deleteUserHandler = exports.deleteUserHandler;
 
 /* Checks for error and returns the profile picture color for a user */

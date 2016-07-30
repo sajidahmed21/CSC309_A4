@@ -427,10 +427,10 @@ describe('user', function () {
                     });
                 });
             });
-            describe('incorrect old password', function () {
-                it('incorrect old password', function () {
+            describe('incorrect password', function () {
+                it('incorrect password', function () {
                     test.verifyUserPassword(user_id, 'randomwrongpass1.', function (result) {
-                        assert.equal(result, 'Error');
+                        assert.equal(result, 'Invalid');
                     });
                 });
             });
