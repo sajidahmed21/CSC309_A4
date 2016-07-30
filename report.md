@@ -49,6 +49,7 @@ Admin password: `admin1-password`
 	* user service methods (refactoring for use with admin)
 	* class service methods (refactoring for use with admin)
 * Willis Chien
+    * session/authentication
 	* user profile
 	* user service methods
 	* user unit testing
