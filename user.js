@@ -15,13 +15,12 @@ exports.test = {};
  * Notifies about success / failure using the callback.
  */
 exports.changeName = function (userId, newName, callback) {
-    
     // Error checking
-    if (!userId || userId === '') {
+    if (userId || userId === '') {
         callback('Invalid user id');
         return;
     }
-    if (!newName || newName === '') {
+    if (newName || newName === '') {
         callback('Invalid name');
         return;
     }
@@ -88,13 +87,13 @@ exports.changePassword = function (userId, currentPassword, newPassword, newPass
     }
     
     //invalid new password
-    if (!newPassword || newPassword.length < 8 || newPassword.length > 20) {
+    if (!newPassword || newPassword.length < 8 || newPassword > 20) {
         callback('Invalid new password');
         return;
     }
 
     //invalid new password confirm
-    if (!newPasswordConfirm || newPasswordConfirm.length < 8 || newPasswordConfirm.length > 20) {
+    if (!newPasswordConfirm || newPasswordConfirm.length < 8 || newPasswordConfirm > 20) {
         callback('Invalid old password');
         return;
     }
@@ -669,20 +668,13 @@ var logoutHandler = function (req, res) {
     if (getLoggedInUserId(req) != 0) {
         setLoggedInUserId(req, 0);
         console.log("INLOGGINOUT");
-        var returnJSON = {
-            "status": "success",
-            "message": "Logout Success"
-        };
-        sendBackJSON(returnJSON, res);
+        common.redirectToPage('/', res);
     }
     // otherwise return an error
     else {
         setLoggedInUserId(req, 0);
-        var returnJSON = {
-            "status": "error",
-            "message": "Logout Error"
-        };
-        sendBackJSON(returnJSON, res);
+        console.log("NOTLOGGINOUT");
+        home.render(req, res, '<p><strong>Opps!</strong> We weren\'t able to log you out. Please try again or close your browser.</p>');
     }
 };
 
@@ -692,7 +684,7 @@ exports.test.logoutHandler = logoutHandler;
 //delete user helper
 exports.deleteUser = function (userId, callback) {
     //check if invalid input
-    if (userId === undefined || userId <= 0 || userId === '') {
+    if (userId === undefined || userId < 1 || userId === '') {
         callback('Invalid user id');
         return;
     }
@@ -746,7 +738,7 @@ exports.deleteUserHandler = function (req, res) {
         sendBackJSON(responseBody, res);
     });
 };
-exports.test.deleteUser = exports.deleteUser;
+exports.test.deleteUserHelper = exports.deleteUser;
 exports.test.deleteUserHandler = exports.deleteUserHandler;
 
 /* Checks for error and returns the profile picture color for a user */
