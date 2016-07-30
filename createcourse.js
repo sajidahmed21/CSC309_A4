@@ -12,7 +12,7 @@ exports.test.formatDesc = formatDesc;
 exports.test.formatReqs = formatReqs;
 /*replace 1 with getLoggedInUserId(req)*/
 exports.validate = function (req, res, next) {
-    var courseTitle = formatTitle(req.body.courseTitle);
+    var courseTitle = req.body.courseTitle;
     var num_errors = 0;
     if (req.file) { // if not using default image
         if (!hasGoodSize(req.file.size) || !isImage(req.file.mimetype)) {
@@ -48,9 +48,9 @@ exports.validate = function (req, res, next) {
 }
 exports.addClassInfoAndRedirect = function (req, res) {
     console.log("res.bannerpath in redirect: " + res.bannerpath);
-    var courseTitle = formatTitle(req.body.courseTitle);
-    var courseDesc = formatDesc(req.body.courseDesc);
-    var courseReqs = formatReqs(req.body.courseReqs);
+    var courseTitle = req.body.courseTitle;
+    var courseDesc = req.body.courseDesc;
+    var courseReqs = req.body.courseReqs;
 
 
     db.query('INSERT INTO CLASSES (class_name, instructor, coursedesc, coursereqs, banner_picture_path) VALUES ($1, $2, $3, $4, $5)', {
@@ -116,3 +116,12 @@ function formatReqs(reqs) {
 	return capitalizeEveryElement(array, ".");
 }
 
+=======
+    // Validation here:
+    pattern = /image(\/jpg$ |\/gif$|\/png$|\/jpeg$|\/bmp$)/i;
+    return pattern.test(value);
+}
+
+exports.test = {};
+exports.test.isImage = isImage;
+>>>>>>> f0cfb3fd97690acc2fdd9f010968ff27b12c37ba
