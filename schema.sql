@@ -39,9 +39,9 @@ CREATE TABLE IF NOT EXISTS NOTIFICATIONS (
   class_id INTEGER NOT NULL,
   created_timestamp INTEGER DEFAULT (datetime('now')),
 
-  FOREIGN KEY(user_id) REFERENCES USERS(id)
-  FOREIGN KEY(followee_id) REFERENCES USERS(id)
-  FOREIGN KEY(class_id) REFERENCES CLASSES(id)
+  FOREIGN KEY(user_id) REFERENCES USERS(id) ON DELETE CASCADE,
+  FOREIGN KEY(followee_id) REFERENCES USERS(id) ON DELETE CASCADE,
+  FOREIGN KEY(class_id) REFERENCES CLASSES(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS ADMIN_CREDENTIALS (
@@ -106,15 +106,6 @@ CREATE TABLE IF NOT EXISTS LOGIN_HISTORY (
   user_id INTEGER NOT NULL,
   login_timestamp INTEGER DEFAULT (datetime('now')),
 
-  PRIMARY KEY(user_id, login_timestamp) ON DELETE CASCADE
-);
-
-
-/* TODO: Decide if we want to keep this */
-CREATE TABLE IF NOT EXISTS TAGS (
-  tag_name varchar(64) NOT NULL,
-  class_id INTEGER NOT NULL,
-
-  PRIMARY KEY(tag_name, class_id),
-  FOREIGN KEY(class_id) REFERENCES CLASSES(id)
+  PRIMARY KEY(user_id, login_timestamp),
+  FOREIGN KEY(user_id) REFERENCES USERS(id) ON DELETE CASCADE
 );
