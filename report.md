@@ -97,7 +97,7 @@ We felt that this would help provide useful information to administrators about 
 ### Instant Messaging
 Although the baseline specification only requires that users be able to message each other, it leaves open how complicated the system itself can be. We felt that messaging was an integral part of maintaining the social community aspect of our website, and therefore dedicated more time to it.
 
-To this end, we made use of socket.io to provide instant messaging capabilities. Because of this, we had to also add in some additional features to support this. For example, the search bar on the messaging page only shows users actively on the messaging system and, when users are not on the messaging system, any open conversions become locked and the chat partner can see that the user is no longer available.
+To this end, we made use of socket.io to provide instant messaging capabilities. Because of this, we had to also add in some additional features to support this. For example, the search bar on the messaging page only shows users who are online on the messaging system and, when users are not on the messaging system, any open conversions become locked and the chat partner can see that the user is no longer available.
 
 ### Advanced Searching
 LearnR allows users to find new courses both through the recommendation system and by seeing what courses other users are taking. As such, it is important that users be able to search for both classes and users at the same time, which we added support for.
@@ -107,12 +107,12 @@ However this leads to a different problem: with all of the classes and all of th
 ### File Upload
 We have considered that different instructors may like to have different themes for their courses. We have implemented the upload file feature for the course background image. Thus, the instructors can choose theme that suit their contents accordingly.
 
-Since the express 4.0+ does not support multipart anymore, we have to make use of external module - multer. By using this module, we are able to retrieve the file name and the image file. We first rename the image file, so that it is unique for each course. Then, we store the image file user under the /public/img and store the path into database. So,  when a user visited a specific course page, the path will be loaded from database and display as background.
+Since the express 4.0+ does not support multipart anymore, we have to make use of external module - multer. By using this module, we are able to retrieve the file name and the image file. We first rename the image file, so that it is unique for each course. Then, we store the image file user under the /public/img and store it's path in the database. So,  when a user visited a specific course page, the path will be loaded from database and display as background on the front-end.
 
 ### Instructor Posts
 Within a class, there are two types of roles: instructor and student. Since instructor's post should be a collection of view for the student to understand immediately, we have separated the instructor posts from students' comments/posts.
 
-This feature is to better the both user experience for both instructor and studnet such that instructor's post will not be over flooded by students' post/comment and that student is able to view and understand instructor's posts immediately.
+This feature is to improve the user experience for both instructors and students such that instructor's post will not be overflooded by students' reviews / comments and that students are able to view and understand instructor's posts immediately.
 
 ## Using the Web App
 
