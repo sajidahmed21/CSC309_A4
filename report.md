@@ -145,7 +145,9 @@ LearnR allows users to find new courses both through the recommendation system a
 However this leads to a different problem: with all of the classes and all of the users, which are the most relevant to what the user is searching for? To solve this problem, we added a scoring system to search results. Scores are based on how well the user's search query matches with the string in question. So, for example, searching for 'dent' would rank 'dent repair' above 'trident wielding'. As such, although we have limits on the number of search results, the results are more accurate and more likely to be what the user was searching for.
 
 ### File Upload
-??
+We have considered that different instructors may like to have different themes for their courses. We have implemented the upload file feature for the course background image. Thus, the instructors can choose theme that suit their contents accordingly.
+
+Since the express 4.0+ does not support multipart anymore, we have to make use of external module - multer. 
 
 ### Instructor Posts
 ??

@@ -7,116 +7,211 @@ describe('user', function () {
     describe('signupHandler()', function () {
         describe('create-user-unsuccessgful', function () {
             describe('with empty field', function () {
-                it('empty name', function () {
+                it('empty name', function (done) {
                     test.createUser('', 'testingpurpose', 'testingpurpose1.', 'testingpurpose1..', function (result) {
-                        assert.equal(result, 'Required field missing');
+                        try {
+                            assert.equal(result, 'Required field missing');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
-                it('empty username', function () {
+                it('empty username', function (done) {
                     test.createUser('testingpurpose', '', 'testingpurpose1.', 'testingpurpose1..', function (result) {
-                        assert.equal(result, 'Required field missing');
+                        try {
+                            assert.equal(result, 'Required field missing');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
-                it('empty password', function () {
+                it('empty password', function (done) {
                     test.createUser('testingpurpose', 'testingpurpose', '', 'testingpurpose1..', function (result) {
-                        assert.equal(result, 'Required field missing');
+                        try {
+                            assert.equal(result, 'Required field missing');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
-                it('empty confirmpassword', function () {
+                it('empty confirmpassword', function (done) {
                     test.createUser('testingpurpose', '', 'testingpurpose1.', '', function (result) {
-                        assert.equal(result, 'Required field missing');
+                        try {
+                            assert.equal(result, 'Required field missing');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
             });
             describe('with null field', function () {
-                it('null name', function () {
+                it('null name', function (done) {
                     test.createUser(null, 'testingpurpose', 'testingpurpose1.', 'testingpurpose1..', function (result) {
-                        assert.equal(result, 'Required field missing');
+                        try {
+                            assert.equal(result, 'Required field missing');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
-                it('null username', function () {
+                it('null username', function (done) {
                     test.createUser('testingpurpose', null, 'testingpurpose1.', 'testingpurpose1..', function (result) {
-                        assert.equal(result, 'Required field missing');
+                        try {
+                            assert.equal(result, 'Required field missing');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
-                it('null password', function () {
+                it('null password', function (done) {
                     test.createUser('testingpurpose', 'testingpurpose', null, 'testingpurpose1..', function (result) {
-                        assert.equal(result, 'Required field missing');
+                        try {
+                            assert.equal(result, 'Required field missing');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
-                it('null confirmpassword', function () {
+                it('null confirmpassword', function (done) {
                     test.createUser('testingpurpose', '', 'testingpurpose1.', null, function (result) {
-                        assert.equal(result, 'Required field missing');
+                        try {
+                            assert.equal(result, 'Required field missing');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
             });
             describe('with undefined field', function () {
-                it('undefined name', function () {
+                it('undefined name', function (done) {
                     test.createUser(undefined, 'testingpurpose', 'testingpurpose1.', 'testingpurpose1..', function (result) {
-                        assert.equal(result, 'Required field missing');
+                        try {
+                            assert.equal(result, 'Required field missing');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
-                it('undefined username', function () {
+                it('undefined username', function (done) {
                     test.createUser('testingpurpose', undefined, 'testingpurpose1.', 'testingpurpose1..', function (result) {
-                        assert.equal(result, 'Required field missing');
+                        try {
+                            assert.equal(result, 'Required field missing');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
-                it('undefined password', function () {
+                it('undefined password', function (done) {
                     test.createUser('testingpurpose', 'testingpurpose', undefined, 'testingpurpose1..', function (result) {
-                        assert.equal(result, 'Required field missing');
+                        try {
+                            assert.equal(result, 'Required field missing');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
-                it('undefined confirmpassword', function () {
+                it('undefined confirmpassword', function (done) {
                     test.createUser('testingpurpose', '', 'testingpurpose1.', undefined, function (result) {
-                        assert.equal(result, 'Required field missing');
+                        try {
+                            assert.equal(result, 'Required field missing');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
             });
             describe('password and confirm password don\'t match', function () {
-                it('password and confirm password don\'t match 1', function () {
+                it('password and confirm password don\'t match 1', function (done) {
                     test.createUser('testingpurpose', 'testingpurpose', 'testingpurpose1.', 'testingpurpose11..', function (result) {
-                        assert.equal(result, 'Passwords Don\'t Match');
+                        try {
+                            assert.equal(result, 'Passwords Don\'t Match');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
-                it('password and confirm password don\'t match 2', function () {
+                it('password and confirm password don\'t match 2', function (done) {
                     test.createUser('testingpurpose', 'testingpurpose', 'testingpurposeabc1.', 'testingpurpose1.', function (result) {
-                        assert.equal(result, 'Passwords Don\'t Match');
+                        try {
+                            assert.equal(result, 'Passwords Don\'t Match');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
             });
             describe('too short/too long username', function () {
-                it('too short username', function () {
+                it('too short username', function (done) {
                     test.createUser('testingpurpose', 'short', 'testingpurpose1.', 'testingpurpose1.', function (result) {
-                        assert.equal(result, 'Incorrect Username Length');
+                        try {
+                            assert.equal(result, 'Incorrect Username Length');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
-                it('too long username', function () {
+                it('too long username', function (done) {
                     test.createUser('testingpurpose', 'testingpurposelonglonglonglong', 'testingpurpose1.', 'testingpurpose1.', function (result) {
-                        assert.equal(result, 'Incorrect Username Length');
+                        try {
+                            assert.equal(result, 'Incorrect Username Length');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
             });
             describe('too short/too long password', function () {
-                it('too short password', function () {
+                it('too short password', function (done) {
                     test.createUser('testingpurpose', 'testingpurpose', 'short', 'short', function (result) {
-                        assert.equal(result, 'Incorrect Password Length');
+                        try {
+                            assert.equal(result, 'Incorrect Password Length');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
-                it('too long password', function () {
+                it('too long password', function (done) {
                     test.createUser('testingpurpose', 'testingpurpose', 'testingpurpose1.longlonglonglong', 'testingpurpose1.longlonglonglong', function (result) {
-                        assert.equal(result, 'Incorrect Password Length');
+                        try {
+                            assert.equal(result, 'Incorrect Password Length');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
             });
         });
-        describe('create-user-success', function () {
+        describe('create-user-success', function (done) {
             it('successs', function () {
                 test.createUser('testingpurpose', 'testingpurpose', 'testingpurpose1.', 'testingpurpose1.', function (errorType, id) {
-                    if (id != undefined) {
-                        console.log("TESTING ID:" + id);
-                        user_id = id;
+                    try {
+                        if (id != undefined) {
+                            console.log("TESTING ID:" + id);
+                            user_id = id;
+                        }
+                        assert.equal(errorType, undefined);
+                        done();
+                    } catch (err) {
+                        done(err);
                     }
-                    assert.equal(errorType, undefined);
                 });
             });
         });
@@ -131,9 +226,14 @@ describe('user', function () {
                     }
                 };
                 var res = {};
-                it('empty username', function () {
+                it('empty username', function (done) {
                     test.signinHandler(emptyUsername, res, function (result) {
-                        assert.equal(result, 'Missing Required Field!');
+                        try {
+                            assert.equal(result, 'Missing Required Field!');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
                 var emptyPassword = {
@@ -143,9 +243,14 @@ describe('user', function () {
                     }
                 };
                 var res = {};
-                it('empty password', function () {
+                it('empty password', function (done) {
                     test.signinHandler(emptyPassword, res, function (result) {
-                        assert.equal(result, 'Missing Required Field!');
+                        try {
+                            assert.equal(result, 'Missing Required Field!');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
             });
@@ -157,10 +262,15 @@ describe('user', function () {
                     }
                 };
                 var res = {};
-                it('null username', function () {
-                    test.signinHandler(nullUsername, res, function (result) {
-                        assert.equal(result, 'Missing Required Field!');
-                    });
+                it('null username', function (done) {
+                    try {
+                        test.signinHandler(nullUsername, res, function (result) {
+                            assert.equal(result, 'Missing Required Field!');
+                        });
+                        done();
+                    } catch (err) {
+                        done(err);
+                    }
                 });
                 var nullPassword = {
                     body: {
@@ -169,9 +279,14 @@ describe('user', function () {
                     }
                 };
                 var res = {};
-                it('null password', function () {
+                it('null password', function (done) {
                     test.signinHandler(nullPassword, res, function (result) {
-                        assert.equal(result, 'Missing Required Field!');
+                        try {
+                            assert.equal(result, 'Missing Required Field!');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
             });
@@ -183,9 +298,14 @@ describe('user', function () {
                     }
                 };
                 var res = {};
-                it('empty username', function () {
+                it('empty username', function (done) {
                     test.signinHandler(undefinedUsername, res, function (result) {
-                        assert.equal(result, 'Missing Required Field!');
+                        try {
+                            assert.equal(result, 'Missing Required Field!');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
                 var undefinedPassword = {
@@ -195,9 +315,14 @@ describe('user', function () {
                     }
                 };
                 var res = {};
-                it('null password', function () {
+                it('null password', function (done) {
                     test.signinHandler(undefinedPassword, res, function (result) {
-                        assert.equal(result, 'Missing Required Field!');
+                        try {
+                            assert.equal(result, 'Missing Required Field!');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
             });
@@ -209,9 +334,14 @@ describe('user', function () {
                     }
                 };
                 var res = {};
-                it('short username', function () {
+                it('short username', function (done) {
                     test.signinHandler(shortUsername, res, function (result) {
-                        assert.equal(result, 'Too long / Too Short Username or Password');
+                        try {
+                            assert.equal(result, 'Too long / Too Short Username or Password');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
                 var longUsername = {
@@ -221,9 +351,14 @@ describe('user', function () {
                     }
                 };
                 var res = {};
-                it('long username', function () {
+                it('long username', function (done) {
                     test.signinHandler(longUsername, res, function (result) {
-                        assert.equal(result, 'Too long / Too Short Username or Password');
+                        try {
+                            assert.equal(result, 'Too long / Too Short Username or Password');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
             });
@@ -235,9 +370,14 @@ describe('user', function () {
                     }
                 };
                 var res = {};
-                it('short password', function () {
+                it('short password', function (done) {
                     test.signinHandler(shortPassword, res, function (result) {
-                        assert.equal(result, 'Too long / Too Short Username or Password');
+                        try {
+                            assert.equal(result, 'Too long / Too Short Username or Password');
+                            done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
                 var longPassword = {
@@ -247,9 +387,14 @@ describe('user', function () {
                     }
                 };
                 var res = {};
-                it('long password', function () {
+                it('long password', function (done) {
                     test.signinHandler(longPassword, res, function (result) {
+                        try{
                         assert.equal(result, 'Too long / Too Short Username or Password');
+                        done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
             });
@@ -261,9 +406,14 @@ describe('user', function () {
                     }
                 };
                 var res = {};
-                it('Invalid username and password 1', function () {
+                it('Invalid username and password 1', function (done) {
                     test.signinHandler(invalidCombination, res, function (result) {
+                        try{
                         assert.equal(result, 'Invalid Username and Password');
+                        done();
+                        } catch (err) {
+                            done(err);
+                        }
                     });
                 });
                 var invalidCombination = {
@@ -455,19 +605,16 @@ describe('user', function () {
         describe('delete-user-unsuccessful', function () {
             it('invalid id', function () {
                 test.deleteUser(0, function (result) {
-                    console.log("DELETE RESULT" + result);
                     assert.equal(result, 'Invalid user id');
                 });
             });
             it('undefined id', function () {
                 test.deleteUser(undefined, function (result) {
-                    console.log("DELETE RESULT" + result);
                     assert.equal(result, 'Invalid user id');
                 });
             });
             it('empty id', function () {
                 test.deleteUser('', function (result) {
-                    console.log("DELETE RESULT" + result);
                     assert.equal(result, 'Invalid user id');
                 });
             });
