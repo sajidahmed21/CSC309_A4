@@ -165,6 +165,6 @@ Clicking on the Messaging button on the navigation bar enters the user into the 
 ## Missing Features
 
 ### Tag Feature
-Tag feature is our original enhnacement feature. This feature should have contained the many different varieties of tags that the course can be tagged with, so that the user can search by tag easily. The tag can only be added by the admin, while the user can tag it with their teaching class.
+The tag feature was our original enhancement feature. This feature should have contained the many different varieties of tags that the courses could be tagged with, so that the user can search by tags easily. Tags would be added by the admin and selected by class instructors for their classes.
 
 To implement this feature, we will need to first create all the possible categories (can be added by admin later) in a separated table in the database. So, when the instructor(user) create course, the server will retrieve a bunch tag and display for instructor to test with. Then, we can integrate the search function with these tags, so that the user can search the course by tag, thus will better the user experience.
