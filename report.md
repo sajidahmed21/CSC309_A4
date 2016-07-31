@@ -92,8 +92,6 @@ Along with the ability to manage users and classes, we added some analytics to t
 
 We felt that this would help provide useful information to administrators about the popularity of the site and how users are using it. For example, the average number of unique users shows whether the site is being used consistently by users.
 
-?? justification?
-
 ### Instant Messaging
 Although the baseline specification only requires that users be able to message each other, it leaves open how complicated the system itself can be. We felt that messaging was an integral part of maintaining the social community aspect of our website, and therefore dedicated more time to it.
 
@@ -113,6 +111,14 @@ Since the express 4.0+ does not support multipart anymore, we have to make use o
 Within a class, there are two types of roles: instructor and student. Since instructor's post should be a collection of view for the student to understand immediately, we have separated the instructor posts from students' comments/posts.
 
 This feature is to improve the user experience for both instructors and students such that instructor's post will not be overflooded by students' reviews / comments and that students are able to view and understand instructor's posts immediately.
+
+### Notifications
+Notification feature is primarily for the follower to have an instant update for their followee. The follower is being signaled when the followee has enrolled in a course.
+
+We thought that it would be meaningless if the follower has followed a person but are not alerted when the followee has enrolled in a class. Notification feature acts like a news feed to the user to automatically update their followee's current activity. This notification may even trigger the follower to enroll in the same course as the followee.
+
+### Popular Courses Suggestion
+Popular Courses Suggestion feature allows all user and non-user to view what is currently the most popular courses. The user may gain a bigger understanding of what the learnR community is mainly interested, and the user may even be attracted and enroll in it. Also, this feature is also available for non-user. Due to this feature, the non-user may be attracted to these top courses and become one of  LearnR Community.
 
 ## Using the Web App
 
