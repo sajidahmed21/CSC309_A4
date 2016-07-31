@@ -11,13 +11,15 @@ var sendBackJSON = common.sendBackJSON;
  */
 exports.recommendedClasses = function(userId, limit, callback) {
     var queryString =
-        'SELECT C.id as class_id, C.class_name, C.coursedesc AS class_description, ' +
+        'SELECT C.id as class_id, C.class_name, C.coursedesc AS class_description, I.name AS instructor, ' +
             'count(*) as user_count ' +
         'FROM CLASSES C ' +
         'INNER JOIN ENROLMENT E ' +
             'ON E.class_id = C.id ' +
         'INNER JOIN FOLLOWINGS F ' +
             'ON F.followee = E.user_id ' +
+        'INNER JOIN USERS I ' +
+            'ON I.id = C.instructor ' +
         // exclude classes the user is already in
         'WHERE C.id NOT IN ( ' +
             'SELECT E1.class_id ' +
