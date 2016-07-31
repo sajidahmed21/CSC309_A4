@@ -163,7 +163,7 @@ p {
 
 /* Font, width, and spacing properties for the auto-complete search container */
 #search-container {
-    width: 350px;
+    width: 500px;
     margin: auto;
     font-size: 1.8rem;
 }
