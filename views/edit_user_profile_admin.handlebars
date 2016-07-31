@@ -69,7 +69,11 @@
     <div class="row">
         <div class="col-md-3"></div>
         <div class="col-md-4">
-            <h2 class="standard-font">Enrolled Classes</h2></div>
+			{{#if classes}}
+			   <h2 class="standard-font" style="margin-top: 55px">Enrolled Classes</h2></div>
+		    {{else}}
+			   <h2 class="standard-font" style="margin-top: 55px">Not Enrolled in any Classes</h2></div>
+	        {{/if}}
         <div class="col-md-5"></div>
     </div>
     {{#each classes}}
