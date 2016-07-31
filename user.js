@@ -207,7 +207,9 @@ var changeProfilePicHandler = function (req, res) {
     var user_id = getLoggedInUserId(req);
 
     //profile color change
-    db.query("UPDATE USERS SET profile_color = '" + changeProfilepic + "' WHERE id=" + user_id).spread(function (results, metadata) {
+    db.query("UPDATE USERS SET profile_color = $1 WHERE id= $2", {
+        bind: [changeProfilepic, user_id]
+    }).spread(function (results, metadata) {
         //if success return change success
         var returnJSON = {
             "status": "success",
