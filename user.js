@@ -448,7 +448,7 @@ var signinHandler = function (req, res, testing) {
     //check for invalid input and return accordingly
     if (signinUsername == null || signinUsername == undefined || signinUsername == '' || signinPassword == null || signinPassword == undefined || signinPassword == '') {
         if (testing != undefined)
-            return 'Missing Required Field!';
+            return testing('Missing Required Field!');
         else {
             res.status(401);
             return res.render('home', {
@@ -461,7 +461,7 @@ var signinHandler = function (req, res, testing) {
     //check for invalid input and return accordingly
     if (signinUsername.length < 8 || signinUsername.length > 20 || signinPassword.length < 8 || signinPassword.length > 20) {
         if (testing != undefined)
-            return 'Too long / Too Short Username or Password';
+            return testing('Too long / Too Short Username or Password');
         else {
             res.status(401);
             return res.render('home', {
@@ -693,17 +693,17 @@ exports.deleteUser = function (userId, callback) {
     db.query("DELETE FROM LOGIN_CREDENTIALS WHERE user_id= $1", {
         bind: [userId]
 
-    }).spread(function () {
+    }).spread(function (result) {
         db.query("DELETE FROM USERS WHERE id= $1", {
             bind: [userId]
-        }).spread(function () {
+        }).spread(function (results) {
             callback('Success');
 
-        }).catch(function () {
+        }).catch(function (err) {
             callback('Error deleting user');
         });
 
-    }).catch(function () {
+    }).catch(function (errs) {
         callback('Error deleting login credentials');
     });
 };
