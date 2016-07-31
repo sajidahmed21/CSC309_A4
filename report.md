@@ -123,7 +123,7 @@ Notification feature is primarily for the follower to have an instant update for
 We thought that it would be meaningless if the follower has followed a person but are not alerted when the followee has enrolled in a class. Notification feature acts like a news feed to the user to automatically update their followee's current activity. This notification may even trigger the follower to enroll in the same course as the followee.
 
 ### Popular Courses Suggestion
-Popular Courses Suggestion feature allows all user and non-user to view what is currently the most popular courses. The user may gain a bigger understanding of what the learnR community is mainly interested, and the user may even be attracted and enroll in it. Also, this feature is also available for non-user. Due to this feature, the non-user may be attracted to these top courses and become one of  LearnR Community.
+Popular Courses Suggestion feature allows all user and non-user to view what is currently the most popular courses. The user may gain a bigger understanding of what the learnR community is mainly interested, and the user may even be attracted and enroll in it. Also, this feature is also available for non-user. Due to this feature, the non-user may be attracted to these top courses and thus become one of LearnR Community.
 
 ## Using the Web App
 
