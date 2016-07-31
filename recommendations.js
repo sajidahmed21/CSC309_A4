@@ -23,7 +23,12 @@ exports.recommendedClasses = function(userId, limit, callback) {
             'SELECT E1.class_id ' +
             'FROM ENROLMENT E1 ' +
             'WHERE E1.user_id = $1 ' +
-        ') ' +
+        // exclude classes where the user is the instructor
+            ') AND C.id NOT IN (' +
+                'SELECT C1.id ' +
+                'FROM CLASSES C1 ' +
+                'WHERE C1.instructor = $1 ' +
+            ') ' +
         'AND F.follower = $1 ' +
         'GROUP BY C.id ' +
         'ORDER BY user_count DESC ' +
