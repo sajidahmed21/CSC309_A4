@@ -5,14 +5,17 @@ var common = require('./common');
 var user = require('./user');
 var analytics = require('./analytics');
 
-/* Function for sending JSON response with 400 `Bad Request` status code */
-var sendBadRequestResponse = common.sendBadRequestResponse;
-
-/* Function for sending JSON response 401 `Unauthorized` status code */
-var sendUnauthorizedResponse = common.sendUnauthorizedResponse;
-
 /* Common instance of `sequelize` */
 var db = common.db;
+
+/* For referencing functions from unit test files */
+exports.test = {
+    login: login,
+    deleteAllUsers: deleteAllUsers,
+    deleteAllClasses: deleteAllClasses,
+    deleteReview: deleteReview,
+    getUserProfileData: getUserProfileData
+};
 
 
 /* To be called as a part of a chain in the routing.
@@ -53,13 +56,13 @@ exports.handleLoginRequest = function (request, response) {
     var username = request.body.admin_id;
     var password = request.body.password;
     
-    exports.login(username, password, request, response);
+    login(username, password, request, response);
     
 };
 
 
 /* Logs in an admin with the given username */
-exports.login = function(username, password, request, response, callback) {
+function login(username, password, request, response, callback) {
 
     if (username === undefined || password === undefined) {
         /* Return login failed response if username or password
@@ -117,7 +120,7 @@ exports.login = function(username, password, request, response, callback) {
             sendLoginFailedResponse('Login Failed: Invalid Credentials', request, response);
         }
     });
-};
+}
 
 function sendLoginFailedResponse(message, request, response) {
     request.session.loginErrorMessage = message;
@@ -422,24 +425,9 @@ function getUserProfileData(profileUserId, callback) {
     });
 }
 
-
-function sendMalformedRequestResponse(message, response) {
-    var responseBody = {
-        status: 'ERROR',
-        'message': message
-    };
-    sendBadRequestResponse(responseBody, response);
-}
-
-function sendInvalidCredentialsResponse(response) {
-    var responseBody = {
-        status: 'ERROR',
-        message: 'Invalid credentials'
-    };
-    sendUnauthorizedResponse(responseBody, response);
-}
-
+/* Called upon a successful login */
 function onSuccessfulLogin(adminId, request, response) {
+    
     // Set the associated adminId for this session
     request.session.adminId = adminId;
 
