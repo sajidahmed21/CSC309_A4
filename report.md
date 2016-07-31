@@ -20,13 +20,7 @@ Testing: `npm test`
 ### Live Hosting
 Link: https://csc309-learnr.herokuapp.com/
 
-Admin username: `admin1`
-
-Admin password: `admin1-password`
-
-## Team Information
-
-### Members
+## Team Members
 * Syed Sajid Ahmed
     * g4ssa
     * sajid.ahmed@mail.utoronto.ca
@@ -39,42 +33,6 @@ Admin password: `admin1-password`
 * Sajjad Khakoo
     * ***REMOVED***
     * ***REMOVED***
-
-### Distribution of Work
-* Syed Sajid Ahmed
-	* database specification
-	* admin pages
-	* admin server methods
-	* admin analytics
-	* admin unit testing
-	* analytics unit testing
-	* user service methods (refactoring for use with admin)
-	* class service methods (refactoring for use with admin)
-* Willis Chien
-    * session/authentication
-	* user profile
-	* user service methods
-	* user unit testing
-	* common pages/styling
-		* home page
-		* header
-		* signin, signup, and reference popups
-* Erfa Habib
-	* class pages
-		* class page
-		* create a class page
-	* class service methods
-	* class unit testings
-* Sajjad Khakoo
-	* messaging page
-	* messaging server methods (socket.io)
-	* search engine (user, classes, and merged)
-	* search engine testing
-	* recommendation service methods
-		* popular classes
-		* recommended classes
-	* notifications server methods
-	* Google authentication
 
 ## Application Design
 
@@ -152,12 +110,17 @@ We have considered that different instructors may like to have different themes 
 Since the express 4.0+ does not support multipart anymore, we have to make use of external module - multer. By using this module, we are able to retrieve the file name and the image file. We first rename the image file, so that it is unique for each course. Then, we store the image file user under the /public/img and store the path into database. So,  when a user visited a specific course page, the path will be loaded from database and display as background.
 
 ### Instructor Posts
-Within a class, there are two types of roles: instructor and student. Since instructor's post should be a collection of view for the student to understand immmediately, we have separated the instructor posts from students' comments/posts.
+Within a class, there are two types of roles: instructor and student. Since instructor's post should be a collection of view for the student to understand immediately, we have separated the instructor posts from students' comments/posts.
 
-This feature is to better the both user experience for both instructor and studnet such that instructor's post will not be overflooded by students' post/comment and that student is able to view and understand instructor's posts immediately.
+This feature is to better the both user experience for both instructor and studnet such that instructor's post will not be over flooded by students' post/comment and that student is able to view and understand instructor's posts immediately.
 
 ## Using the Web App
-??
+
+Admin username: `admin1`
+
+Admin password: `admin1-password`
+
+?? (also goes in readme.md)
 
 ## Missing Features
 ??
