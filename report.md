@@ -147,10 +147,12 @@ However this leads to a different problem: with all of the classes and all of th
 ### File Upload
 We have considered that different instructors may like to have different themes for their courses. We have implemented the upload file feature for the course background image. Thus, the instructors can choose theme that suit their contents accordingly.
 
-Since the express 4.0+ does not support multipart anymore, we have to make use of external module - multer. 
+Since the express 4.0+ does not support multipart anymore, we have to make use of external module - multer. By using this module, we are able to retrieve the file name and the image file. We first rename the image file, so that it is unique for each course. Then, we store the image file user under the /public/img and store the path into database. So,  when a user visited a specific course page, the path will be loaded from database and display as background.
 
 ### Instructor Posts
-??
+Within a class, there are two types of roles: instructor and student. Since instructor's post should be a collection of view for the student to understand immmediately, we have separated the instructor posts from students' comments/posts.
+
+This feature is to better the both user experience for both instructor and studnet such that instructor's post will not be overflooded by students' post/comment and that student is able to view and understand instructor's posts immediately.
 
 ## Using the Web App
 ??
