@@ -13,6 +13,8 @@ Username: `a4-csc309`
 Password: `a4-csc309!`
 
 ### Execution
+Installation: `npm install`
+
 Server: `node server.js`
 
 Testing: `npm test`
@@ -41,7 +43,10 @@ For our web app, we chose to use a three tier architectural design: the data lay
 
 Changes are triggered by the user in the presentation layer, which makes calls to the logic layer which in turn calls the data layer to manipulate the actual data. As such, the presentation layer and the data layer do not directly communicate.
 
-### Web App Parts??
+### Web App Parts
+In designing the individual parts of the web app, we tried to make things modular and separate functions into separate files. The server.js file holds the core basic functionality, including routing of requests. Common functions and the database are stored in common.js, which all other modules include. Request handlers are in their respective files (user.js, course.js, et cetera), along with any helper methods required. The exception is home.js, which has a basic function for rendering the home page with error text when required.
+
+server.js interacts directly with methods from the modules, which in turn rely on common.js. The administrator functions add one more level of indirection: server.js interacts directly with admin.js, which in turn calls library functions in the modules.
 
 ## Security Vulnerabilities
 We have implemented security in a few ways on our web app: input validation (both on the server and client side), prepared statements, cross-site scripting protection, DOS protection from too many requests.
@@ -110,7 +115,7 @@ Since the express 4.0+ does not support multipart anymore, we have to make use o
 ### Instructor Posts
 Within a class, there are two types of roles: instructor and student. Since instructor's post should be a collection of view for the student to understand immediately, we have separated the instructor posts from students' comments/posts.
 
-This feature is to improve the user experience for both instructors and students such that instructor's post will not be overflooded by students' reviews / comments and that students are able to view and understand instructor's posts immediately.
+This feature is to improve the user experience for both instructors and students such that instructor's post will not be over-flooded by students' reviews / comments and that students are able to view and understand instructor's posts immediately.
 
 ### Notifications
 Notification feature is primarily for the follower to have an instant update for their followee. The follower is being signaled when the followee has enrolled in a course.
@@ -122,11 +127,40 @@ Popular Courses Suggestion feature allows all user and non-user to view what is 
 
 ## Using the Web App
 
+### Administrator
+
+Administrators can login by navigating to `/admin`. Below are the login credentials supplied in our database.
+
 Admin username: `admin1`
 
 Admin password: `admin1-password`
 
-?? (also goes in readme.md)
+Administrators can use the tabbed interface to switch between seeing the analytics dashboard, modifying and deleting user accounts, and managing and deleting courses.
+
+
+### Users
+
+#### Searching
+Users can make use of the omni-search bar at the top. This search is always run on classes, however if logged in, it is also run on users.
+
+#### Logging In
+Users can either signup using our internal login system (username and password) and then login or use the Google authentication system to login directly.
+
+#### Home Page
+Users can go to the home page to see a list of popular and recommended classes. A class is recommended based on the users who are followed and which classes they are taking. Users will not be recommended to take classes they are already enrolled in or are the instructor for.
+
+#### Profile Management
+From their profile page, users can change their names, passwords (if using the internal login system), drop classes, and stop teaching classes. Each of these is controlled through buttons on the page with popups if necessary.
+
+#### Classes
+From the navigation bar, users can go to the create a class page to fill in details for a new class.
+
+Once created, they can modify the class and make posts through the tabbed interface on the class page. They can also see some analytic information and reviews on the page.
+
+For users who are not the instructor, the options to modify the page are unavailable, but they can instead leave a review and rating for the course.
+
+#### Messaging
+Clicking on the Messaging button on the navigation bar enters the user into the IM system. Using the search bar on the page, the user can find online users and send them messages in real time. If they receive messages, they will appear on the page. Unseen messages are marked in bold and, should a chat partner leave the messaging page, the styling will change to let the user see that.
 
 ## Missing Features
 ??
