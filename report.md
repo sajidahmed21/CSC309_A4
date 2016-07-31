@@ -86,7 +86,7 @@ Changes are triggered by the user in the presentation layer, which makes calls t
 ### Web App Parts??
 
 ## Security Vulnerabilities
-We have implemented security in a few ways on our web app: form validation, prepared statements, cross-site scripting protection, DOS protection from too many requests.
+We have implemented security in a few ways on our web app: input validation (both on the server and client side), prepared statements, cross-site scripting protection, DOS protection from too many requests.
 
 ### Form Validation
 The input data is both validated within the presentation layer and the logic layer. The input is first checked on the presentation layer so that when passing into logic layer, the data is well-formatted. Then, Methods in the logic layer validate the inputs given to them (to ensure that they are provided and valid). If there is any problem, no change is triggered on the data layer. For example, when enrolling in a class, we check to make sure that a class id is provided, that it is not negative, that it corresponds to a known course, and that the user is eligible to enrol (he is not the instructor nor currently enrolled in the class).
