@@ -46,6 +46,8 @@ Admin password: `admin1-password`
 	* admin pages
 	* admin server methods
 	* admin analytics
+	* admin unit testing
+	* analytics unit testing
 	* user service methods (refactoring for use with admin)
 	* class service methods (refactoring for use with admin)
 * Willis Chien
