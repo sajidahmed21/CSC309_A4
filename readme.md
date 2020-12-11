@@ -62,7 +62,7 @@ Testing: `npm test`
 		* popular classes
 		* recommended classes
 	* notifications server methods
-	* Google authentication
+	* Google authentication 
 
 ## Using the Web App
 
