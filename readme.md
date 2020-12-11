@@ -27,8 +27,6 @@ Testing: `npm test`
     * g4habibe
     * erfa.habib@mail.utoronto.ca
 * Sajjad Khakoo
-    * ***REMOVED***
-    * ***REMOVED***
 
 ### Distribution of Work
 * Syed Sajid Ahmed

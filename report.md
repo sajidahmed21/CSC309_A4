@@ -33,8 +33,6 @@ Link: https://csc309-learnr.herokuapp.com/
     * g4habibe
     * erfa.habib@mail.utoronto.ca
 * Sajjad Khakoo
-    * ***REMOVED***
-    * ***REMOVED***
 
 ## Application Design
 

@@ -32,8 +32,6 @@ Users who wish to enrol in a course may not always know what to enrol in or whic
     * g4habibe
     * erfa.habib@mail.utoronto.ca
 * Sajjad Khakoo
-    * ***REMOVED***
-    * ***REMOVED***
 
 ## Task Allocation
 ### Web Pages
